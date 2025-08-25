@@ -7,7 +7,7 @@ async function fetchUsers() {
 
     try {
         // Realizar la petición a la API
-        const response = await fetch('https://jsonplaceholder.typicode.com/lalal');
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
         
         // Verificar si la respuesta es exitosa
         if (!response.ok) {
