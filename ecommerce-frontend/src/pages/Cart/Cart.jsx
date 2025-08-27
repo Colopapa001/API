@@ -1,13 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import Button from '../../components/UI/Button';
-import Input from '../../components/UI/Input';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
-export { default as Button } from './Button/Button';
-export { default as Input } from './Input/Input';
-export { default as LoadingSpinner } from './LoadingSpinner/LoadingSpinner';
 import { formatPrice } from '../../utils/helpers';
 import './Cart.css';
 
@@ -20,7 +15,6 @@ const Cart = () => {
     updateQuantity,
     removeFromCart,
     clearCart,
-    cartTotal,
     getCartSummary
   } = useCart();
 

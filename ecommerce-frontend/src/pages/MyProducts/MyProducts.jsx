@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext';
 import Button from '../../components/UI/Button';
-import Input from '../../components/UI/Input';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
-import { getProductsByUser, deleteProduct } from '../../../utils/mockData';
-import { formatPrice, formatDate } from '../../../utils/helpers';
+import { getProductsByUser, deleteProduct } from '../../utils/mockData';
+import { formatPrice, formatDate } from '../../utils/helpers';
 import './MyProducts.css';
 
 const MyProducts = () => {
@@ -18,11 +16,7 @@ const MyProducts = () => {
   const [error, setError] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
 
-  useEffect(() => {
-    loadProducts();
-  }, [user.id]);
-
-  const loadProducts = async () => {
+  const loadProducts = useCallback(async () => {
     try {
       setLoading(true);
       const userProducts = await getProductsByUser(user.id);
@@ -34,7 +28,11 @@ const MyProducts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user.id]);
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
 
   const handleDelete = async (productId) => {
     if (!window.confirm('¿Estás seguro de eliminar este producto?')) {
