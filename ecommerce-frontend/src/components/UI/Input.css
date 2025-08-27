@@ -1,0 +1,374 @@
+/* Input.css - Estilos del componente Input */
+
+/* ==================== BASE INPUT STYLES ==================== */
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.input-full-width {
+  width: 100%;
+}
+
+/* ==================== LABEL STYLES ==================== */
+.input-label {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.input-required {
+  color: var(--error-color);
+  margin-left: 0.25rem;
+}
+
+.input-focused .input-label {
+  color: var(--primary-color);
+}
+
+/* ==================== INPUT WRAPPER ==================== */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: var(--transition-fast);
+  overflow: hidden;
+}
+
+.input-wrapper:hover:not(.input-disabled) {
+  border-color: var(--primary-color);
+}
+
+.input-focused .input-wrapper {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.input-error .input-wrapper {
+  border-color: var(--error-color);
+}
+
+.input-error.input-focused .input-wrapper {
+  box-shadow: 0 0 0 3px rgba(220, 38, 127, 0.1);
+}
+
+.input-disabled .input-wrapper {
+  background: var(--background-light);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ==================== INPUT FIELD ==================== */
+.input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-size: 1rem;
+  transition: var(--transition-fast);
+  width: 100%;
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.input-field:disabled {
+  cursor: not-allowed;
+  color: var(--text-muted);
+}
+
+/* ==================== INPUT SIZES ==================== */
+
+/* Small Input */
+.input-size-small .input-field {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.input-size-small .input-label {
+  font-size: 0.8rem;
+}
+
+/* Medium Input */
+.input-size-medium .input-field {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+/* Large Input */
+.input-size-large .input-field {
+  padding: 1rem 1.25rem;
+  font-size: 1.125rem;
+}
+
+.input-size-large .input-label {
+  font-size: 1rem;
+}
+
+/* ==================== ICON STYLES ==================== */
+.input-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: var(--transition-fast);
+  pointer-events: none;
+}
+
+.input-focused .input-icon-container {
+  color: var(--primary-color);
+}
+
+.input-icon-left {
+  padding-left: 1rem;
+  padding-right: 0.5rem;
+}
+
+.input-icon-right {
+  padding-left: 0.5rem;
+  padding-right: 1rem;
+}
+
+/* Ajustar padding del input cuando hay iconos */
+.input-with-icon.input-icon-left .input-field {
+  padding-left: 0;
+}
+
+.input-with-icon.input-icon-right .input-field {
+  padding-right: 0;
+}
+
+.input-with-icon.input-icon-left.input-icon-right .input-field {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ==================== PASSWORD TOGGLE ==================== */
+.input-password-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  border-radius: 0;
+}
+
+.input-password-toggle:hover {
+  color: var(--primary-color);
+  background: rgba(74, 144, 226, 0.05);
+}
+
+.input-password-toggle:focus {
+  outline: none;
+  color: var(--primary-color);
+}
+
+/* ==================== HELPER TEXT ==================== */
+.input-helper-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ==================== ERROR MESSAGE ==================== */
+.input-error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--error-color);
+  line-height: 1.4;
+}
+
+.input-error-message svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* ==================== SPECIAL INPUT TYPES ==================== */
+
+/* Search Input */
+.input-search {
+  background: var(--background-light);
+  border: 1px solid transparent;
+}
+
+.input-search:focus {
+  background: white;
+  border-color: var(--primary-color);
+}
+
+/* Number Input */
+.input-field[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input-field[type="number"]::-webkit-outer-spin-button,
+.input-field[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* File Input */
+.input-field[type="file"] {
+  padding: 0.5rem;
+}
+
+.input-field[type="file"]::file-selector-button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  margin-right: 1rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.input-field[type="file"]::file-selector-button:hover {
+  background: var(--secondary-color);
+}
+
+/* ==================== TEXTAREA VARIANT ==================== */
+.input-textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: var(--font-family);
+  line-height: 1.5;
+}
+
+/* ==================== FLOATING LABEL ==================== */
+.input-floating {
+  position: relative;
+}
+
+.input-floating .input-label {
+  position: absolute;
+  top: 0;
+  left: 1rem;
+  background: white;
+  padding: 0 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  transform: translateY(-50%);
+  transition: var(--transition-fast);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-floating.input-focused .input-label,
+.input-floating.input-has-value .input-label {
+  color: var(--primary-color);
+  font-size: 0.75rem;
+}
+
+/* ==================== INPUT GROUPS ==================== */
+.input-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.input-group .input-container {
+  flex: 1;
+}
+
+.input-group-vertical {
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+  .input-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .input-size-large .input-field {
+    font-size: 16px; /* Evitar zoom en iOS */
+  }
+  
+  .input-size-medium .input-field {
+    font-size: 16px; /* Evitar zoom en iOS */
+  }
+  
+  .input-icon-left,
+  .input-icon-right {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .input-password-toggle {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* ==================== DARK MODE ==================== */
+@media (prefers-color-scheme: dark) {
+  .input-wrapper {
+    background: var(--background-color);
+    border-color: var(--border-color);
+  }
+  
+  .input-field {
+    color: var(--text-color);
+  }
+  
+  .input-field::placeholder {
+    color: var(--text-muted);
+  }
+  
+  .input-disabled .input-wrapper {
+    background: var(--background-dark);
+  }
+  
+  .input-floating .input-label {
+    background: var(--background-color);
+  }
+  
+  .input-field[type="file"]::file-selector-button {
+    background: var(--primary-color);
+  }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .input-wrapper,
+  .input-label,
+  .input-icon-container,
+  .input-password-toggle {
+    transition: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .input-wrapper {
+    border-width: 3px;
+  }
+  
+  .input-focused .input-wrapper {
+    border-width: 3px;
+  }
+  
+  .input-error .input-wrapper {
+    border-width: 3px;
+  }
+}
