@@ -24,17 +24,14 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (isBlocked) {
-      return;
-    }
+  e.preventDefault();
+  
+  if (isBlocked) {
+    return;
+  }
 
-    const result = await login(formData.email, formData.password);
-    if (result.success) {
-      navigate('/');
-    }
-  };
+  await login(formData.email, formData.password);
+};
 
   return (
     <div className="auth-container">

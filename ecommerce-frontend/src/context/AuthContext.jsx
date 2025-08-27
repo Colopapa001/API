@@ -180,7 +180,7 @@ export const AuthProvider = ({ children }) => {
 
         return { success: true, user: result.user };
       } else {
-        throw new Error(result.message);
+       throw new Error(result.error);
       }
     } catch (error) {
       const errorMessage = error.message || 'Error al iniciar sesión';
@@ -238,7 +238,7 @@ export const AuthProvider = ({ children }) => {
 
         return { success: true, user: result.user };
       } else {
-        throw new Error(result.message);
+       throw new Error(result.error);
       }
     } catch (error) {
       const errorMessage = error.message || 'Error al registrar usuario';
