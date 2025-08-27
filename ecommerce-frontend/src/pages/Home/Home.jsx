@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
-export { default as Button } from './Button/Button';
-export { default as Input } from './Input/Input';
-export { default as LoadingSpinner } from './LoadingSpinner/LoadingSpinner';
 import { mockProducts } from '../../utils/mockData';
 import { 
   formatPrice, 

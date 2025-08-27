@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
-import LoadingSpinner from '../../components/UI/LoadingSpinner';
-import { createProduct, getCategories } from '../../../utils/mockData';
-import { validateProductData, imageUtils } from '../../../utils/helpers';
+import { createProduct, getCategories } from '../../utils/mockData';
+import { validateProductData, imageUtils } from '../../utils/helpers';
 import './MyProducts.css';
 
 const AddProduct = () => {

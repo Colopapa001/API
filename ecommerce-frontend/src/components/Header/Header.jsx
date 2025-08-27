@@ -1,5 +1,5 @@
 // src/components/Header/Header.jsx
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
