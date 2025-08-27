@@ -52,53 +52,12 @@ export const formatRelativeDate = (dateString) => {
   }
 };
 
-// Validar email
-export const isValidEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-// Validar contraseña (mínimo 6 caracteres, al menos 1 número y 1 letra)
-export const isValidPassword = (password) => {
-  const minLength = password.length >= 6;
-  const hasLetter = /[a-zA-Z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  
-  return {
-    isValid: minLength && hasLetter && hasNumber,
-    errors: {
-      minLength: !minLength ? 'Debe tener al menos 6 caracteres' : '',
-      hasLetter: !hasLetter ? 'Debe contener al menos una letra' : '',
-      hasNumber: !hasNumber ? 'Debe contener al menos un número' : ''
-    }
-  };
-};
-
-// Validar username
-export const isValidUsername = (username) => {
-  const minLength = username.length >= 3;
-  const maxLength = username.length <= 20;
-  const validChars = /^[a-zA-Z0-9_]+$/.test(username);
-  
-  return {
-    isValid: minLength && maxLength && validChars,
-    errors: {
-      minLength: !minLength ? 'Debe tener al menos 3 caracteres' : '',
-      maxLength: !maxLength ? 'No puede tener más de 20 caracteres' : '',
-      validChars: !validChars ? 'Solo se permiten letras, números y guiones bajos' : ''
-    }
-  };
-};
-
 // Calcular total del carrito
 export const calculateCartTotal = (cartItems) => {
   return cartItems.reduce((total, item) => {
     return total + (item.product.price * item.quantity);
   }, 0);
 };
-
-// Calcular cantidad total de items en el carrito
-
 
 // Generar slug para URLs amigables
 export const generateSlug = (text) => {
@@ -527,12 +486,6 @@ export const token = {
   }
 };
 
-// Legacy functions para compatibilidad
-export const getToken = () => token.get();
-export const setToken = (authToken) => token.set(authToken);
-export const removeToken = () => token.remove();
-export const isTokenExpired = (authToken) => token.isExpired(authToken);
-
 // ============================================
 // VALIDATION FUNCTIONS
 // ============================================
@@ -542,9 +495,24 @@ export const validateEmail = (email) => {
 };
 
 export const validatePassword = (password) => {
-  // Al menos 6 caracteres, una mayúscula, una minúscula y un número
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/;
-  return passwordRegex.test(password);
+  const errors = [];
+  if (password.length < 6) {
+    errors.push('debe tener al menos 6 caracteres');
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push('debe contener al menos una letra minúscula');
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push('debe contener al menos una letra mayúscula');
+  }
+  if (!/\d/.test(password)) {
+    errors.push('debe contener al menos un número');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors: errors.join(', ')
+  };
 };
 
 // ============================================
@@ -561,5 +529,3 @@ export const getStockStatus = (stock) => {
   return { status: 'in-stock', text: 'En stock', color: 'success' };
 };
 
-// Alias para compatibilidad
-export const calculateCartItemsCount = (cartItems) => calculateCartCount(cartItems);
