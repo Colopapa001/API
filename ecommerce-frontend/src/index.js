@@ -98,7 +98,7 @@ class ErrorBoundary extends React.Component {
                   color: 'var(--color-danger)'
                 }}>
                   {this.state.error && this.state.error.toString()}
-                  {this.state.errorInfo.componentStack}
+                  {this.state.errorInfo && this.state.errorInfo.componentStack}
                 </pre>
               </details>
             )}
@@ -158,18 +158,8 @@ getFCP(sendToAnalytics);
 getLCP(sendToAnalytics);
 getTTFB(sendToAnalytics);
 
-// Service Worker registration (opcional - para PWA)
-if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then((registration) => {
-        console.log('SW registered: ', registration);
-      })
-      .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
-      });
-  });
-}
+// The service worker registration was removed because the file service-worker.js
+// does not exist in the public folder. This would cause a 404 error in production.
 
 // Dark mode detection and initialization
 function initializeTheme() {

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { loginUser, registerUser, mockUsers } from '../utils/mockData';
-import { validateEmail, validatePassword, getToken, setToken, removeToken, isTokenExpired } from '../utils/helpers';
+import { validateEmail, validatePassword, token } from '../utils/helpers';
 
 // Estados de autenticación
 const INITIAL_STATE = {
@@ -121,8 +121,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const restoreSession = () => {
       try {
-        const token = getToken();
-        if (token && !isTokenExpired(token)) {
+        const sessionToken = token.get();
+        if (sessionToken && !token.isExpired(sessionToken)) {
           // En una app real, verificarías el token con el backend
           // Aquí simulamos encontrar el usuario por token
           const userData = JSON.parse(localStorage.getItem('userData'));
@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }) => {
         }
         
         // Si no hay token válido, cerrar sesión
-        removeToken();
+        token.remove();
         localStorage.removeItem('userData');
         dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
       } catch (error) {
@@ -158,8 +158,9 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Email inválido');
       }
 
-      if (!validatePassword(password)) {
-        throw new Error('La contraseña debe tener al menos 6 caracteres');
+      const passwordValidation = validatePassword(password);
+      if (!passwordValidation.isValid) {
+        throw new Error(`Contraseña inválida: ${passwordValidation.errors}`);
       }
 
       // Intentar login con datos mock
@@ -170,7 +171,7 @@ export const AuthProvider = ({ children }) => {
         const mockToken = `mock-jwt-token-${Date.now()}-${result.user.id}`;
         
         // Guardar token y datos del usuario
-        setToken(mockToken);
+        token.set(mockToken);
         localStorage.setItem('userData', JSON.stringify(result.user));
 
         dispatch({
@@ -180,7 +181,7 @@ export const AuthProvider = ({ children }) => {
 
         return { success: true, user: result.user };
       } else {
-        throw new Error(result.message);
+       throw new Error(result.error);
       }
     } catch (error) {
       const errorMessage = error.message || 'Error al iniciar sesión';
@@ -208,8 +209,9 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Email inválido');
       }
 
-      if (!validatePassword(password)) {
-        throw new Error('La contraseña debe tener al menos 6 caracteres');
+      const passwordValidation = validatePassword(password);
+      if (!passwordValidation.isValid) {
+        throw new Error(`Contraseña inválida: ${passwordValidation.errors}`);
       }
 
       if (password !== confirmPassword) {
@@ -228,7 +230,7 @@ export const AuthProvider = ({ children }) => {
         const mockToken = `mock-jwt-token-${Date.now()}-${result.user.id}`;
         
         // Guardar token y datos del usuario
-        setToken(mockToken);
+        token.set(mockToken);
         localStorage.setItem('userData', JSON.stringify(result.user));
 
         dispatch({
@@ -238,7 +240,7 @@ export const AuthProvider = ({ children }) => {
 
         return { success: true, user: result.user };
       } else {
-        throw new Error(result.message);
+       throw new Error(result.error);
       }
     } catch (error) {
       const errorMessage = error.message || 'Error al registrar usuario';
@@ -252,7 +254,7 @@ export const AuthProvider = ({ children }) => {
 
   // Función de logout
   const logout = () => {
-    removeToken();
+    token.remove();
     localStorage.removeItem('userData');
     localStorage.removeItem('cartItems'); // Limpiar carrito también
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
@@ -266,8 +268,8 @@ export const AuthProvider = ({ children }) => {
   // Login rápido para desarrollo (usuarios mock)
   const quickLogin = async (userType = 'juan') => {
     const users = {
-      juan: { email: 'juan@email.com', password: '123456' },
-      maria: { email: 'maria@email.com', password: '123456' }
+      juan: { email: 'juan@email.com', password: 'Password123' },
+      maria: { email: 'maria@email.com', password: 'Password123' }
     };
 
     const user = users[userType];
