@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
-import { isValidEmail, isValidPassword } from '../../utils/helpers';
+import { validateEmail, validatePassword } from '../../utils/helpers';
 import './Profile.css';
 
 const Profile = () => {
@@ -56,7 +56,7 @@ const Profile = () => {
       errors.lastName = 'El apellido es requerido';
     }
 
-    if (!isValidEmail(formData.email)) {
+    if (!validateEmail(formData.email)) {
       errors.email = 'Email inválido';
     }
 
@@ -67,7 +67,7 @@ const Profile = () => {
       }
 
       if (formData.newPassword) {
-        const passwordValidation = isValidPassword(formData.newPassword);
+        const passwordValidation = validatePassword(formData.newPassword);
         if (!passwordValidation.isValid) {
           errors.newPassword = Object.values(passwordValidation.errors)[0];
         }

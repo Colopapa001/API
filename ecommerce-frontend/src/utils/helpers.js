@@ -495,23 +495,41 @@ export const validateEmail = (email) => {
 };
 
 export const validatePassword = (password) => {
-  const errors = [];
+  const errors = {};
   if (password.length < 6) {
-    errors.push('debe tener al menos 6 caracteres');
+    errors.length = 'debe tener al menos 6 caracteres';
   }
   if (!/[a-z]/.test(password)) {
-    errors.push('debe contener al menos una letra minúscula');
+    errors.lowercase = 'debe contener al menos una letra minúscula';
   }
   if (!/[A-Z]/.test(password)) {
-    errors.push('debe contener al menos una letra mayúscula');
+    errors.uppercase = 'debe contener al menos una letra mayúscula';
   }
   if (!/\d/.test(password)) {
-    errors.push('debe contener al menos un número');
+    errors.number = 'debe contener al menos un número';
   }
 
   return {
-    isValid: errors.length === 0,
-    errors: errors.join(', ')
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+};
+
+export const validateUsername = (username) => {
+  const errors = {};
+  if (username.length < 3) {
+    errors.minLength = 'debe tener al menos 3 caracteres';
+  }
+  if (username.length > 20) {
+    errors.maxLength = 'no debe tener más de 20 caracteres';
+  }
+  if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+    errors.format = 'solo puede contener letras, números y guiones bajos';
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
   };
 };
 
