@@ -8,7 +8,7 @@ const ProductCard = ({
   title,
   price,
   description,
-  image,
+  images = [],
   onAddToCart,
   loading = false
 }) => {
@@ -18,15 +18,19 @@ const ProductCard = ({
     navigate(`/product/${id}`);
   };
 
+  const primaryImage = Array.isArray(images) && images.length > 0 
+    ? images[0] 
+    : 'https://via.placeholder.com/400x400/CCCCCC/666666?text=Sin+imagen';
+
   return (
     <div className="product-card">
       <div className="product-image-container">
         <img 
-          src={image} 
+          src={primaryImage} 
           alt={title} 
           className="product-image"
           onError={(e) => {
-            e.target.src = '/images/placeholder.png';
+            e.target.src = 'https://via.placeholder.com/400x400/CCCCCC/666666?text=Sin+imagen';
           }}
         />
       </div>

@@ -65,9 +65,9 @@ export const mockProducts = [
     categoryId: 1,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/333333/FFFFFF?text=iPhone+15+Pro',
-      'https://via.placeholder.com/400x400/444444/FFFFFF?text=iPhone+Back',
-      'https://via.placeholder.com/400x400/555555/FFFFFF?text=iPhone+Side'
+      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-03-01T09:00:00Z'
   },
@@ -80,8 +80,9 @@ export const mockProducts = [
     categoryId: 1,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/E8E8E8/333333?text=MacBook+Air',
-      'https://via.placeholder.com/400x400/F0F0F0/333333?text=MacBook+Open'
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-28T11:30:00Z'
   },
@@ -94,8 +95,9 @@ export const mockProducts = [
     categoryId: 1,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/000000/FFFFFF?text=Sony+Headphones',
-      'https://via.placeholder.com/400x400/222222/FFFFFF?text=Sony+Side'
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-03-05T16:45:00Z'
   },
@@ -108,8 +110,9 @@ export const mockProducts = [
     categoryId: 2,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/4A90E2/FFFFFF?text=Camiseta+Azul',
-      'https://via.placeholder.com/400x400/50C878/FFFFFF?text=Camiseta+Verde'
+      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-20T12:00:00Z'
   },
@@ -122,8 +125,9 @@ export const mockProducts = [
     categoryId: 2,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/1E3A8A/FFFFFF?text=Jeans+Azul',
-      'https://via.placeholder.com/400x400/1F2937/FFFFFF?text=Jeans+Negro'
+      'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-25T14:20:00Z'
   },
@@ -136,8 +140,9 @@ export const mockProducts = [
     categoryId: 3,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/8B4513/FFFFFF?text=Sofa+Marron',
-      'https://via.placeholder.com/400x400/A0522D/FFFFFF?text=Sofa+Detalle'
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-18T08:15:00Z'
   },
@@ -150,8 +155,9 @@ export const mockProducts = [
     categoryId: 3,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/C0C0C0/333333?text=Set+Ollas',
-      'https://via.placeholder.com/400x400/D3D3D3/333333?text=Ollas+Detalle'
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-22T10:45:00Z'
   },
@@ -164,8 +170,9 @@ export const mockProducts = [
     categoryId: 4,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/000000/FFFFFF?text=Adidas+Negro',
-      'https://via.placeholder.com/400x400/FFFFFF/000000?text=Adidas+Blanco'
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-03-03T13:20:00Z'
   },
@@ -178,8 +185,9 @@ export const mockProducts = [
     categoryId: 1,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/2F2F2F/FFFFFF?text=Galaxy+Tab',
-      'https://via.placeholder.com/400x400/404040/FFFFFF?text=Tab+S+Pen'
+      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-27T15:10:00Z'
   },
@@ -192,8 +200,9 @@ export const mockProducts = [
     categoryId: 4,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/FF6B35/FFFFFF?text=Nike+Ball',
-      'https://via.placeholder.com/400x400/FF8C42/FFFFFF?text=Ball+Detail'
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-03-07T09:30:00Z'
   },
@@ -206,8 +215,9 @@ export const mockProducts = [
     categoryId: 1,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/1C1C1E/FFFFFF?text=Apple+Watch',
-      'https://via.placeholder.com/400x400/2C2C2E/FFFFFF?text=Watch+Side'
+      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca359?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca359?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca359?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-03-02T11:15:00Z'
   },
@@ -220,8 +230,9 @@ export const mockProducts = [
     categoryId: 3,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/8B4513/FFFFFF?text=Mesa+Madera',
-      'https://via.placeholder.com/400x400/A0522D/FFFFFF?text=Mesa+Detalle'
+      'https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-19T14:00:00Z'
   },
@@ -234,8 +245,9 @@ export const mockProducts = [
     categoryId: 4,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/FF0000/FFFFFF?text=Wilson+Racket',
-      'https://via.placeholder.com/400x400/CC0000/FFFFFF?text=Racket+Detail'
+      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-24T16:30:00Z'
   },
@@ -248,8 +260,9 @@ export const mockProducts = [
     categoryId: 1,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/36454F/FFFFFF?text=DJI+Drone',
-      'https://via.placeholder.com/400x400/455A64/FFFFFF?text=Drone+Flying'
+      'https://images.unsplash.com/photo-1579829366248-204fe8413f31?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1579829366248-204fe8413f31?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1579829366248-204fe8413f31?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-03-04T08:45:00Z'
   },
@@ -262,8 +275,9 @@ export const mockProducts = [
     categoryId: 5,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x300/8B4513/FFFFFF?text=Arte+Guerra',
-      'https://via.placeholder.com/400x300/A0522D/FFFFFF?text=Book+Back'
+      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-21T13:40:00Z'
   },
@@ -276,8 +290,9 @@ export const mockProducts = [
     categoryId: 3,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/FFD700/333333?text=Smart+Lamp',
-      'https://via.placeholder.com/400x400/FFA500/333333?text=Lamp+Colors'
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-26T17:20:00Z'
   },
@@ -290,8 +305,9 @@ export const mockProducts = [
     categoryId: 3,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/2F4F4F/FFFFFF?text=Cafetera',
-      'https://via.placeholder.com/400x400/556B2F/FFFFFF?text=Coffee+Making'
+      'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-23T12:10:00Z'
   },
@@ -304,8 +320,9 @@ export const mockProducts = [
     categoryId: 5,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x300/228B22/FFFFFF?text=Cien+Años',
-      'https://via.placeholder.com/400x300/32CD32/FFFFFF?text=Garcia+Marquez'
+      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-02-29T11:05:00Z'
   },
@@ -318,8 +335,9 @@ export const mockProducts = [
     categoryId: 6,
     userId: 1,
     images: [
-      'https://via.placeholder.com/400x400/4169E1/FFFFFF?text=Puzzle+1000',
-      'https://via.placeholder.com/400x400/1E90FF/FFFFFF?text=Landscape'
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-03-06T14:25:00Z'
   },
@@ -332,8 +350,9 @@ export const mockProducts = [
     categoryId: 4,
     userId: 2,
     images: [
-      'https://via.placeholder.com/400x400/000000/FFFFFF?text=Nike+Backpack',
-      'https://via.placeholder.com/400x400/333333/FFFFFF?text=Backpack+Open'
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&crop=entropy'
     ],
     createdAt: '2024-03-08T10:40:00Z'
   }

@@ -1,9 +1,9 @@
-import { products } from '../utils/mockData';
+import { mockProducts } from '../utils/mockData';
 
 export const getAllProducts = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(products);
+      resolve(mockProducts);
     }, 1000);
   });
 };
@@ -11,7 +11,8 @@ export const getAllProducts = () => {
 export const getProductById = (id) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const product = products.find(p => p.id === id);
+      const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+      const product = mockProducts.find(p => p.id === numericId);
       if (product) {
         resolve(product);
       } else {
@@ -24,7 +25,8 @@ export const getProductById = (id) => {
 export const getUserProducts = (userId) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const userProducts = products.filter(p => p.userId === userId);
+      const numericUserId = typeof userId === 'string' ? parseInt(userId, 10) : userId;
+      const userProducts = mockProducts.filter(p => p.userId === numericUserId);
       resolve(userProducts);
     }, 1000);
   });
@@ -34,11 +36,11 @@ export const addProduct = (productData) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       const newProduct = {
-        id: products.length + 1,
+        id: mockProducts.length + 1,
         ...productData,
         createdAt: new Date().toISOString(),
       };
-      products.push(newProduct);
+      mockProducts.push(newProduct);
       resolve(newProduct);
     }, 1000);
   });
@@ -47,14 +49,15 @@ export const addProduct = (productData) => {
 export const updateProduct = (productId, productData) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const index = products.findIndex(p => p.id === productId);
+      const numericProductId = typeof productId === 'string' ? parseInt(productId, 10) : productId;
+      const index = mockProducts.findIndex(p => p.id === numericProductId);
       if (index !== -1) {
-        products[index] = {
-          ...products[index],
+        mockProducts[index] = {
+          ...mockProducts[index],
           ...productData,
           updatedAt: new Date().toISOString(),
         };
-        resolve(products[index]);
+        resolve(mockProducts[index]);
       } else {
         reject(new Error('Product not found'));
       }
@@ -65,9 +68,10 @@ export const updateProduct = (productId, productData) => {
 export const deleteProduct = (productId) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const index = products.findIndex(p => p.id === productId);
+      const numericProductId = typeof productId === 'string' ? parseInt(productId, 10) : productId;
+      const index = mockProducts.findIndex(p => p.id === numericProductId);
       if (index !== -1) {
-        const deletedProduct = products.splice(index, 1)[0];
+        const deletedProduct = mockProducts.splice(index, 1)[0];
         resolve(deletedProduct);
       } else {
         reject(new Error('Product not found'));
