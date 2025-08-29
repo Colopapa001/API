@@ -326,8 +326,8 @@ export const CartProvider = ({ children }) => {
       itemCount: cartCount,
       totalItems: state.items.length,
       subtotal: cartTotal,
-      shipping: cartTotal > 50000 ? 0 : 5000, // Envío gratis por compras mayores a $50,000
-      total: cartTotal + (cartTotal > 50000 ? 0 : 5000),
+      shipping: cartTotal > 50000 ? 0 : 5, // Envío gratis por compras mayores a $50,000
+      total: cartTotal + (cartTotal > 50000 ? 0 : 5),
       isEmpty,
       items: state.items
     };
@@ -367,6 +367,16 @@ export const CartProvider = ({ children }) => {
         status: 'confirmed',
         createdAt: new Date().toISOString()
       };
+
+      // Persistir orden en localStorage
+      try {
+        const existing = localStorage.getItem('orders');
+        const orders = existing ? JSON.parse(existing) : [];
+        orders.push(order);
+        localStorage.setItem('orders', JSON.stringify(orders));
+      } catch (e) {
+        console.error('Error guardando orden:', e);
+      }
 
       // Limpiar carrito después del checkout exitoso
       dispatch({ type: CART_ACTIONS.CLEAR_CART });

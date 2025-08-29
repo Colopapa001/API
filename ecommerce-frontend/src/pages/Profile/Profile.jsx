@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
-import { validateEmail, validatePassword } from '../../utils/helpers';
+import { validateEmail, validatePassword, formatRelativeDate, formatPrice } from '../../utils/helpers';
+import { getProductsByUser } from '../../utils/mockData';
+import { getOrdersBySeller, getLastSaleDateBySeller } from '../../services/orderService';
 import './Profile.css';
 
 const Profile = () => {
@@ -24,6 +26,31 @@ const Profile = () => {
   });
 
   const [validationErrors, setValidationErrors] = useState({});
+  const [activity, setActivity] = useState({ published: 0, sold: 0, lastSale: null, revenue: 0 });
+
+  useEffect(() => {
+    const loadActivity = async () => {
+      if (!user?.id) return;
+      // Productos publicados por este usuario (mock)
+      const userProducts = await getProductsByUser(user.id);
+      const published = userProducts.length;
+
+      // Órdenes donde este usuario es vendedor
+      const orders = await getOrdersBySeller(user.id);
+      const { sold, revenue } = orders.reduce((acc, order) => {
+        const sellerItems = order.items.filter(it => it.product?.userId === user.id);
+        const qty = sellerItems.reduce((n, it) => n + (it.quantity || 0), 0);
+        const rev = sellerItems.reduce((sum, it) => sum + (it.product?.price || 0) * (it.quantity || 0), 0);
+        return { sold: acc.sold + qty, revenue: acc.revenue + rev };
+      }, { sold: 0, revenue: 0 });
+
+      const lastSale = await getLastSaleDateBySeller(user.id);
+
+      setActivity({ published, sold, lastSale, revenue });
+    };
+
+    loadActivity();
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -298,15 +325,19 @@ const Profile = () => {
               <h3>Actividad</h3>
               <div className="detail-row">
                 <span className="detail-label">Productos publicados:</span>
-                <span className="detail-value">12</span>
+                <span className="detail-value">{activity.published}</span>
               </div>
               <div className="detail-row">
                 <span className="detail-label">Productos vendidos:</span>
-                <span className="detail-value">8</span>
+                <span className="detail-value">{activity.sold}</span>
               </div>
               <div className="detail-row">
                 <span className="detail-label">Última venta:</span>
-                <span className="detail-value">Hace 2 días</span>
+                <span className="detail-value">{activity.lastSale ? formatRelativeDate(activity.lastSale) : 'Sin ventas'}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Ingresos:</span>
+                <span className="detail-value">{formatPrice(activity.revenue)}</span>
               </div>
             </div>
           </div>
