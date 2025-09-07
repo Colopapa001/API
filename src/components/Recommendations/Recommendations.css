@@ -1,0 +1,125 @@
+.recommendations {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recommendations__title {
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.recommendations__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.recommendation-card {
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.recommendation-card__image {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* Aspecto cuadrado */
+  background: #f8f9fa;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+}
+
+.recommendation-card__image img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cambiado a cover para llenar el espacio */
+  background-color: #f8f9fa;
+  transition: transform 0.3s ease;
+}
+
+/* Fallback para imágenes que no cargan */
+.recommendation-card__image img:not([src]), 
+.recommendation-card__image img[src=""], 
+.recommendation-card__image img[src="null"] {
+  visibility: hidden;
+}
+
+.recommendation-card:hover .recommendation-card__image img {
+  transform: scale(1.05);
+}
+
+.recommendation-card__content {
+  padding: 1rem;
+}
+
+.recommendation-card__title {
+  font-size: 0.95rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--color-text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recommendation-card__price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0.25rem 0;
+}
+
+.recommendation-card__reason {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
+/* Dark mode */
+.dark-mode .recommendations {
+  background: var(--color-gray-800);
+}
+
+.dark-mode .recommendation-card {
+  border-color: var(--color-gray-700);
+}
+
+.dark-mode .recommendation-card__image {
+  background: var(--color-gray-900);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .recommendations__grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .recommendation-card__content {
+    padding: 0.75rem;
+  }
+  
+  .recommendation-card__title {
+    font-size: 0.9rem;
+  }
+  
+  .recommendation-card__price {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,123 @@
+.filters {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.filters__title {
+  font-size: 1.25rem;
+  margin: 0 0 1.5rem 0;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.filters__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-size: 0.95rem;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.filter-group input {
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-gray-200);
+  padding: 0.5rem;
+  border-radius: 4px;
+  width: 100%;
+  outline: none;
+}
+
+.filter-group input:focus {
+  border: 2px solid var(--color-primary);
+}
+
+.filter-group .category-select {
+  border: 2px solid var(--color-primary);
+  color: var(--color-text-secondary);
+}
+
+.filter-group input[type="search"]::placeholder,
+.filter-group input[type="text"]::placeholder,
+.filter-group input[type="number"]::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.price-range {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.price-range-separator {
+  color: var(--color-text-secondary);
+  padding: 0 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.category-select {
+  padding: 0.5rem;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 4px;
+  background-color: white;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  outline: none;
+  width: 100%;
+}
+
+.category-select:hover {
+  border-color: var(--color-primary);
+}
+
+.category-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-50);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary);
+}
+
+/* Dark mode */
+.dark-mode .filters {
+  background: var(--color-gray-800);
+  border: 1px solid var(--color-gray-700);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filters {
+    padding: 1rem;
+  }
+  
+  .price-range {
+    grid-template-columns: 1fr;
+  }
+  
+  .price-range-separator {
+    display: none;
+  }
+}
