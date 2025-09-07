@@ -536,9 +536,17 @@ export const deleteProduct = async (id, userId) => {
 export const updateProductStock = async (id, newStock) => {
   await simulateApiDelay();
   
-  const productIndex = mockProducts.findIndex(p => p.id === parseInt(id));
+  console.log(`updateProductStock llamado con id=${id} (${typeof id}), newStock=${newStock}`);
+  
+  // Asegurarse de que el ID sea numérico
+  const numericId = parseInt(id, 10);
+  console.log(`Buscando producto con ID numérico: ${numericId}`);
+  
+  const productIndex = mockProducts.findIndex(p => p.id === numericId);
+  console.log(`Índice del producto encontrado: ${productIndex}`);
   
   if (productIndex === -1) {
+    console.log(`No se encontró ningún producto con ID ${numericId}`);
     return {
       success: false,
       error: 'Producto no encontrado'
@@ -546,16 +554,77 @@ export const updateProductStock = async (id, newStock) => {
   }
   
   if (newStock < 0) {
+    console.log(`El nuevo stock ${newStock} es negativo, no se actualizará`);
     return {
       success: false,
       error: 'El stock no puede ser negativo'
     };
   }
   
+  // Guardar el stock antiguo para comparar
+  const oldStock = mockProducts[productIndex].stock;
+  
+  // Actualizar el stock
   mockProducts[productIndex].stock = newStock;
+  
+  console.log(`Stock actualizado para ${mockProducts[productIndex].title}: ${oldStock} -> ${newStock}`);
   
   return {
     success: true,
     product: mockProducts[productIndex]
   };
+};
+
+// Actualizar stock después de una compra
+export const updateMockProductStock = async (items) => {
+  const results = [];
+  
+  console.log('Actualizando stock para los siguientes items:', 
+    items.map(i => ({ 
+      productId: i.productId, 
+      quantity: i.quantity, 
+      type: typeof i.productId 
+    }))
+  );
+  
+  console.log('Productos disponibles:', 
+    mockProducts.map(p => ({ 
+      id: p.id, 
+      title: p.title,
+      stock: p.stock, 
+      type: typeof p.id 
+    }))
+  );
+  
+  for (const item of items) {
+    const { productId, quantity } = item;
+    // Asegurémonos de que el productId sea un número
+    const numericProductId = parseInt(productId, 10);
+    
+    // Usamos el ID numérico para buscar el producto
+    const product = mockProducts.find(p => p.id === numericProductId);
+    
+    if (product) {
+      console.log(`Producto encontrado: ${product.title} (ID: ${product.id}), Stock actual: ${product.stock}, A restar: ${quantity}`);
+      const newStock = Math.max(0, product.stock - quantity);
+      console.log(`Nuevo stock será: ${newStock}`);
+      
+      const result = await updateProductStock(numericProductId, newStock);
+      console.log('Resultado de la actualización:', result);
+      
+      results.push(result);
+    } else {
+      console.log(`No se encontró el producto con ID ${numericProductId} (original: ${productId})`);
+    }
+  }
+  
+  console.log('Stock actualizado. Productos ahora:', 
+    mockProducts.map(p => ({ 
+      id: p.id, 
+      title: p.title, 
+      stock: p.stock 
+    }))
+  );
+  
+  return results;
 };
