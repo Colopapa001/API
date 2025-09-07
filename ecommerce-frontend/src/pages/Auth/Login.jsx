@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
-import '../Auth/Auth.css';
+import './Auth.css'; // Asegúrate que esta línea esté presente
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,17 +24,14 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (isBlocked) {
-      return;
-    }
+  e.preventDefault();
+  
+  if (isBlocked) {
+    return;
+  }
 
-    const result = await login(formData.email, formData.password);
-    if (result.success) {
-      navigate('/');
-    }
-  };
+  await login(formData.email, formData.password);
+};
 
   return (
     <div className="auth-container">
@@ -81,6 +78,7 @@ const Login = () => {
             loading={isLoading}
             disabled={isBlocked}
             fullWidth
+            className="auth-submit"
           >
             Iniciar Sesión
           </Button>

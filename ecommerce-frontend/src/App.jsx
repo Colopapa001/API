@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 
@@ -68,26 +68,25 @@ const AppRoutes = () => {
 
         {/* Rutas protegidas con Layout */}
         <Route
-          path="/*"
           element={
             <ProtectedRoute>
               <Layout>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/product/:id" element={<ProductDetail />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/my-products" element={<MyProducts />} />
-                  <Route path="/add-product" element={<AddProduct />} />
-                  <Route path="/edit-product/:id" element={<AddProduct />} />
-                  
-                  {/* Ruta catch-all - redirigir a home */}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
+                <Outlet />
               </Layout>
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/my-products" element={<MyProducts />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/edit-product/:id" element={<AddProduct />} />
+        </Route>
+
+        {/* Ruta catch-all - redirigir a home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
