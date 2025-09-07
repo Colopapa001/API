@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { mockProducts } from '../utils/mockData';
+import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
+import { mockProducts as initialMockProducts, updateMockProductStock } from '../utils/mockData';
 import { calculateCartTotal, calculateCartCount, formatPrice } from '../utils/helpers';
 
 // Estado inicial del carrito
@@ -149,6 +149,8 @@ export const useCart = () => {
 
 // Provider del contexto
 export const CartProvider = ({ children }) => {
+  // Estado para los productos disponibles
+  const [products, setProducts] = useState(initialMockProducts);
   const [state, dispatch] = useReducer(cartReducer, INITIAL_STATE);
 
   // Cargar carrito desde localStorage al iniciar
@@ -163,7 +165,7 @@ export const CartProvider = ({ children }) => {
           
           // Validar que los productos aún existen y actualizar datos
           const validatedItems = cartItems.map(item => {
-            const currentProduct = mockProducts.find(p => p.id === item.productId);
+            const currentProduct = products.find(p => p.id === item.productId);
             if (currentProduct) {
               return {
                 ...item,
@@ -184,7 +186,7 @@ export const CartProvider = ({ children }) => {
     };
 
     loadCartFromStorage();
-  }, []);
+  }, [products]);
 
   // Guardar carrito en localStorage cuando cambie
   useEffect(() => {
@@ -208,22 +210,25 @@ export const CartProvider = ({ children }) => {
         throw new Error('La cantidad debe ser mayor a 0');
       }
 
-      if (product.stock === 0) {
+      // Buscar producto actualizado en el estado
+      const currentProduct = products.find(p => p.id === product.id) || product;
+
+      if (currentProduct.stock === 0) {
         throw new Error('Producto sin stock');
       }
 
       // Verificar stock disponible
-      const existingItem = state.items.find(item => item.productId === product.id);
+      const existingItem = state.items.find(item => item.productId === currentProduct.id);
       const currentQuantity = existingItem ? existingItem.quantity : 0;
       const totalQuantity = currentQuantity + quantity;
 
-      if (totalQuantity > product.stock) {
-        throw new Error(`Stock insuficiente. Disponible: ${product.stock - currentQuantity}`);
+      if (totalQuantity > currentProduct.stock) {
+        throw new Error(`Stock insuficiente. Disponible: ${currentProduct.stock - currentQuantity}`);
       }
 
       dispatch({
         type: CART_ACTIONS.ADD_ITEM,
-        payload: { product, quantity }
+        payload: { product: currentProduct, quantity }
       });
 
       return { success: true, message: 'Producto agregado al carrito' };
@@ -345,7 +350,7 @@ export const CartProvider = ({ children }) => {
 
       // Validar stock antes del checkout
       for (const item of state.items) {
-        const currentProduct = mockProducts.find(p => p.id === item.productId);
+        const currentProduct = products.find(p => p.id === item.productId);
         if (!currentProduct) {
           throw new Error(`Producto ${item.product.name} ya no está disponible`);
         }
@@ -356,6 +361,29 @@ export const CartProvider = ({ children }) => {
 
       // Simular llamada a API
       await new Promise(resolve => setTimeout(resolve, 2000));
+
+      console.log('Estado inicial de productos:', products.map(p => ({id: p.id, stock: p.stock})));
+
+      // Crear nuevos productos con stock actualizado
+      const updatedProducts = products.map(product => {
+        const cartItem = state.items.find(item => item.productId === product.id);
+        if (cartItem) {
+          console.log(`Actualizando stock de ${product.title}: ${product.stock} -> ${Math.max(0, product.stock - cartItem.quantity)}`);
+          return {
+            ...product,
+            stock: Math.max(0, product.stock - cartItem.quantity)
+          };
+        }
+        return product;
+      });
+
+      // Actualizar el estado con los nuevos productos
+      setProducts(updatedProducts);
+
+      console.log('Estado final de productos:', updatedProducts.map(p => ({id: p.id, stock: p.stock})));
+
+      // También actualizar en mockData.js (para mantener consistencia)
+      await updateMockProductStock(state.items);
 
       // Simular orden exitosa
       const order = {
@@ -398,6 +426,7 @@ export const CartProvider = ({ children }) => {
     isLoading: state.isLoading,
     error: state.error,
     lastUpdated: state.lastUpdated,
+    products, // Exportamos los productos para tener acceso al stock actualizado
 
     // Métricas
     cartTotal,
