@@ -4,7 +4,7 @@ import ProductCard from '../../components/ProductCard/ProductCard';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
-import { mockProducts } from '../../utils/mockData';
+import { mockProducts, mockCategories } from '../../utils/mockData';
 import { 
   formatPrice, 
   formatStock,
@@ -16,36 +16,39 @@ import './Home.css';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     minPrice: '',
     maxPrice: '',
     inStock: false,
-    sortBy: 'newest'
+    sortBy: 'name-asc'
   });
 
   const { addToCart, isLoading: isCartLoading } = useCart();
 
-  // Cargar productos
+  // Cargar productos y categorías
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
         // Simular llamada a API
         await new Promise(resolve => setTimeout(resolve, 1000));
         setProducts(mockProducts);
+        setCategories(mockCategories);
         setError(null);
       } catch (err) {
-        setError('Error cargando productos');
+        setError('Error cargando datos');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadProducts();
+    loadData();
   }, []);
 
   // Manejar cambios en filtros
@@ -60,6 +63,11 @@ const Home = () => {
   // Aplicar filtros
   const getFilteredProducts = () => {
     let filtered = [...products];
+
+    // Filtrar por categoría seleccionada
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.categoryId === selectedCategory.id);
+    }
 
     // Filtrar por búsqueda
     if (filters.search) {
@@ -118,85 +126,130 @@ const Home = () => {
 
   return (
     <div className="home">
-      {/* Filtros */}
-      <div className="home-filters">
-        <Input
-          name="search"
-          value={filters.search}
-          onChange={handleFilterChange}
-          placeholder="Buscar productos..."
-          icon={
-            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          }
-        />
+      {/* Categorías */}
+      <section className="categories-section">
+        <h2>Categorías</h2>
+        {selectedCategory ? (
+          <div className="selected-category">
+            <div className="selected-category-header">
+              <h3>Categoría: {selectedCategory.name}</h3>
+              <Button onClick={() => setSelectedCategory(null)} variant="outline">
+                Ver todas las categorías
+              </Button>
+            </div>
+            <p>{selectedCategory.description}</p>
+          </div>
+        ) : (
+          <div className="categories-container">
+            {categories.map(category => {
+              // Contar cuántos productos hay en esta categoría
+              const productsInCategory = products.filter(product => product.categoryId === category.id).length;
+              
+              return (
+                <div key={category.id} className="category-card">
+                  <h3>{category.name}</h3>
+                  <p>{category.description}</p>
+                  <div className="category-card-footer">
+                    <span className="products-count">{productsInCategory} productos</span>
+                    <Button onClick={() => setSelectedCategory(category)}>
+                      Ver productos
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+      
+      {/* Productos */}
+      <section className="products-section">
+        <h2>
+          {selectedCategory 
+            ? `Productos en ${selectedCategory.name}` 
+            : 'Todos los Productos'}
+        </h2>
         
-        <div className="price-filters">
+        {/* Filtros */}
+        <div className="home-filters">
           <Input
-            type="number"
-            name="minPrice"
-            value={filters.minPrice}
+            name="search"
+            value={filters.search}
             onChange={handleFilterChange}
-            placeholder="Precio mínimo"
-            min="0"
+            placeholder="Buscar productos..."
+            icon={
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            }
           />
-          <Input
-            type="number"
-            name="maxPrice"
-            value={filters.maxPrice}
-            onChange={handleFilterChange}
-            placeholder="Precio máximo"
-            min="0"
-          />
-        </div>
-
-        <div className="stock-filter">
-          <label>
-            <input
-              type="checkbox"
-              name="inStock"
-              checked={filters.inStock}
+          
+          <div className="price-filters">
+            <Input
+              type="number"
+              name="minPrice"
+              value={filters.minPrice}
               onChange={handleFilterChange}
+              placeholder="Precio mínimo"
+              min="0"
             />
-            Solo productos con stock
-          </label>
+            <Input
+              type="number"
+              name="maxPrice"
+              value={filters.maxPrice}
+              onChange={handleFilterChange}
+              placeholder="Precio máximo"
+              min="0"
+            />
+          </div>
+
+          <div className="stock-filter">
+            <label>
+              <input
+                type="checkbox"
+                name="inStock"
+                checked={filters.inStock}
+                onChange={handleFilterChange}
+              />
+              Solo productos con stock
+            </label>
+          </div>
+
+          <select
+            name="sortBy"
+            value={filters.sortBy}
+            onChange={handleFilterChange}
+            className="sort-select"
+          >
+            <option value="name-asc">A-Z</option>
+            <option value="name-desc">Z-A</option>
+            <option value="newest">Más recientes</option>
+            <option value="price-asc">Menor precio</option>
+            <option value="price-desc">Mayor precio</option>
+          </select>
         </div>
 
-        <select
-          name="sortBy"
-          value={filters.sortBy}
-          onChange={handleFilterChange}
-          className="sort-select"
-        >
-          <option value="newest">Más recientes</option>
-          <option value="price-asc">Menor precio</option>
-          <option value="price-desc">Mayor precio</option>
-          <option value="name-asc">A-Z</option>
-          <option value="name-desc">Z-A</option>
-        </select>
-      </div>
-
-      {/* Resultados */}
-      {filteredProducts.length === 0 ? (
-        <div className="no-results">
-          <h3>No se encontraron productos</h3>
-          <p>Intenta con otros filtros</p>
-        </div>
-      ) : (
-        <div className="products-grid">
-          {filteredProducts.map(product => (
-            <ProductCard
-              key={product.id}
-              {...product}
-              onAddToCart={() => handleAddToCart(product)}
-              loading={isCartLoading}
-              stockLabel={formatStock(product.stock)}
-              formattedPrice={formatPrice(product.price)}
-            />
-          ))}
-        </div>
-      )}
+        {/* Resultados de productos */}
+        {filteredProducts.length === 0 ? (
+          <div className="no-results">
+            <h3>No se encontraron productos</h3>
+            <p>Intenta con otros filtros</p>
+          </div>
+        ) : (
+          <div className="products-grid">
+            {filteredProducts.map(product => (
+              <ProductCard
+                key={product.id}
+                {...product}
+                onAddToCart={() => handleAddToCart(product)}
+                loading={isCartLoading}
+                stockLabel={formatStock(product.stock)}
+                formattedPrice={formatPrice(product.price)}
+              />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 };

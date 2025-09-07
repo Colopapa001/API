@@ -542,9 +542,10 @@ export const validateEmail = (email) => {
 };
 
 export const validatePassword = (password) => {
-  // Al menos 6 caracteres, una mayúscula, una minúscula y un número
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/;
-  return passwordRegex.test(password);
+  // Verifica que tenga al menos 6 caracteres, con al menos 1 letra y 1 número
+  const hasLetter = /[a-z]/i.test(password); // Letras (mayúsculas o minúsculas)
+  const hasNumber = /\d/.test(password);     // Al menos un número
+  return password && password.length >= 6 && hasLetter && hasNumber;
 };
 
 // ============================================
