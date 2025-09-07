@@ -9,6 +9,8 @@ const ProductCard = ({
   price,
   description,
   image,
+  stockLabel,
+  formattedPrice,
   onAddToCart,
   loading = false
 }) => {
@@ -33,8 +35,14 @@ const ProductCard = ({
       
       <div className="product-content">
         <h3 className="product-title">{title}</h3>
-        <p className="product-price">${price.toFixed(2)}</p>
+        <p className="product-price">{formattedPrice || `$${price.toFixed(2)}`}</p>
         <p className="product-description">{description}</p>
+        
+        <div className="product-stock">
+          <span className={`stock-badge ${!stockLabel || stockLabel === 'Sin stock' ? 'out-of-stock' : 'in-stock'}`}>
+            {stockLabel || 'Stock no disponible'}
+          </span>
+        </div>
         
         <div className="product-actions">
           <Button

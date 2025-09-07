@@ -52,13 +52,35 @@
 .product-description {
   color: var(--text-secondary);
   font-size: 0.875rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.product-stock {
+  margin-bottom: 1rem;
+}
+
+.stock-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.in-stock {
+  background-color: rgba(72, 187, 120, 0.2);
+  color: #2f855a;
+}
+
+.out-of-stock {
+  background-color: rgba(229, 62, 62, 0.2);
+  color: #c53030;
 }
 
 .product-actions {

@@ -1,21 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import Button from '../../components/UI/Button';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import { formatPrice } from '../../utils/helpers';
+import { mockProducts } from '../../utils/mockData';
 import './Cart.css';
 
 const Cart = () => {
   const navigate = useNavigate();
-  const {
-    items,
-    isLoading,
-    error,
-    updateQuantity,
-    removeFromCart,
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const { 
+    items, 
+    cartTotal,
+    removeFromCart, 
+    updateQuantity, 
     clearCart,
-    getCartSummary
+    checkout,
+    getCartSummary,
+    isLoading: isCartLoading,
+    formatPrice
   } = useCart();
 
   if (isLoading) {
@@ -70,12 +76,51 @@ const Cart = () => {
     }
   };
 
-  const handleCheckout = () => {
-    navigate('/checkout');
+  const handleCheckout = async () => {
+    if (isEmpty) {
+      alert('El carrito está vacío');
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      // Actualizar directamente el stock de los productos
+      for (const item of items) {
+        // Obtener la información más reciente del producto
+        const product = mockProducts.find(p => p.id === item.productId);
+        
+        if (product) {
+          console.log(`Actualizando stock para ${product.title}: ${product.stock} - ${item.quantity} = ${product.stock - item.quantity}`);
+          
+          // Actualizar el stock directamente
+          product.stock = Math.max(0, product.stock - item.quantity);
+        }
+      }
+      
+      // Mostrar mensaje
+      alert('¡Compra realizada con éxito! Volviendo a la página de inicio...');
+      
+      // Vaciar el carrito
+      clearCart();
+      
+      // Redirigir a la página de inicio
+      navigate('/');
+    } catch (err) {
+      setError('Ha ocurrido un error al procesar la compra');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="cart">
+      {successMessage && (
+        <div className="cart-success-message">
+          {successMessage}
+        </div>
+      )}
       <div className="cart-header">
         <h1>Carrito de Compras</h1>
         <Button
@@ -126,6 +171,9 @@ const Cart = () => {
                 >
                   +
                 </button>
+                <div className="stock-info">
+                  Stock disponible: {item.product.stock}
+                </div>
               </div>
 
               <div className="cart-item-subtotal">
