@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
-import { isValidPassword, isValidEmail, isValidUsername } from '../../utils/helpers';
+import { validatePassword, validateEmail, validateUsername } from '../../utils/helpers';
 import './Auth.css';
 
 const Register = () => {
@@ -25,18 +25,18 @@ const Register = () => {
     const errors = {};
 
     // Validar username
-    const usernameValidation = isValidUsername(formData.username);
+    const usernameValidation = validateUsername(formData.username);
     if (!usernameValidation.isValid) {
       errors.username = Object.values(usernameValidation.errors)[0];
     }
 
     // Validar email
-    if (!isValidEmail(formData.email)) {
+    if (!validateEmail(formData.email)) {
       errors.email = 'Email inválido';
     }
 
     // Validar password
-    const passwordValidation = isValidPassword(formData.password);
+    const passwordValidation = validatePassword(formData.password);
     if (!passwordValidation.isValid) {
       errors.password = Object.values(passwordValidation.errors)[0];
     }

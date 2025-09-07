@@ -9,11 +9,11 @@ import './Header.css';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-  const { getTotalItems } = useCart();
+  const { cartCount } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const cartItemsCount = getTotalItems();
+  const cartItemsCount = cartCount;
 
   const handleLogout = () => {
     logout();
