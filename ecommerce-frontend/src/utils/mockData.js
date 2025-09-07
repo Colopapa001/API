@@ -4,7 +4,7 @@ export const mockUsers = [
     id: 1,
     username: 'juanperez',
     email: 'juan@email.com',
-    password: 'password123', // En producción esto estaría encriptado
+    password: 'Password123', // En producción esto estaría encriptado
     firstName: 'Juan',
     lastName: 'Pérez',
     createdAt: '2024-01-15T10:00:00Z'
@@ -13,7 +13,7 @@ export const mockUsers = [
     id: 2,
     username: 'mariagarcia',
     email: 'maria@email.com',
-    password: 'password123',
+    password: 'Password123',
     firstName: 'María',
     lastName: 'García',
     createdAt: '2024-02-20T14:30:00Z'
