@@ -9,27 +9,28 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-gray-50) 100%);
-}
-
-.dark-mode .auth-page {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, var(--color-gray-900) 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 .auth-container {
-  width: 100%;
-  max-width: 400px;
-  background: var(--color-background);
-  border-radius: var(--radius-xl);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   padding: 2rem;
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--color-gray-200);
 }
 
-.dark-mode .auth-container {
-  background: var(--color-gray-800);
-  border-color: var(--color-gray-700);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: 
+    0 -8px 15px -3px rgba(0, 0, 0, 0.05),  /* sombra superior */
+    0 8px 15px -3px rgba(0, 0, 0, 0.05);    /* sombra inferior */
+  border: 1px solid #e5e7eb;
 }
 
 /* ============================================
@@ -99,9 +100,8 @@
 }
 
 .form-label {
-  font-size: 0.9rem;
+  color: #4b5563;
   font-weight: 500;
-  color: var(--color-text-primary);
 }
 
 .form-error {
@@ -131,6 +131,22 @@
 
 .auth-submit {
   width: 100%;
+  background-color: #3b82f6 !important; /* azul */
+  color: white !important;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.auth-submit:hover {
+  background-color: #2563eb !important; /* azul más oscuro al hover */
+}
+
+.auth-submit:disabled {
+  background-color: #93c5fd !important; /* azul más claro cuando está deshabilitado */
+  cursor: not-allowed;
 }
 
 .auth-divider {
@@ -145,12 +161,7 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--color-gray-300);
-}
-
-.dark-mode .auth-divider::before,
-.dark-mode .auth-divider::after {
-  background: var(--color-gray-600);
+  background: #e5e7eb;
 }
 
 .auth-divider span {
@@ -166,16 +177,12 @@
   text-align: center;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--color-gray-200);
-}
-
-.dark-mode .auth-links {
-  border-top-color: var(--color-gray-700);
+  border-top: 1px solid #e5e7eb;
 }
 
 .auth-link {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
+  color: #6b7280;
+  font-size: 0.95rem;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -184,16 +191,16 @@
 }
 
 .auth-link:hover {
-  color: var(--color-primary);
+  color: #3b82f6;
 }
 
 .auth-link-primary {
-  color: var(--color-primary);
+  color: #2563eb;
   font-weight: 500;
 }
 
 .auth-link-primary:hover {
-  color: var(--color-primary-dark);
+  color: #1d4ed8;
   text-decoration: underline;
 }
 
@@ -201,16 +208,11 @@
    QUICK LOGIN (Development)
 ============================================ */
 .quick-login {
-  background: var(--color-warning-50);
-  border: 1px solid var(--color-warning-200);
+  background: #fff9db;
+  border: 1px solid #ffe066;
   border-radius: var(--radius-md);
   padding: 1rem;
   margin-bottom: 1.5rem;
-}
-
-.dark-mode .quick-login {
-  background: rgba(245, 158, 11, 0.1);
-  border-color: rgba(245, 158, 11, 0.3);
 }
 
 .quick-login-title {
@@ -254,9 +256,9 @@
    SUCCESS MESSAGE
 ============================================ */
 .auth-success {
-  background: var(--color-success-50);
-  border: 1px solid var(--color-success-200);
-  color: var(--color-success-dark);
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #166534;
   padding: 1rem;
   border-radius: var(--radius-md);
   margin-bottom: 1rem;
@@ -264,12 +266,6 @@
   align-items: center;
   gap: 0.75rem;
   font-size: 0.9rem;
-}
-
-.dark-mode .auth-success {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
-  color: var(--color-success-light);
 }
 
 .auth-success svg {
