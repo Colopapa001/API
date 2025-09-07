@@ -160,7 +160,8 @@ export const AuthProvider = ({ children }) => {
 
       const passwordValidation = validatePassword(password);
       if (!passwordValidation.isValid) {
-        throw new Error(`Contraseña inválida: ${passwordValidation.errors}`);
+        const errorMessages = Object.values(passwordValidation.errors);
+        throw new Error(`Contraseña inválida: ${errorMessages.join(', ')}`);
       }
 
       // Intentar login con datos mock
@@ -211,7 +212,8 @@ export const AuthProvider = ({ children }) => {
 
       const passwordValidation = validatePassword(password);
       if (!passwordValidation.isValid) {
-        throw new Error(`Contraseña inválida: ${passwordValidation.errors}`);
+        const errorMessages = Object.values(passwordValidation.errors);
+        throw new Error(`Contraseña inválida: ${errorMessages.join(', ')}`);
       }
 
       if (password !== confirmPassword) {

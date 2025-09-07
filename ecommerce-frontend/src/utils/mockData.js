@@ -13,7 +13,7 @@ export const mockUsers = [
     id: 2,
     username: 'mariagarcia',
     email: 'maria@email.com',
-    password: 'Password123',
+    password: 'Password321',
     firstName: 'María',
     lastName: 'García',
     createdAt: '2024-02-20T14:30:00Z'

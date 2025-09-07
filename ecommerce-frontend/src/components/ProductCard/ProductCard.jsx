@@ -8,13 +8,10 @@ const ProductCard = ({
   title,
   price,
   description,
-'<<<<<<< ManejoStock
   image,
   stockLabel,
   formattedPrice,
-'=======
   images = [],
-'>>>>>>> Prueba-Merge
   onAddToCart,
   loading = false
 }) => {
