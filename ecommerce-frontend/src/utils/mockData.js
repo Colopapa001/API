@@ -215,9 +215,9 @@ export const mockProducts = [
     categoryId: 1,
     userId: 1,
     images: [
-      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca359?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca359?w=400&h=400&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca359?w=400&h=400&fit=crop&crop=entropy'
+      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?q=80&w=3271&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?q=80&w=3271&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?q=80&w=3271&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
     ],
     createdAt: '2024-03-02T11:15:00Z'
   },

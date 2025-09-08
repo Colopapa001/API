@@ -32,6 +32,8 @@ const Home = () => {
 
   // Cargar productos y categorías
   useEffect(() => {
+    // Scroll al inicio al montar
+    import('../../utils/helpers').then(({ scrollToTop }) => scrollToTop('auto'));
     const loadData = async () => {
       try {
         setLoading(true);
@@ -172,19 +174,20 @@ const Home = () => {
         
         {/* Filtros */}
         <div className="home-filters">
-          <Input
-            name="search"
-            value={filters.search}
-            onChange={handleFilterChange}
-            placeholder="Buscar productos..."
-            icon={
-              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            }
-          />
-          
-          <div className="price-filters">
+          <div className="filter-box">
+            <Input
+              name="search"
+              value={filters.search}
+              onChange={handleFilterChange}
+              placeholder="Buscar productos..."
+              icon={
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              }
+            />
+          </div>
+          <div className="filter-box">
             <Input
               type="number"
               name="minPrice"
@@ -193,6 +196,8 @@ const Home = () => {
               placeholder="Precio mínimo"
               min="0"
             />
+          </div>
+          <div className="filter-box">
             <Input
               type="number"
               name="maxPrice"
@@ -202,31 +207,33 @@ const Home = () => {
               min="0"
             />
           </div>
-
-          <div className="stock-filter">
-            <label>
-              <input
-                type="checkbox"
-                name="inStock"
-                checked={filters.inStock}
-                onChange={handleFilterChange}
-              />
-              Solo productos con stock
-            </label>
+          <div className="filter-box">
+            <div className="stock-filter">
+              <label>
+                <input
+                  type="checkbox"
+                  name="inStock"
+                  checked={filters.inStock}
+                  onChange={handleFilterChange}
+                />
+                Solo productos con stock
+              </label>
+            </div>
           </div>
-
-          <select
-            name="sortBy"
-            value={filters.sortBy}
-            onChange={handleFilterChange}
-            className="sort-select"
-          >
-            <option value="name-asc">A-Z</option>
-            <option value="name-desc">Z-A</option>
-            <option value="newest">Más recientes</option>
-            <option value="price-asc">Menor precio</option>
-            <option value="price-desc">Mayor precio</option>
-          </select>
+          <div className="filter-box">
+            <select
+              name="sortBy"
+              value={filters.sortBy}
+              onChange={handleFilterChange}
+              className="sort-select"
+            >
+              <option value="name-asc">A-Z</option>
+              <option value="name-desc">Z-A</option>
+              <option value="newest">Más recientes</option>
+              <option value="price-asc">Menor precio</option>
+              <option value="price-desc">Mayor precio</option>
+            </select>
+          </div>
         </div>
 
         {/* Resultados de productos */}

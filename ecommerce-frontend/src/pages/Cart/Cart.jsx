@@ -1,37 +1,26 @@
-import React, { useState } from 'react';
+// ...existing code...
+import { formatPrice } from '../../utils/helpers';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import Button from '../../components/UI/Button';
-import LoadingSpinner from '../../components/UI/LoadingSpinner';
-import { formatPrice } from '../../utils/helpers';
 import { mockProducts } from '../../utils/mockData';
 import './Cart.css';
 
 const Cart = () => {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
+  // ...existing code...
   const { 
     items, 
-    cartTotal,
     removeFromCart, 
     updateQuantity, 
     clearCart,
-    checkout,
     getCartSummary,
-    isLoading: isCartLoading,
-    formatPrice
   } = useCart();
-
-  if (isLoading) {
-    return (
-      <div className="cart-loading">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
   if (error) {
     return (
       <div className="cart-error">
@@ -82,7 +71,6 @@ const Cart = () => {
       return;
     }
     
-    setIsLoading(true);
     
     try {
       // Actualizar directamente el stock de los productos
@@ -110,17 +98,11 @@ const Cart = () => {
       setError('Ha ocurrido un error al procesar la compra');
       console.error(err);
     } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <div className="cart">
-      {successMessage && (
-        <div className="cart-success-message">
-          {successMessage}
-        </div>
-      )}
       <div className="cart-header">
         <h1>Carrito de Compras</h1>
         <Button
@@ -238,6 +220,6 @@ const Cart = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Cart;
