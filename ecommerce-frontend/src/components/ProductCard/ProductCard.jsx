@@ -13,7 +13,8 @@ const ProductCard = ({
   formattedPrice,
   images = [],
   onAddToCart,
-  loading = false
+  loading = false,
+  stock
 }) => {
   const navigate = useNavigate();
 
@@ -40,6 +41,9 @@ const ProductCard = ({
           <h3 className="product-title">{title}</h3>
           <p className="product-description">{description}</p>
           <p className="product-price">{formattedPrice || `$${price.toFixed(2)}`}</p>
+          {stock !== undefined && (
+            <p className="product-stock">Stock: {stock}</p>
+          )}
         </div>
       </div>
       <div className="product-actions">
