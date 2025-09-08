@@ -26,6 +26,7 @@ const ProductDetail = () => {
 
   // Cargar producto
   useEffect(() => {
+    window.scrollTo(0, 0);
     const loadProduct = async () => {
       try {
         setLoading(true);

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 import Button from '../../components/UI/Button';
@@ -29,6 +29,8 @@ const Profile = () => {
   const [activity, setActivity] = useState({ published: 0, sold: 0, lastSale: null, revenue: 0 });
 
   useEffect(() => {
+    // Scroll al inicio al montar
+    import('../../utils/helpers').then(({ scrollToTop }) => scrollToTop('auto'));
     const loadActivity = async () => {
       if (!user?.id) return;
       // Productos publicados por este usuario (mock)

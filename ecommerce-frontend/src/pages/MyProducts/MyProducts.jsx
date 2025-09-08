@@ -31,6 +31,8 @@ const MyProducts = () => {
   }, [user.id]);
 
   useEffect(() => {
+    // Scroll al inicio al montar
+    import('../../utils/helpers').then(({ scrollToTop }) => scrollToTop('auto'));
     loadProducts();
   }, [loadProducts]);
 
