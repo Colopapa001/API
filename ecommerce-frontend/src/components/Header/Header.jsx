@@ -93,7 +93,7 @@ const Header = () => {
 
               {/* User Menu */}
               <div className="header__user">
-                <span className="header__user-name">¡Hola, {user.name}!</span>
+                <span className="header__user-name">¡Hola{user.name}!</span>
                 <Button 
                   variant="outline" 
                   size="small"

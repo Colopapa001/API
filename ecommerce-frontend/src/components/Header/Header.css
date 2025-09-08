@@ -67,6 +67,7 @@
 
 .header__logo-text {
   display: none;
+  color: #f5f5f5;
 }
 
 /* ============================================
@@ -175,6 +176,7 @@
   font-size: 0.9rem;
   color: var(--color-text-secondary);
   font-weight: 500;
+  color: #f5f5f5;
 }
 
 .header__auth-buttons {
@@ -461,4 +463,18 @@
   .header__nav-link.active {
     outline: 2px solid var(--color-primary);
   }
+}
+
+.header__user-name,
+.header__logo-text,
+.header__nav-link,
+.header__cart-btn svg,
+.header__cart-badge,
+.header__user button,
+.header__mobile-link,
+.header__mobile-cart svg,
+.header__mobile-user-name,
+.header__mobile-user button {
+  color: #f5f5f5;
+  fill: #f5f5f5;
 }
