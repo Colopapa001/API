@@ -93,7 +93,7 @@ const Header = () => {
 
               {/* User Menu */}
               <div className="header__user">
-                <span className="header__user-name">¡Hola{user.name}!</span>
+                <span className="header__user-name">¡Hola, {user.firstName}!</span>
                 <Button 
                   variant="outline" 
                   size="small"
@@ -179,7 +179,7 @@ const Header = () => {
               
               {/* Mobile User Info */}
               <div className="header__mobile-user">
-                <span className="header__mobile-user-name">¡Hola, {user.name}!</span>
+                <span className="header__mobile-user-name">¡Hola, {user.firstName}!</span>
                 <Button 
                   variant="danger" 
                   size="small" 
