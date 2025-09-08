@@ -1,10 +1,12 @@
+/* Mejorar hover del botón secundario */
+
 .product-card {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
   background: var(--card-bg);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  width: 320px;
+  width: 100%;
   min-height: 420px;
   box-sizing: border-box;
   margin: 1rem;
@@ -19,15 +21,22 @@
 }
 
 .product-image-container {
-  width: 280px;
+  width: 100%;
+  height: 250px;
   overflow: hidden;
   background: var(--bg-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 0;
+  display: block;
   transition: transform 0.3s ease;
 }
 
@@ -36,7 +45,6 @@
 }
 
 .product-content {
-  padding: 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -45,6 +53,7 @@
 .product-info {
   flex: 1;
   margin-bottom: 16px;
+  padding: 1rem;
 }
 
 .product-title {
@@ -108,8 +117,24 @@
 .product-actions {
   margin-top: auto;
   display: flex;
-  gap: 8px;
-  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: stretch;
+  align-items: stretch;
+  width: 100%;
+}
+.product-actions button {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  display: block;
+  text-align: center;
+}
+.product-actions .btn-full-width {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 /* Responsive */
@@ -118,4 +143,12 @@
     max-width: 100%;
     margin: 0.5rem 0;
   }
+}
+
+/* Hover para botón secundario con clase .btn-secondary */
+.product-actions .btn-secondary:hover {
+  background: #eaf1fb;
+  border-color: #2563eb;
+  color: #2563eb !important;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
 }

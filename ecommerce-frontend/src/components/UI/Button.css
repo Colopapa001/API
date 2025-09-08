@@ -132,6 +132,7 @@
 /* Full Width Button */
 .btn-full-width {
   width: 100%;
+  justify-content: center;
 }
 
 /* Disabled Button */

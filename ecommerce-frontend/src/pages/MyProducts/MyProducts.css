@@ -62,20 +62,37 @@
 
 .product-image {
   position: relative;
-  aspect-ratio: 16/9;
+  width: 100%;
+  height: 250px; /* Puedes ajustar la altura si lo prefieres */
   background: var(--bg-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 0;
+  display: block;
+}
+
+.product-description {
+  margin: 0.5em 0 0.5em 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  min-height: 2.5em; /* Para descripciones de hasta 2 líneas */
+  display: flex;
+  align-items: flex-end;
 }
 
 .product-status {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+  position: static;
+  margin-top: 0.5rem;
+  margin-left: 1rem;
+  display: block;
 }
 
 .stock-badge {
@@ -92,27 +109,84 @@
   color: var(--error);
 }
 
-.product-info {
-  padding: 1rem;
+.info-top {
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 32px; /* Espacio entre imagen y título */
+  gap: 0.5em;
+  align-items: flex-start;
+}
+
+.info-top h3 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  min-height: 2.5em;
+  font-weight: 600;
+}
+
+ .product-description {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  min-height: 2.5em;
+  display: flex;
+  align-items: flex-start;
+  word-break: break-word;
+}
+
+  /* Espacio entre imagen y título */
+  .info-top h3 {
+    margin-top: 40px;
+    margin-bottom: 0.5em;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    min-height: 2.5em;
+    font-weight: 600;
+}
+
+.product-info .info-top {
+  min-height: 80px; /* Ajusta según tu preferencia */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .product-info h3 {
   margin: 0;
   font-size: 1.25rem;
   color: var(--text-primary);
+  min-height: 2.5em; /* Para títulos de hasta 2 líneas */
+  align-items: flex-end;
 }
 
 .product-price {
   margin: 0.5rem 0;
+  padding-left: 1rem;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--primary-color);
+  display: flex;
+  gap: 1rem;
 }
 
 .product-date {
   margin: 0;
+  padding-left: 1rem;
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+.product-description {
+  margin-top: 8px;
+  /* Opcional: para evitar que el texto se pegue abajo */
+  margin-bottom: 8px;
 }
 
 .product-actions {
@@ -152,6 +226,6 @@
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    margin-top: 30px; /* Agregar margen superior */
   }
 }

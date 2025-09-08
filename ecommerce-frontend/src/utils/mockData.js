@@ -200,9 +200,9 @@ export const mockProducts = [
     categoryId: 4,
     userId: 2,
     images: [
-      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=entropy'
+  'https://images.pexels.com/photos/274506/pexels-photo-274506.jpeg',
+  'https://images.pexels.com/photos/274506/pexels-photo-274506.jpeg',
+  'https://images.pexels.com/photos/274506/pexels-photo-274506.jpeg'
     ],
     createdAt: '2024-03-07T09:30:00Z'
   },
@@ -245,9 +245,9 @@ export const mockProducts = [
     categoryId: 4,
     userId: 1,
     images: [
-      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop&crop=entropy'
+  'https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg',
+  'https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg',
+  'https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg'
     ],
     createdAt: '2024-02-24T16:30:00Z'
   },
@@ -275,9 +275,9 @@ export const mockProducts = [
     categoryId: 5,
     userId: 1,
     images: [
-      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop&crop=entropy'
+  'https://images.pexels.com/photos/17131239/pexels-photo-17131239.jpeg',
+  'https://images.pexels.com/photos/17131239/pexels-photo-17131239.jpeg',
+  'https://images.pexels.com/photos/17131239/pexels-photo-17131239.jpeg'
     ],
     createdAt: '2024-02-21T13:40:00Z'
   },
@@ -305,9 +305,9 @@ export const mockProducts = [
     categoryId: 3,
     userId: 1,
     images: [
-      'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&crop=entropy'
+  'https://images.pexels.com/photos/593328/pexels-photo-593328.jpeg',
+  'https://images.pexels.com/photos/593328/pexels-photo-593328.jpeg',
+  'https://images.pexels.com/photos/593328/pexels-photo-593328.jpeg'
     ],
     createdAt: '2024-02-23T12:10:00Z'
   },
@@ -335,9 +335,9 @@ export const mockProducts = [
     categoryId: 6,
     userId: 1,
     images: [
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&crop=entropy'
+  'https://images.pexels.com/photos/1586950/pexels-photo-1586950.jpeg',
+  'https://images.pexels.com/photos/1586950/pexels-photo-1586950.jpeg',
+  'https://images.pexels.com/photos/1586950/pexels-photo-1586950.jpeg'
     ],
     createdAt: '2024-03-06T14:25:00Z'
   },
