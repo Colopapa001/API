@@ -153,9 +153,13 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: AUTH_ACTIONS.LOGIN_START });
 
+      // Limpiar sessionStorage de productos agregados/eliminados
+      sessionStorage.removeItem('myCatalog');
+      sessionStorage.removeItem('deletedMyProducts');
+
       // Validar email y password
       if (!validateEmail(email)) {
-        throw new Error('Email inválido');
+        throw new Error('Email inválida');
       }
 
       const passwordValidation = validatePassword(password);
@@ -256,10 +260,12 @@ export const AuthProvider = ({ children }) => {
 
   // Función de logout
   const logout = () => {
-    token.remove();
-    localStorage.removeItem('userData');
-    localStorage.removeItem('cartItems'); // Limpiar carrito también
-    dispatch({ type: AUTH_ACTIONS.LOGOUT });
+  token.remove();
+  localStorage.removeItem('userData');
+  localStorage.removeItem('cartItems'); // Limpiar carrito también
+  sessionStorage.removeItem('myCatalog');
+  sessionStorage.removeItem('deletedMyProducts');
+  dispatch({ type: AUTH_ACTIONS.LOGOUT });
   };
 
   // Función para limpiar errores

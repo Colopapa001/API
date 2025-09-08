@@ -29,14 +29,16 @@ const ProductCard = ({
   return (
     <div className="product-card">
       <div className="product-content">
-        <img 
-          src={primaryImage} 
-          alt={title} 
-          className="product-image"
-          onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/400x400/CCCCCC/666666?text=Sin+imagen';
-          }}
-        />
+        <div className="product-image-container">
+          <img 
+            src={primaryImage} 
+            alt={title} 
+            className="product-image"
+            onError={(e) => {
+              e.target.src = 'https://via.placeholder.com/400x400/CCCCCC/666666?text=Sin+imagen';
+            }}
+          />
+        </div>
         <div className="product-info">
           <h3 className="product-title">{title}</h3>
           <p className="product-description">{description}</p>
@@ -51,15 +53,16 @@ const ProductCard = ({
           variant="secondary"
           onClick={handleViewDetails}
           fullWidth
+          className="btn-full-width"
         >
           Ver Detalles
         </Button>
-        
         <Button
           variant="primary"
           onClick={onAddToCart}
           loading={loading}
           fullWidth
+          className="btn-full-width"
         >
           Agregar al Carrito
         </Button>

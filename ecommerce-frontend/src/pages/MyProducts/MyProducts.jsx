@@ -12,6 +12,7 @@ const MyProducts = () => {
   const { user } = useAuth();
   
   const [products, setProducts] = useState([]);
+  const [sessionProducts, setSessionProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
@@ -20,7 +21,10 @@ const MyProducts = () => {
     try {
       setLoading(true);
       const userProducts = await getProductsByUser(user.id);
-      setProducts(userProducts);
+      // Filtrar productos eliminados en la sesión
+      const deletedIds = JSON.parse(sessionStorage.getItem('deletedMyProducts')) || [];
+      const filteredProducts = userProducts.filter(p => !deletedIds.includes(p.id));
+      setProducts(filteredProducts);
       setError(null);
     } catch (err) {
       setError('Error cargando productos');
@@ -33,7 +37,10 @@ const MyProducts = () => {
   useEffect(() => {
     // Scroll al inicio al montar
     import('../../utils/helpers').then(({ scrollToTop }) => scrollToTop('auto'));
-    loadProducts();
+  loadProducts();
+  // Cargar productos agregados en la sesión
+  const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+  setSessionProducts(sessionCatalog);
   }, [loadProducts]);
 
   const handleDelete = async (productId) => {
@@ -41,20 +48,19 @@ const MyProducts = () => {
       return;
     }
 
-    try {
-      setDeletingId(productId);
-      const result = await deleteProduct(productId, user.id);
-      
-      if (result.success) {
-        setProducts(prev => prev.filter(p => p.id !== productId));
-      } else {
-        throw new Error(result.error);
-      }
-    } catch (err) {
-      setError(err.message || 'Error eliminando producto');
-    } finally {
-      setDeletingId(null);
+    setDeletingId(productId);
+    // Si el producto fue agregado en la sesión, eliminar de sessionStorage
+    const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+    const newCatalog = sessionCatalog.filter(p => p.id !== productId);
+    sessionStorage.setItem('myCatalog', JSON.stringify(newCatalog));
+    setSessionProducts(newCatalog);
+    // Si el producto es propio, guardar su ID en sessionStorage para excluirlo en la sesión
+    if (products.some(p => p.id === productId && p.userId === user.id)) {
+      setProducts(prev => prev.filter(p => p.id !== productId));
+      const deletedIds = JSON.parse(sessionStorage.getItem('deletedMyProducts')) || [];
+      sessionStorage.setItem('deletedMyProducts', JSON.stringify([...deletedIds, productId]));
     }
+    setDeletingId(null);
   };
 
   const handleEdit = (productId) => {
@@ -90,7 +96,7 @@ const MyProducts = () => {
         </Button>
       </div>
 
-      {products.length === 0 ? (
+      {products.length === 0 && sessionProducts.length === 0 ? (
         <div className="my-products-empty">
           <h3>No tienes productos publicados</h3>
           <p>¡Comienza a vender agregando tu primer producto!</p>
@@ -100,7 +106,11 @@ const MyProducts = () => {
         </div>
       ) : (
         <div className="products-grid">
-          {products.map(product => (
+          {[...products,
+            ...sessionProducts.filter(
+              sp => !products.some(p => p.id === sp.id)
+            )
+          ].map(product => (
             <div key={product.id} className="product-card">
               <div className="product-image">
                 <img
@@ -110,21 +120,22 @@ const MyProducts = () => {
                     e.target.src = '/images/placeholder.png';
                   }}
                 />
+              </div>
+              <div className="product-info">
+                <div className="info-top">
+                  <h3>{product.title}</h3>
+                  <p className="product-description">{product.description}</p>
+                </div>
+                <p className="product-price">{formatPrice(product.price)}</p>
                 <div className="product-status">
                   <span className={`stock-badge ${product.stock === 0 ? 'out-of-stock' : ''}`}>
                     {product.stock === 0 ? 'Sin stock' : `${product.stock} disponibles`}
                   </span>
                 </div>
-              </div>
-
-              <div className="product-info">
-                <h3>{product.title}</h3>
-                <p className="product-price">{formatPrice(product.price)}</p>
                 <p className="product-date">
                   Publicado: {formatDate(product.createdAt)}
                 </p>
               </div>
-
               <div className="product-actions">
                 <Button
                   variant="outline"

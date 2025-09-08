@@ -124,7 +124,6 @@ const ProductDetail = () => {
             }}
           />
         </div>
-        
         {product.images.length > 1 && (
           <div className="product-thumbnails">
             {product.images.map((image, index) => (
@@ -149,21 +148,22 @@ const ProductDetail = () => {
       {/* Información del producto */}
       <div className="product-info">
         <h1 className="product-title">{product.title}</h1>
-        
         <div className="product-meta">
           <p className="product-price">{formatPrice(product.price)}</p>
           <p className={`product-stock product-stock-${stockStatus.status}`}>
             {formatStock(product.stock)}
           </p>
         </div>
-
         <div className="product-description">
-          <h3>Descripción</h3>
-          <p>{product.description}</p>
+          <div className="description-title-box">
+            Descripción
+          </div>
+          <div className="description-info-box">
+            {product.description}
+          </div>
         </div>
-
-        {product.stock > 0 && (
-          <div className="product-actions">
+        <div className="product-actions">
+          <div className="action-column">
             <div className="quantity-controls">
               <button
                 onClick={decreaseQuantity}
@@ -187,19 +187,44 @@ const ProductDetail = () => {
                 +
               </button>
             </div>
-
             <Button
               onClick={handleAddToCart}
               disabled={product.stock === 0}
               loading={isCartLoading}
               fullWidth
+              style={{ marginTop: '1rem' }}
             >
               {cartQuantity > 0
-                ? `Agregar más al carrito (${cartQuantity} en carrito)`
-                : 'Agregar al carrito'}
+                ? `Agregar más al Carrito (${cartQuantity} en Carrito)`
+                : 'Agregar al Carrito'}
+            </Button>
+            <Button
+              variant="primary"
+              fullWidth
+              style={{ marginTop: '1rem' }}
+              onClick={() => {
+                // Obtener productos propios y de sesión
+                const userId = JSON.parse(sessionStorage.getItem('user'))?.id;
+                const userProducts = Array.isArray(window.mockProducts)
+                  ? window.mockProducts.filter(p => p.userId === userId)
+                  : [];
+                const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+                const exists = [...userProducts, ...sessionCatalog].find(p => p.id === product.id);
+                if (exists) {
+                  alert('El producto ya existe en el catálogo');
+                } else {
+                  // Agregar a sessionStorage
+                  const newCatalog = [...sessionCatalog, product];
+                  sessionStorage.setItem('myCatalog', JSON.stringify(newCatalog));
+                  window.dispatchEvent(new Event('storage'));
+                  navigate('/my-products');
+                }
+              }}
+            >
+              Agregar al Catálogo
             </Button>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Productos relacionados */}
