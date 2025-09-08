@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
-import '../Auth/Auth.css';
+import './Auth.css';
 
 const Login = () => {
   const navigate = useNavigate();
