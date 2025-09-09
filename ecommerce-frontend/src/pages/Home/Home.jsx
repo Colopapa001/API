@@ -107,7 +107,7 @@ const Home = () => {
   if (loading) {
     return (
       <div className="home-loading">
-        <LoadingSpinner />
+        <LoadingSpinner fullscreen={false} size="large" />
       </div>
     );
   }

@@ -56,18 +56,30 @@ const MyProducts = () => {
     }
 
     setDeletingId(productId);
-    // Si el producto fue agregado en la sesión, eliminar de sessionStorage
-    const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
-    const newCatalog = sessionCatalog.filter(p => p.id !== productId);
-    sessionStorage.setItem('myCatalog', JSON.stringify(newCatalog));
-    setSessionProducts(newCatalog);
-    // Si el producto es propio, guardar su ID en sessionStorage para excluirlo en la sesión
-    if (products.some(p => p.id === productId && p.userId === user.id)) {
-      setProducts(prev => prev.filter(p => p.id !== productId));
-      const deletedIds = JSON.parse(sessionStorage.getItem('deletedMyProducts')) || [];
-      sessionStorage.setItem('deletedMyProducts', JSON.stringify([...deletedIds, productId]));
+    
+    try {
+      // Intentar eliminar el producto usando la función importada
+      await deleteProduct(productId);
+      
+      // Si el producto fue agregado en la sesión, eliminar de sessionStorage
+      const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+      const newCatalog = sessionCatalog.filter(p => p.id !== productId);
+      sessionStorage.setItem('myCatalog', JSON.stringify(newCatalog));
+      setSessionProducts(newCatalog);
+      
+      // Si el producto es propio, guardar su ID en sessionStorage para excluirlo en la sesión
+      if (products.some(p => p.id === productId && p.userId === user.id)) {
+        setProducts(prev => prev.filter(p => p.id !== productId));
+        const deletedIds = JSON.parse(sessionStorage.getItem('deletedMyProducts')) || [];
+        sessionStorage.setItem('deletedMyProducts', JSON.stringify([...deletedIds, productId]));
+      }
+    } catch (error) {
+      console.error('Error eliminando producto:', error);
+      // Mostrar mensaje de error al usuario
+      setError('Error al eliminar el producto. Inténtalo nuevamente.');
+    } finally {
+      setDeletingId(null);
     }
-    setDeletingId(null);
   };
 
   const handleEdit = (product) => {
@@ -119,7 +131,7 @@ const MyProducts = () => {
   if (loading) {
     return (
       <div className="my-products-loading">
-        <LoadingSpinner />
+        <LoadingSpinner fullscreen={false} size="large" />
       </div>
     );
   }
