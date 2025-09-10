@@ -1,81 +1,63 @@
-import { mockProducts } from '../utils/mockData';
+import { api, ENDPOINTS } from './apiConfig';
 
-export const getAllProducts = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockProducts);
-    }, 1000);
-  });
+export const getAllProducts = async () => {
+  try {
+    return await api.get(ENDPOINTS.PRODUCTS);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
 };
 
-export const getProductById = (id) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
-      const product = mockProducts.find(p => p.id === numericId);
-      if (product) {
-        resolve(product);
-      } else {
-        reject(new Error('Product not found'));
-      }
-    }, 500);
-  });
+export const getProductById = async (id) => {
+  try {
+    return await api.get(ENDPOINTS.PRODUCTS, id);
+  } catch (error) {
+    console.error(`Error fetching product with id ${id}:`, error);
+    throw error;
+  }
 };
 
-export const getUserProducts = (userId) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const numericUserId = typeof userId === 'string' ? parseInt(userId, 10) : userId;
-      const userProducts = mockProducts.filter(p => p.userId === numericUserId);
-      resolve(userProducts);
-    }, 1000);
-  });
+export const getUserProducts = async (userId) => {
+  try {
+    return await api.get(ENDPOINTS.PRODUCTS, null, { userId });
+  } catch (error) {
+    console.error(`Error fetching products for user ${userId}:`, error);
+    throw error;
+  }
 };
 
-export const addProduct = (productData) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newProduct = {
-        id: mockProducts.length + 1,
-        ...productData,
-        createdAt: new Date().toISOString(),
-      };
-      mockProducts.push(newProduct);
-      resolve(newProduct);
-    }, 1000);
-  });
+export const addProduct = async (productData) => {
+  try {
+    const productWithTimestamp = {
+      ...productData,
+      createdAt: new Date().toISOString(),
+    };
+    return await api.post(ENDPOINTS.PRODUCTS, productWithTimestamp);
+  } catch (error) {
+    console.error('Error adding product:', error);
+    throw error;
+  }
 };
 
-export const updateProduct = (productId, productData) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const numericProductId = typeof productId === 'string' ? parseInt(productId, 10) : productId;
-      const index = mockProducts.findIndex(p => p.id === numericProductId);
-      if (index !== -1) {
-        mockProducts[index] = {
-          ...mockProducts[index],
-          ...productData,
-          updatedAt: new Date().toISOString(),
-        };
-        resolve(mockProducts[index]);
-      } else {
-        reject(new Error('Product not found'));
-      }
-    }, 1000);
-  });
+export const updateProduct = async (productId, productData) => {
+  try {
+    const updatedData = {
+      ...productData,
+      updatedAt: new Date().toISOString(),
+    };
+    return await api.put(ENDPOINTS.PRODUCTS, productId, updatedData);
+  } catch (error) {
+    console.error(`Error updating product with id ${productId}:`, error);
+    throw error;
+  }
 };
 
-export const deleteProduct = (productId) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const numericProductId = typeof productId === 'string' ? parseInt(productId, 10) : productId;
-      const index = mockProducts.findIndex(p => p.id === numericProductId);
-      if (index !== -1) {
-        const deletedProduct = mockProducts.splice(index, 1)[0];
-        resolve(deletedProduct);
-      } else {
-        reject(new Error('Product not found'));
-      }
-    }, 1000);
-  });
+export const deleteProduct = async (productId) => {
+  try {
+    return await api.delete(ENDPOINTS.PRODUCTS, productId);
+  } catch (error) {
+    console.error(`Error deleting product with id ${productId}:`, error);
+    throw error;
+  }
 };

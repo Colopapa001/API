@@ -2,7 +2,7 @@
 
 /* ==================== BASE BUTTON STYLES ==================== */
 .btn {
-  display: inline-flex;
+  display:flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-family);
@@ -22,6 +22,12 @@
 .btn:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+.btn-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* ==================== BUTTON VARIANTS ==================== */
