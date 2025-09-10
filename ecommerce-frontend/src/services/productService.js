@@ -79,3 +79,15 @@ export const deleteProduct = (productId) => {
     }, 1000);
   });
 };
+
+export const getProductsByPage = async (page = 1, limit = 8) => {
+  // Simulación de paginación usando mockProducts
+  const start = (page - 1) * limit;
+  const end = start + limit;
+  const paginatedProducts = mockProducts.slice(start, end);
+  const totalPages = Math.ceil(mockProducts.length / limit);
+  return {
+    products: paginatedProducts,
+    totalPages,
+  };
+};

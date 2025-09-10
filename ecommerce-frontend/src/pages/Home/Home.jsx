@@ -4,7 +4,7 @@ import ProductCard from '../../components/ProductCard/ProductCard';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
-import { mockProducts, mockCategories } from '../../utils/mockData';
+import { mockCategories } from '../../utils/mockData';
 import { 
   formatPrice, 
   formatStock,
@@ -12,6 +12,7 @@ import {
   filterProductsByPriceRange,
   filterProductsInStock
 } from '../../utils/helpers';
+import { getProductsByPage } from '../../services/productService';
 import './Home.css';
 
 const Home = () => {
@@ -27,31 +28,38 @@ const Home = () => {
     inStock: false,
     sortBy: 'name-asc'
   });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const PRODUCTS_PER_PAGE = 8;
 
   const { addToCart, isLoading: isCartLoading } = useCart();
 
-  // Cargar productos y categorías
+  // Cargar categorías
   useEffect(() => {
     // Scroll al inicio al montar
     import('../../utils/helpers').then(({ scrollToTop }) => scrollToTop('auto'));
-    const loadData = async () => {
+    setCategories(mockCategories);
+  }, []);
+
+  // Fetch products for the current page
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        // Simular llamada a API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setProducts(mockProducts);
-        setCategories(mockCategories);
+        const { products: fetchedProducts, totalPages: fetchedTotalPages } = await getProductsByPage(page, PRODUCTS_PER_PAGE);
+        setProducts(fetchedProducts);
+        setTotalPages(fetchedTotalPages);
         setError(null);
-      } catch (err) {
-        setError('Error cargando datos');
-        console.error(err);
+      } catch (error) {
+        setError('Error cargando productos');
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadData();
-  }, []);
+    fetchProducts();
+  }, [page]);
 
   // Manejar cambios en filtros
   const handleFilterChange = (e) => {
@@ -102,6 +110,14 @@ const Home = () => {
     if (result.success) {
       // Aquí podrías mostrar una notificación de éxito
     }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages) setPage(page + 1);
   };
 
   if (loading) {
@@ -256,6 +272,13 @@ const Home = () => {
             ))}
           </div>
         )}
+
+        {/* Paginación */}
+        <div className="pagination-controls">
+          <Button onClick={handlePrevPage} disabled={page === 1}>Anterior</Button>
+          <span>Página {page} de {totalPages}</span>
+          <Button onClick={handleNextPage} disabled={page === totalPages}>Siguiente</Button>
+        </div>
       </section>
     </div>
   );
