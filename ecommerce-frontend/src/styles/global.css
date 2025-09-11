@@ -55,7 +55,7 @@ a:hover {
 
 /* Button Styles */
 .btn {
-  display: inline-flex;
+  display:flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-sm) var(--spacing-md);
