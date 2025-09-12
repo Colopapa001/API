@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../../components/UI/Button';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import { useCart } from '../../context/CartContext';
-import { getProductById, getAllProducts } from '../../services/api';
+import { getProductById, getAllProducts } from '../../services/Api';
 import {
   formatPrice,
   formatStock,
@@ -205,7 +205,6 @@ const ProductDetail = () => {
               style={{ marginTop: '1rem' }}
               onClick={() => {
                 // Obtener productos propios y de sesión
-                const userId = JSON.parse(sessionStorage.getItem('user'))?.id;
                 const userProducts = [];
                 const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
                 const exists = [...userProducts, ...sessionCatalog].find(p => p.id === product.id);

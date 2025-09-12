@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import { validateEmail, validatePassword, formatRelativeDate, formatPrice } from '../../utils/helpers';
-import { getProductsByUser } from '../../services/api';
+import { getProductsByUser } from '../../services/Api';
 import { getOrdersBySeller, getLastSaleDateBySeller } from '../../services/orderService';
 import './Profile.css';
 

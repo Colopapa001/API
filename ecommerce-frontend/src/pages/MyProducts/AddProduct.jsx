@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
-import { createProduct, getCategories } from '../../services/api';
+import { createProduct, getCategories } from '../../services/Api';
 import { validateProductData, imageUtils } from '../../utils/helpers';
 import './MyProducts.css';
 

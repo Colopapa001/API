@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
-import { getAllProducts } from '../services/api';
+import { getAllProducts } from '../services/Api';
 import { calculateCartTotal, calculateCartCount, formatPrice } from '../utils/helpers';
 
 // Estado inicial del carrito

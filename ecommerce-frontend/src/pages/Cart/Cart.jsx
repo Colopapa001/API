@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import Button from '../../components/UI/Button';
-import { updateProductStockAfterPurchase } from '../../services/api';
+import { updateProductStockAfterPurchase } from '../../services/Api';
 import './Cart.css';
 
 const Cart = () => {

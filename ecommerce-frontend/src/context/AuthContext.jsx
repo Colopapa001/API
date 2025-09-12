@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { loginUser, registerUser } from '../services/api';
+import { loginUser, registerUser } from '../services/Api';
 import { validateEmail, validatePassword, token } from '../utils/helpers';
 
 // Estados de autenticación
