@@ -13,7 +13,6 @@ import {
   filterProductsInStock
 } from '../../utils/helpers';
 import './Home.css';
-import { getAllProducts } from "../../services/productService";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -52,18 +51,6 @@ const Home = () => {
     };
 
     loadData();
-  }, []);
-
-  useEffect(() => {
-    getAllProducts()
-      .then((data) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Error al cargar productos");
-        setLoading(false);
-      });
   }, []);
 
   // Manejar cambios en filtros
@@ -118,17 +105,29 @@ const Home = () => {
   };
 
   if (loading) {
-    return <div className="loading-message">Cargando productos...</div>;
+    return (
+      <div className="home-loading">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return (
+      <div className="home-error">
+        <h2>Error</h2>
+        <p>{error}</p>
+        <Button onClick={() => window.location.reload()}>
+          Intentar nuevamente
+        </Button>
+      </div>
+    );
   }
 
   const filteredProducts = getFilteredProducts();
 
   return (
-    <div className="home-container">
+    <div className="home">
       {/* Categorías */}
       <section className="categories-section">
         <h2>Categorías</h2>
