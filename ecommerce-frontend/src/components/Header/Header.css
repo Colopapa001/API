@@ -15,7 +15,7 @@
   transition: all 0.3s ease;
 }
 
-.dark-mode .header {
+.dark .header {
   background: rgba(17, 24, 39, 0.95);
   border-bottom-color: var(--color-gray-700);
 }
@@ -94,7 +94,7 @@
   background: var(--color-gray-50);
 }
 
-.dark-mode .header__nav-link:hover {
+.dark .header__nav-link:hover {
   background: var(--color-gray-800);
 }
 
@@ -103,7 +103,7 @@
   background: var(--color-primary-50);
 }
 
-.dark-mode .header__nav-link.active {
+.dark .header__nav-link.active {
   background: rgba(59, 130, 246, 0.1);
 }
 
@@ -135,7 +135,7 @@
   background: var(--color-gray-50);
 }
 
-.dark-mode .header__cart-btn:hover {
+.dark .header__cart-btn:hover {
   background: var(--color-gray-800);
 }
 
@@ -184,6 +184,77 @@
   gap: 0.5rem;
 }
 
+/* ============================================
+   THEME TOGGLE BUTTON
+============================================ */
+.header__theme-toggle {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header__theme-toggle:hover {
+  color: var(--color-primary);
+  background: var(--color-gray-50);
+}
+
+.dark .header__theme-toggle:hover {
+  background: var(--color-gray-800);
+}
+
+.header__theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.header__theme-toggle:hover svg {
+  transform: scale(1.1);
+}
+
+/* Mobile Theme Toggle */
+.header__mobile-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  padding: 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.header__mobile-theme-toggle:hover {
+  background: var(--color-gray-50);
+}
+
+.dark .header__mobile-theme-toggle:hover {
+  background: var(--color-gray-800);
+}
+
+.header__mobile-theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.header__mobile-theme-toggle:hover svg {
+  transform: scale(1.1);
+}
+
 /* Estilo específico para el botón Cerrar Sesión en el header */
 .header__user .btn-outline {
   border-color: var(--color-gray-300);
@@ -217,7 +288,7 @@
   background: var(--color-gray-50);
 }
 
-.dark-mode .header__menu-toggle:hover {
+.dark .header__menu-toggle:hover {
   background: var(--color-gray-800);
 }
 
@@ -275,7 +346,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.dark-mode .header__mobile-menu {
+.dark .header__mobile-menu {
   border-bottom-color: var(--color-gray-700);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
@@ -308,8 +379,8 @@
   color: var(--color-primary);
 }
 
-.dark-mode .header__mobile-link:hover,
-.dark-mode .header__mobile-link.active {
+.dark .header__mobile-link:hover,
+.dark .header__mobile-link.active {
   background: rgba(59, 130, 246, 0.1);
 }
 
@@ -333,7 +404,7 @@
   background: var(--color-gray-50);
 }
 
-.dark-mode .header__mobile-cart:hover {
+.dark .header__mobile-cart:hover {
   background: var(--color-gray-800);
 }
 
@@ -352,7 +423,7 @@
   gap: 1rem;
 }
 
-.dark-mode .header__mobile-user {
+.dark .header__mobile-user {
   background: var(--color-gray-800);
 }
 

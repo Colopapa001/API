@@ -1,5 +1,5 @@
 .my-products {
-  max-width: var(--max-width);
+  max-width: var(--container-max-width);
   margin: 0 auto;
   padding: 2rem;
 }
@@ -14,7 +14,7 @@
 .my-products-header h1 {
   margin: 0;
   font-size: 2rem;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 
 /* Estado de carga y error */
@@ -28,15 +28,22 @@
   justify-content: center;
   text-align: center;
   gap: 1rem;
+  padding: 2rem;
+}
+
+.my-products-loading {
+  position: relative;
+  width: 100%;
+  height: 50vh;
 }
 
 .my-products-empty h3 {
   margin: 0;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 
 .my-products-empty p {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
 

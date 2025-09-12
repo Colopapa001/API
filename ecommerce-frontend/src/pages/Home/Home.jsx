@@ -109,7 +109,7 @@ const Home = () => {
   return (
     loading ? (
       <div className="home-loading">
-        <LoadingSpinner />
+        <LoadingSpinner fullscreen={false} size="large" />
       </div>
     ) : error ? (
       <div className="home-error">

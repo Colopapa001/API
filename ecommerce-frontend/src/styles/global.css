@@ -22,6 +22,7 @@ body {
   background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Typography */
@@ -397,5 +398,44 @@ a:hover {
     --font-size-4xl: 1.875rem;
     --font-size-3xl: 1.5rem;
     --font-size-2xl: 1.25rem;
+  }
+}
+
+/* ============================================
+   DARK MODE ENHANCEMENTS
+============================================ */
+.dark {
+  /* Ensure smooth transitions for all elements */
+  * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  /* Override any hardcoded white backgrounds */
+  .card,
+  .btn-secondary,
+  .form-input {
+    background-color: var(--color-background-secondary);
+    border-color: var(--color-border);
+  }
+  
+  /* Ensure proper contrast for links */
+  a {
+    color: var(--color-primary);
+  }
+  
+  a:hover {
+    color: var(--color-primary-dark);
+  }
+  
+  /* Fix any remaining light backgrounds */
+  .btn-outline {
+    background-color: transparent;
+    border-color: var(--color-border-dark);
+    color: var(--color-text-primary);
+  }
+  
+  .btn-outline:hover:not(:disabled) {
+    background-color: var(--color-background-tertiary);
+    border-color: var(--color-gray-400);
   }
 }

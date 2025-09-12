@@ -321,31 +321,49 @@
 }
 
 /* ==================== DARK MODE ==================== */
-@media (prefers-color-scheme: dark) {
-  .input-wrapper {
-    background: var(--background-color);
-    border-color: var(--border-color);
-  }
-  
-  .input-field {
-    color: var(--text-color);
-  }
-  
-  .input-field::placeholder {
-    color: var(--text-muted);
-  }
-  
-  .input-disabled .input-wrapper {
-    background: var(--background-dark);
-  }
-  
-  .input-floating .input-label {
-    background: var(--background-color);
-  }
-  
-  .input-field[type="file"]::file-selector-button {
-    background: var(--primary-color);
-  }
+.dark .input-wrapper {
+  background: var(--color-background);
+  border-color: var(--color-border);
+}
+
+.dark .input-field {
+  color: var(--color-text-primary);
+}
+
+.dark .input-field::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.dark .input-label {
+  color: var(--color-text-primary);
+}
+
+.dark .input-focused .input-label {
+  color: var(--color-primary);
+}
+
+.dark .input-disabled .input-wrapper {
+  background: var(--color-background-secondary);
+}
+
+.dark .input-floating .input-label {
+  background: var(--color-background);
+}
+
+.dark .input-field[type="file"]::file-selector-button {
+  background: var(--color-primary);
+}
+
+.dark .input-helper-text {
+  color: var(--color-text-secondary);
+}
+
+.dark .input-icon-container {
+  color: var(--color-text-tertiary);
+}
+
+.dark .input-focused .input-icon-container {
+  color: var(--color-primary);
 }
 
 /* ==================== ACCESSIBILITY ==================== */

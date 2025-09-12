@@ -30,7 +30,12 @@ const Login = () => {
     return;
   }
 
-  await login(formData.email, formData.password);
+  const success = await login(formData.email, formData.password);
+  
+  // Redirigir al usuario después del login exitoso
+  if (success) {
+    navigate('/');
+  }
 };
 
   return (
