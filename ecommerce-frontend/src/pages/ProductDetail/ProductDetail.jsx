@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../../components/UI/Button';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import { useCart } from '../../context/CartContext';
-import { mockProducts } from '../../utils/mockData';
+import { getProductById, getAllProducts } from '../../services/api';
 import {
   formatPrice,
   formatStock,
@@ -30,21 +30,22 @@ const ProductDetail = () => {
     const loadProduct = async () => {
       try {
         setLoading(true);
-        // Simular llamada a API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const found = mockProducts.find(p => p.id === parseInt(id));
+        const [productData, allProducts] = await Promise.all([
+          getProductById(id),
+          getAllProducts()
+        ]);
         
-        if (!found) {
+        if (!productData) {
           throw new Error('Producto no encontrado');
         }
         
-        setProduct(found);
+        setProduct(productData);
         
         // Cargar productos relacionados
         const related = getRelatedProducts(
-          mockProducts,
+          allProducts,
           id,
-          found.categoryId
+          productData.categoryId
         );
         setRelatedProducts(related);
         
@@ -205,9 +206,7 @@ const ProductDetail = () => {
               onClick={() => {
                 // Obtener productos propios y de sesión
                 const userId = JSON.parse(sessionStorage.getItem('user'))?.id;
-                const userProducts = Array.isArray(window.mockProducts)
-                  ? window.mockProducts.filter(p => p.userId === userId)
-                  : [];
+                const userProducts = [];
                 const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
                 const exists = [...userProducts, ...sessionCatalog].find(p => p.id === product.id);
                 if (exists) {

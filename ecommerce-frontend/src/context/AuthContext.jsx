@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { loginUser, registerUser, mockUsers } from '../utils/mockData';
+import { loginUser, registerUser } from '../services/api';
 import { validateEmail, validatePassword, token } from '../utils/helpers';
 
 // Estados de autenticación
@@ -168,7 +168,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error(`Contraseña inválida: ${errorMessages.join(', ')}`);
       }
 
-      // Intentar login con datos mock
+      // Intentar login con API
       const result = await loginUser(email, password);
       
       if (result.success) {
@@ -228,7 +228,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Nombre y apellido son requeridos');
       }
 
-      // Intentar registro con datos mock
+      // Intentar registro con API
       const result = await registerUser(userData);
       
       if (result.success) {
@@ -328,7 +328,7 @@ export const AuthProvider = ({ children }) => {
 
     // Utilidades
     isBlocked: isBlocked(),
-    mockUsers, // Para desarrollo
+
   };
 
   return (

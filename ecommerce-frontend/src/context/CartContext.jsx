@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
-import { mockProducts as initialMockProducts, updateMockProductStock } from '../utils/mockData';
+import { getAllProducts } from '../services/api';
 import { calculateCartTotal, calculateCartCount, formatPrice } from '../utils/helpers';
 
 // Estado inicial del carrito
@@ -150,22 +150,27 @@ export const useCart = () => {
 // Provider del contexto
 export const CartProvider = ({ children }) => {
   // Estado para los productos disponibles
-  const [products, setProducts] = useState(initialMockProducts);
+  const [products, setProducts] = useState([]);
   const [state, dispatch] = useReducer(cartReducer, INITIAL_STATE);
 
-  // Cargar carrito desde localStorage al iniciar
+  // Cargar productos y carrito al iniciar
   useEffect(() => {
-    const loadCartFromStorage = () => {
+    const loadProductsAndCart = async () => {
       try {
         dispatch({ type: CART_ACTIONS.SET_LOADING, payload: true });
         
+        // Cargar productos desde API
+        const productsData = await getAllProducts();
+        setProducts(productsData);
+        
+        // Cargar carrito desde localStorage
         const savedCart = localStorage.getItem('cartItems');
         if (savedCart) {
           const cartItems = JSON.parse(savedCart);
           
           // Validar que los productos aún existen y actualizar datos
           const validatedItems = cartItems.map(item => {
-            const currentProduct = products.find(p => p.id === item.productId);
+            const currentProduct = productsData.find(p => p.id === item.productId);
             if (currentProduct) {
               return {
                 ...item,
@@ -180,13 +185,13 @@ export const CartProvider = ({ children }) => {
           dispatch({ type: CART_ACTIONS.SET_LOADING, payload: false });
         }
       } catch (error) {
-        console.error('Error cargando carrito:', error);
-        dispatch({ type: CART_ACTIONS.SET_ERROR, payload: 'Error cargando carrito' });
+        console.error('Error cargando productos y carrito:', error);
+        dispatch({ type: CART_ACTIONS.SET_ERROR, payload: 'Error cargando datos' });
       }
     };
 
-    loadCartFromStorage();
-  }, [products]);
+    loadProductsAndCart();
+  }, []);
 
   // Guardar carrito en localStorage cuando cambie
   useEffect(() => {
@@ -382,8 +387,7 @@ export const CartProvider = ({ children }) => {
 
       console.log('Estado final de productos:', updatedProducts.map(p => ({id: p.id, stock: p.stock})));
 
-      // También actualizar en mockData.js (para mantener consistencia)
-      await updateMockProductStock(state.items);
+      // Stock actualizado a través de la API
 
       // Simular orden exitosa
       const order = {

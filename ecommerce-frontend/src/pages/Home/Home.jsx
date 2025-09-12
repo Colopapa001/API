@@ -4,7 +4,7 @@ import ProductCard from '../../components/ProductCard/ProductCard';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
-import { mockProducts, mockCategories } from '../../utils/mockData';
+import { getAllProducts, getCategories } from '../../services/api';
 import { 
   formatPrice, 
   formatStock,
@@ -37,10 +37,12 @@ const Home = () => {
     const loadData = async () => {
       try {
         setLoading(true);
-        // Simular llamada a API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setProducts(mockProducts);
-        setCategories(mockCategories);
+        const [productsData, categoriesData] = await Promise.all([
+          getAllProducts(),
+          getCategories()
+        ]);
+        setProducts(productsData);
+        setCategories(categoriesData);
         setError(null);
       } catch (err) {
         setError('Error cargando datos');

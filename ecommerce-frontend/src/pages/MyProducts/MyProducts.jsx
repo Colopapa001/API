@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import Input from '../../components/UI/Input';
-import { getProductsByUser, deleteProduct } from '../../utils/mockData';
+import { getProductsByUser, deleteProduct } from '../../services/api';
 import { formatPrice, formatDate } from '../../utils/helpers';
 import './MyProducts.css';
 
