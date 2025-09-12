@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import Button from '../../components/UI/Button';
-import { mockProducts } from '../../utils/mockData';
+import { updateProductStockAfterPurchase } from '../../services/api';
 import './Cart.css';
 
 const Cart = () => {
@@ -73,17 +73,15 @@ const Cart = () => {
     
     
     try {
-      // Actualizar directamente el stock de los productos
-      for (const item of items) {
-        // Obtener la información más reciente del producto
-        const product = mockProducts.find(p => p.id === item.productId);
-        
-        if (product) {
-          console.log(`Actualizando stock para ${product.title}: ${product.stock} - ${item.quantity} = ${product.stock - item.quantity}`);
-          
-          // Actualizar el stock directamente
-          product.stock = Math.max(0, product.stock - item.quantity);
-        }
+      // Actualizar el stock de los productos usando la API
+      const results = await updateProductStockAfterPurchase(items);
+      
+      // Verificar si hubo errores
+      const hasErrors = results.some(result => !result.success);
+      if (hasErrors) {
+        console.error('Algunos productos no pudieron actualizarse:', results);
+        alert('Hubo un problema al actualizar el stock de algunos productos');
+        return;
       }
       
       // Mostrar mensaje
