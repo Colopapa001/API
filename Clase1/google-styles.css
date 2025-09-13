@@ -1,0 +1,260 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+nav a {
+    color: #000;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.apps-button {
+    padding: 8px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.apps-button .material-icons {
+    font-size: 24px;
+    color: #5f6368;
+}
+
+.signin-button {
+    padding: 9px 23px;
+    border: none;
+    border-radius: 4px;
+    background: #1a73e8;
+    color: white;
+}
+
+.signin-button:hover {
+    background: #2b7de9;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    max-width: 584px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 10px 20px;
+    border: 1px solid #dfe1e5;
+    border-radius: 24px;
+}
+
+.search-box:hover {
+    box-shadow: 0 1px 6px rgba(32,33,36,.28);
+}
+
+.search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    margin: 0 10px;
+    font-size: 16px;
+}
+
+.search-box input:focus {
+    outline: none;
+}
+
+.search-box:focus-within {
+    box-shadow: 0 1px 6px rgba(32,33,36,.28);
+    border-color: transparent;
+}
+
+.search-buttons {
+    margin-top: 30px;
+}
+
+.search-buttons button {
+    margin: 0 4px;
+    padding: 0 16px;
+    height: 36px;
+    background-color: #f8f9fa;
+    border: 1px solid #f8f9fa;
+    border-radius: 4px;
+    color: #3c4043;
+    cursor: pointer;
+}
+
+.search-buttons button:hover {
+    border: 1px solid #dadce0;
+    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+}
+
+.search-buttons button:active {
+    border: 1px solid #4285f4;
+}
+
+footer {
+    background: #f2f2f2;
+}
+
+.footer-top {
+    padding: 15px 30px;
+    border-bottom: 1px solid #dadce0;
+    color: #70757a;
+    font-size: 14px;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+}
+
+.footer-left, .footer-right {
+    display: flex;
+    gap: 20px;
+}
+
+footer a {
+    color: #70757a;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+footer a:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+.material-icons {
+    color: #9aa0a6;
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.search-icon {
+    padding: 0 8px;
+}
+
+.mic-icon, .camera-icon {
+    padding: 0 8px;
+    cursor: pointer;
+}
+
+.mic-icon:hover, .camera-icon:hover, .search-icon:hover {
+    color: #4285f4;
+}
+
+.signin-button:active {
+    background: #1557b0;
+}
+
+.apps-button:active {
+    background-color: #e8e8e8;
+}
+
+.dark-mode-button {
+    padding: 8px;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+}
+
+.dark-mode-button .material-icons {
+    font-size: 24px;
+    color: #5f6368;
+}
+
+/* Modo oscuro */
+body.dark-mode {
+    background-color: #202124;
+    color: #fff;
+}
+
+body.dark-mode nav a {
+    color: #fff;
+}
+
+body.dark-mode .search-box {
+    background-color: #303134;
+    border-color: #303134;
+}
+
+body.dark-mode .search-box input {
+    background-color: #303134;
+    color: #fff;
+}
+
+body.dark-mode .search-buttons button {
+    background-color: #303134;
+    border: 1px solid #303134;
+    color: #e8eaed;
+}
+
+body.dark-mode .search-buttons button:hover {
+    border: 1px solid #5f6368;
+}
+
+body.dark-mode footer {
+    background-color: #171717;
+}
+
+body.dark-mode .footer-top {
+    border-bottom: 1px solid #3c4043;
+}
+
+/* Nuevos estilos para modo oscuro */
+body.dark-mode .material-icons {
+    color: #9aa0a6;
+}
+
+body.dark-mode .apps-button .material-icons,
+body.dark-mode .dark-mode-button .material-icons {
+    color: #e8eaed;
+}
+
+body.dark-mode .apps-button:active {
+    background-color: #303134;
+}
+
+body.dark-mode .mic-icon:hover,
+body.dark-mode .camera-icon:hover,
+body.dark-mode .search-icon:hover {
+    color: #8ab4f8;
+}
+
+body.dark-mode footer a {
+    color: #9aa0a6;
+}
+
+body.dark-mode footer a:hover {
+    color: #e8eaed;
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabla de Usuarios</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Usuarios</h1>
+        <div id="loading" class="loading">Cargando usuarios...</div>
+        <div id="error" class="error"></div>
+        <table id="usersTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Ciudad</th>
+                    <th>Teléfono</th>
+                    <th>Compañía</th>
+                    <th>Sitio Web</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <script src="js/users.js"></script>
+</body>
+</html>
