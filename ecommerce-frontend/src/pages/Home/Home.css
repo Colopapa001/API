@@ -1,3 +1,12 @@
+/* Mejorar visibilidad de las opciones del select en modo oscuro */
+.dark select.sort-select option {
+  color: #fff;
+  background: #23272f;
+}
+/* Mejorar visibilidad de opciones del select en modo oscuro sin forzar fondo */
+.dark .sort-select {
+  color: #fff !important;
+}
 .category-icon-container {
   display: flex;
   align-items: center;
@@ -37,7 +46,7 @@
   height: 50vh;
 }
 
-.home-filters {
+ .home-filters {
   display: flex;
   align-items: stretch;
   justify-content: center;
@@ -49,6 +58,7 @@
   padding: 1.5rem 2rem;
   flex-wrap: wrap;
 }
+
 
 .filter-box {
   background: var(--color-background);
