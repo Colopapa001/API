@@ -12,9 +12,47 @@ import {
   filterProductsByPriceRange,
   filterProductsInStock
 } from '../../utils/helpers';
+
 import './Home.css';
 
+
 const PRODUCTS_PER_PAGE = 8;
+
+// Iconos SVG para categorías
+const categoryIcons = {
+  'Electrónicos': (
+    <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7" viewBox="0 0 24 24">
+      <rect x="3" y="7" width="18" height="10" rx="2" stroke="currentColor" strokeWidth="1.7"/>
+      <path d="M7 21h10M12 17v4" stroke="currentColor" strokeWidth="1.7"/>
+    </svg>
+  ),
+  'Ropa': (
+    <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7" viewBox="0 0 24 24">
+      <path d="M4 4l4 2 4-2 4 2 4-2" stroke="currentColor" strokeWidth="1.7"/>
+      <path d="M4 4v16a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V8m4 0v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V4" stroke="currentColor" strokeWidth="1.7"/>
+    </svg>
+  ),
+  'Hogar': (
+    <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7" viewBox="0 0 24 24">
+      <path d="M3 11l9-7 9 7" stroke="currentColor" strokeWidth="1.7"/>
+      <rect x="6" y="11" width="12" height="8" rx="2" stroke="currentColor" strokeWidth="1.7"/>
+    </svg>
+  ),
+  'Deportes': (
+    <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.7"/>
+      <path d="M4 12h16M12 4a8 8 0 0 1 0 16" stroke="currentColor" strokeWidth="1.7"/>
+    </svg>
+  ),
+  'Juguetes': (
+    <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.7"/>
+      <circle cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.7"/>
+      <path d="M12 2v2M12 20v2M2 12h2M20 12h2" stroke="currentColor" strokeWidth="1.7"/>
+    </svg>
+  ),
+};
+
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -189,9 +227,15 @@ const Home = () => {
               {categories.map(category => {
                 // Contar cuántos productos hay en esta categoría
                 const productsInCategory = products.filter(product => product.categoryId === category.id).length;
-                
                 return (
                   <div key={category.id} className="category-card">
+                    <div className="category-icon-container">
+                      {categoryIcons[category.name] || (
+                        <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7" viewBox="0 0 24 24">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.7"/>
+                        </svg>
+                      )}
+                    </div>
                     <h3>{category.name}</h3>
                     <p>{category.description}</p>
                     <div className="category-card-footer">
