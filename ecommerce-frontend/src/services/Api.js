@@ -155,10 +155,10 @@ export const updateProductStockAfterPurchase = async (items) => {
       throw new Error('Error actualizando stock de algunos productos');
     }
     
-    return { success: true, message: 'Stock actualizado correctamente' };
+    return results; // Devolver el array de resultados
   } catch (error) {
     console.error('Error actualizando stock después de compra:', error);
-    return { success: false, error: error.message };
+    throw error; // Lanzar el error para que sea manejado en el componente
   }
 };
 

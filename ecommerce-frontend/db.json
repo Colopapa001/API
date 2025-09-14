@@ -17,6 +17,17 @@
       "firstName": "María",
       "lastName": "García",
       "createdAt": "2024-02-20T14:30:00Z"
+    },
+    {
+      "username": "Pepe01",
+      "email": "Pepe01@gmail.com",
+      "password": "Contraseña123",
+      "confirmPassword": "Contraseña123",
+      "firstName": "Pepe",
+      "lastName": "Pepito",
+      "id": 1757893225383,
+      "createdAt": "2025-09-14T23:40:25.383Z",
+      "updatedAt": "2025-09-14T23:40:25.383Z"
     }
   ],
   "categories": [
@@ -57,7 +68,7 @@
       "title": "iPhone 15 Pro",
       "description": "El iPhone más avanzado con chip A17 Pro, cámara de 48MP y titanio aerospace.",
       "price": 999.99,
-      "stock": 15,
+      "stock": 10,
       "categoryId": 1,
       "userId": 1,
       "images": [
@@ -87,7 +98,7 @@
       "title": "Auriculares Sony WH-1000XM5",
       "description": "Auriculares inalámbricos con cancelación de ruido líder en la industria.",
       "price": 299.99,
-      "stock": 24,
+      "stock": 21,
       "categoryId": 1,
       "userId": 1,
       "images": [
@@ -96,7 +107,7 @@
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&crop=entropy"
       ],
       "createdAt": "2024-03-05T16:45:00Z",
-      "updatedAt": "2025-09-14T16:36:52.032Z"
+      "updatedAt": "2025-09-14T23:39:05.620Z"
     },
     {
       "id": 4,
@@ -299,7 +310,7 @@
       "title": "Cafetera Express Delonghi",
       "description": "Cafetera automática con molinillo integrado y sistema de leche.",
       "price": 279.99,
-      "stock": 9,
+      "stock": 4,
       "categoryId": 3,
       "userId": 1,
       "images": [
@@ -307,7 +318,8 @@
         "https://images.pexels.com/photos/593328/pexels-photo-593328.jpeg",
         "https://images.pexels.com/photos/593328/pexels-photo-593328.jpeg"
       ],
-      "createdAt": "2024-02-23T12:10:00Z"
+      "createdAt": "2024-02-23T12:10:00Z",
+      "updatedAt": "2025-09-14T23:39:05.653Z"
     },
     {
       "id": 18,
@@ -325,21 +337,6 @@
       "createdAt": "2024-02-29T11:05:00Z"
     },
     {
-      "id": 19,
-      "title": "Puzzle 1000 Piezas",
-      "description": "Puzzle de paisaje natural con 1000 piezas, perfecto para relajarse.",
-      "price": 12.99,
-      "stock": 0,
-      "categoryId": 6,
-      "userId": 1,
-      "images": [
-        "https://images.pexels.com/photos/1586950/pexels-photo-1586950.jpeg",
-        "https://images.pexels.com/photos/1586950/pexels-photo-1586950.jpeg",
-        "https://images.pexels.com/photos/1586950/pexels-photo-1586950.jpeg"
-      ],
-      "createdAt": "2024-03-06T14:25:00Z"
-    },
-    {
       "id": 20,
       "title": "Mochila Deportiva Nike",
       "description": "Mochila resistente al agua con compartimentos especializados para deporte.",
@@ -353,6 +350,20 @@
         "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&crop=entropy"
       ],
       "createdAt": "2024-03-08T10:40:00Z"
+    },
+    {
+      "title": "Remera Basica",
+      "description": "Remera Basica Blanca",
+      "price": 5,
+      "stock": 10,
+      "categoryId": 2,
+      "images": [
+        "blob:http://localhost:3000/3354558c-8e81-4f39-9c91-70fcf850834a"
+      ],
+      "userId": 1,
+      "id": 1757893058139,
+      "createdAt": "2025-09-14T23:37:38.139Z",
+      "updatedAt": "2025-09-14T23:37:38.139Z"
     }
   ],
   "orders": []

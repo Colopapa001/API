@@ -21,6 +21,7 @@ const Cart = () => {
   }, []);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   if (error) {
     return (
       <div className="cart-error">
@@ -71,6 +72,8 @@ const Cart = () => {
       return;
     }
     
+    setIsProcessing(true);
+    setError(null);
     
     try {
       // Actualizar el stock de los productos usando la API
@@ -80,11 +83,11 @@ const Cart = () => {
       const hasErrors = results.some(result => !result.success);
       if (hasErrors) {
         console.error('Algunos productos no pudieron actualizarse:', results);
-        alert('Hubo un problema al actualizar el stock de algunos productos');
+        setError('Hubo un problema al actualizar el stock de algunos productos');
         return;
       }
       
-      // Mostrar mensaje
+      // Mostrar mensaje de éxito
       alert('¡Compra realizada con éxito! Volviendo a la página de inicio...');
       
       // Vaciar el carrito
@@ -93,9 +96,10 @@ const Cart = () => {
       // Redirigir a la página de inicio
       navigate('/');
     } catch (err) {
-      setError('Ha ocurrido un error al procesar la compra');
-      console.error(err);
+      console.error('Error en checkout:', err);
+      setError('Ha ocurrido un error al procesar la compra. Por favor, inténtalo nuevamente.');
     } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -204,8 +208,10 @@ const Cart = () => {
             onClick={handleCheckout}
             fullWidth
             size="large"
+            loading={isProcessing}
+            disabled={isProcessing}
           >
-            Proceder al pago
+            {isProcessing ? 'Procesando compra...' : 'Proceder al pago'}
           </Button>
 
           <button
