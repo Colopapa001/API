@@ -52,7 +52,7 @@
 
 .filter-box {
   background: var(--color-background);
-  border: 1.5px solid var(--color-border);
+  border: none;
   border-radius: 10px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   padding: 0.7rem 1.2rem;
