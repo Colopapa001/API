@@ -13,9 +13,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: rgba(255,255,255,0.97);
-  box-shadow: 0 4px 32px 0 rgba(59,130,246,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
-  transition: background 0.3s;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
 }
 
 .loading-spinner {
@@ -35,10 +33,9 @@
 }
 
 .loading-text {
-  color: #2563eb;
-  font-size: 1.08rem;
+  color: white;
+  font-size: 1.1rem;
   font-weight: 500;
-  opacity: 0.85;
 }
 
 @keyframes spin {
@@ -245,12 +242,12 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 50px;
-  height: 50px;
-  border: 4px solid #e0e7ef;
-  border-top: 4px solid #60a5fa;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
   animation: spin 1s linear infinite;
 }
 
