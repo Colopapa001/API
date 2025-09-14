@@ -185,3 +185,49 @@
 .no-results p {
   color: var(--color-text-secondary);
 }
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  font-size: 1.5rem;
+}
+
+.pagination-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 1.5rem;
+  padding: 0.25rem 0.75rem;
+  margin: 0 0.1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  border-radius: 6px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  color: #2563eb;
+  background: #eaf1ff;
+}
+
+.pagination-btn:disabled {
+  color: #bbb;
+  cursor: default;
+  background: none;
+}
+
+.pagination-btn.active {
+  color: #2563eb;
+  font-weight: bold;
+  background: none;
+  border-bottom: 2px solid #2563eb;
+}
+
+.pagination-ellipsis {
+  color: #bbb;
+  font-size: 1.5rem;
+  padding: 0 0.5rem;
+  user-select: none;
+}
