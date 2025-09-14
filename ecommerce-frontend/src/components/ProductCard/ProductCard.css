@@ -149,6 +149,14 @@
   width: 100%;
   padding: 0 1.1rem 1.1rem 1.1rem;
 }
+
+/* Centrar solo el botón 'Agregar al Carrito' */
+.product-actions .btn-full-width:last-child {
+  width: auto;
+  min-width: 180px;
+  align-self: center;
+  text-align: center;
+}
 .product-actions button {
   width: 100%;
   margin: 0;
