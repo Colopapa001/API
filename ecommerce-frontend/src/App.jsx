@@ -82,8 +82,8 @@ const AppRoutes = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/my-products" element={<MyProducts />} />
-          <Route path="/add-product" element={<AddProduct />} />
-          <Route path="/edit-product/:id" element={<AddProduct />} />
+          <Route path="/my-products/add" element={<AddProduct />} />
+          <Route path="/my-products/edit/:id" element={<AddProduct />} />
         </Route>
 
         {/* Ruta catch-all - redirigir a home */}

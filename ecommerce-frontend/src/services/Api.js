@@ -53,7 +53,7 @@ export const getProductsByUser = async (userId) => {
 };
 
 // Crear nuevo producto
-export const createProduct = async (productData) => {
+export const createProduct = async (productData, userId) => {
   try {
     await delay(API_DELAY);
     const response = await fetch(`${API_BASE_URL}/products`, {
@@ -63,6 +63,7 @@ export const createProduct = async (productData) => {
       },
       body: JSON.stringify({
         ...productData,
+        userId: userId, // Incluir el userId del usuario autenticado
         id: Date.now(), // ID temporal
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
