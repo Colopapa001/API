@@ -1,3 +1,29 @@
+/* Animación de aparición para la tarjeta de login */
+.login-card-strong {
+  animation: loginFadeInSlideUp 0.6s cubic-bezier(.33,1,.68,1);
+}
+
+@keyframes loginFadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Solo para el login: borde y sombra más notorios */
+.login-card-strong {
+  border: 2.5px solid var(--color-primary-50) !important;
+  box-shadow: 0 4px 24px 0 rgba(59,130,246,0.08), 0 1.5px 6px rgba(0,0,0,0.04) !important;
+  background: white !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.login-card-strong:hover, .login-card-strong:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 8px 32px 0 rgba(59,130,246,0.13), 0 2px 8px rgba(0,0,0,0.06) !important;
+}
 /* src/pages/Auth/Auth.css */
 
 /* ============================================
@@ -25,12 +51,10 @@
   max-width: 400px;
   margin: 0 auto;
   background: white;
-  border-radius: var(--radius-xl);
-  padding: 2rem;
-  box-shadow: 
-    0 -8px 15px -3px rgba(0, 0, 0, 0.05),  /* sombra superior */
-    0 8px 15px -3px rgba(0, 0, 0, 0.05);    /* sombra inferior */
-  border: 1px solid #e5e7eb;
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  border: 5px solid var(--color-primary-dark);
+  box-shadow: 0 0 0 6px rgba(59,130,246,0.10), 0 8px 32px 0 rgba(59,130,246,0.13), 0 1.5px 6px rgba(0,0,0,0.04);
 }
 
 /* ============================================
@@ -118,9 +142,8 @@
   height: 16px;
   flex-shrink: 0;
 }
-
 /* ============================================
-   AUTH ACTIONS
+  AUTH ACTIONS
 ============================================ */
 .auth-actions {
   display: flex;
