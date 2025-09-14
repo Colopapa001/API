@@ -1,3 +1,17 @@
+/* Corrige el color de fondo y el icono en autocompletado */
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:focus,
+.input-wrapper input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: var(--text-color) !important;
+  color: var(--text-color) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.input-wrapper input:-webkit-autofill ~ .input-icon-container {
+  color: var(--primary-color) !important;
+}
 /* Input.css - Estilos del componente Input */
 
 /* ==================== BASE INPUT STYLES ==================== */
