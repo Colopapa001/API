@@ -4,12 +4,7 @@ import Button from '../../components/UI/Button';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import { useCart } from '../../context/CartContext';
 import { getProductById, getAllProducts } from '../../services/Api';
-import {
-  formatPrice,
-  formatStock,
-  getStockStatus,
-  getRelatedProducts
-} from '../../utils/helpers';
+import { formatPrice, formatStock, getStockStatus } from '../../utils/helpers';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -23,6 +18,13 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+
+  // Función para obtener productos relacionados
+  const getRelatedProducts = (allProducts, currentId, categoryId) => {
+    return allProducts
+      .filter(p => p.id !== parseInt(currentId) && p.categoryId === categoryId)
+      .slice(0, 4); // Muestra hasta 4 relacionados
+  };
 
   // Cargar producto
   useEffect(() => {
@@ -91,8 +93,8 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="product-detail-loading">
-        <LoadingSpinner />
+      <div className="product-detail-loading-full">
+        <LoadingSpinner fullscreen={true} size="large" />
       </div>
     );
   }
