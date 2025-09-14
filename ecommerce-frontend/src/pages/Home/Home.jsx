@@ -15,6 +15,9 @@ import {
 
 import './Home.css';
 
+
+const PRODUCTS_PER_PAGE = 8;
+
 // Iconos SVG para categorías
 const categoryIcons = {
   'Electrónicos': (
@@ -50,6 +53,7 @@ const categoryIcons = {
   ),
 };
 
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -63,6 +67,7 @@ const Home = () => {
     inStock: false,
     sortBy: 'name-asc'
   });
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { addToCart, isLoading: isCartLoading } = useCart();
 
@@ -143,6 +148,51 @@ const Home = () => {
   };
 
   const filteredProducts = getFilteredProducts();
+
+  // Calcular productos a mostrar
+  const indexOfLastProduct = currentPage * PRODUCTS_PER_PAGE;
+  const indexOfFirstProduct = indexOfLastProduct - PRODUCTS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+
+  // Generar array de páginas para mostrar en la paginación
+  const getPageNumbers = () => {
+    const pages = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 4) {
+        pages.push(1,2,3,4,5,'...',totalPages);
+      } else if (currentPage >= totalPages - 3) {
+        pages.push(1,'...',totalPages-4,totalPages-3,totalPages-2,totalPages-1,totalPages);
+      } else {
+        pages.push(1,'...',currentPage-1,currentPage,currentPage+1,'...',totalPages);
+      }
+    }
+    return pages;
+  };
+
+  const handlePageClick = (page) => {
+    if (page === '...') return;
+    setCurrentPage(page);
+  };
+
+  const handleFirstPage = () => setCurrentPage(1);
+  const handleLastPage = () => setCurrentPage(totalPages);
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+  };
+
+  // Hacer scroll automático al cambiar de página
+  useEffect(() => {
+    if (!loading) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentPage, loading]);
 
   return (
     loading ? (
@@ -274,14 +324,14 @@ const Home = () => {
           </div>
 
           {/* Resultados de productos */}
-          {filteredProducts.length === 0 ? (
+          {currentProducts.length === 0 ? (
             <div className="no-results">
               <h3>No se encontraron productos</h3>
               <p>Intenta con otros filtros</p>
             </div>
           ) : (
             <div className="products-grid">
-              {filteredProducts.map(product => (
+              {currentProducts.map(product => (
                 <ProductCard
                   key={product.id}
                   {...product}
@@ -293,6 +343,26 @@ const Home = () => {
               ))}
             </div>
           )}
+
+          {/* Controles de paginación */}
+          <div className="pagination-controls custom-pagination">
+            <button className="pagination-btn" onClick={handleFirstPage} disabled={currentPage === 1}>{'«'}</button>
+            <button className="pagination-btn" onClick={handlePrevPage} disabled={currentPage === 1}>{'<'}</button>
+            {getPageNumbers().map((page, idx) => (
+              page === '...'
+                ? <span key={idx} className="pagination-ellipsis">...</span>
+                : <button
+                    key={idx}
+                    className={`pagination-btn${page === currentPage ? ' active' : ''}`}
+                    onClick={() => handlePageClick(page)}
+                    disabled={page === currentPage}
+                  >
+                    {page}
+                  </button>
+            ))}
+            <button className="pagination-btn" onClick={handleNextPage} disabled={currentPage === totalPages}>{'>'}</button>
+            <button className="pagination-btn" onClick={handleLastPage} disabled={currentPage === totalPages}>{'»'}</button>
+          </div>
         </section>
       </div>
     )
