@@ -142,8 +142,8 @@
 .product-actions {
   margin-top: auto;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  gap: 0.7rem;
   justify-content: stretch;
   align-items: stretch;
   width: 100%;
@@ -151,24 +151,22 @@
 }
 
 /* Centrar solo el botón 'Agregar al Carrito' */
-.product-actions .btn-full-width:last-child {
-  width: auto;
-  min-width: 180px;
-  align-self: center;
-  text-align: center;
-}
-.product-actions button {
-  width: 100%;
-  margin: 0;
-  box-sizing: border-box;
-  display: block;
-  text-align: center;
-}
+.product-actions button,
 .product-actions .btn-full-width {
+  flex: 1 1 0;
   width: 100%;
   margin: 0;
   box-sizing: border-box;
+  min-width: 0;
+}
+
+/* Centrar el texto solo en el botón 'Agregar al Carrito' */
+.product-actions button:last-child,
+.product-actions .btn-full-width:last-child {
   text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 /* Responsive */
