@@ -87,7 +87,7 @@
       "title": "Auriculares Sony WH-1000XM5",
       "description": "Auriculares inalámbricos con cancelación de ruido líder en la industria.",
       "price": 299.99,
-      "stock": 25,
+      "stock": 24,
       "categoryId": 1,
       "userId": 1,
       "images": [
@@ -95,7 +95,8 @@
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&crop=face",
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&crop=entropy"
       ],
-      "createdAt": "2024-03-05T16:45:00Z"
+      "createdAt": "2024-03-05T16:45:00Z",
+      "updatedAt": "2025-09-14T16:36:52.032Z"
     },
     {
       "id": 4,
@@ -207,7 +208,7 @@
       "title": "Apple Watch Series 9",
       "description": "Smartwatch con pantalla Always-On Retina y funciones avanzadas de salud.",
       "price": 399.99,
-      "stock": 18,
+      "stock": 17,
       "categoryId": 1,
       "userId": 1,
       "images": [
@@ -215,7 +216,8 @@
         "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?q=80&w=3271&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?q=80&w=3271&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
       ],
-      "createdAt": "2024-03-02T11:15:00Z"
+      "createdAt": "2024-03-02T11:15:00Z",
+      "updatedAt": "2025-09-14T16:36:52.033Z"
     },
     {
       "id": 12,
