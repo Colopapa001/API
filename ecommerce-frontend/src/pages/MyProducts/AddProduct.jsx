@@ -86,6 +86,24 @@ const AddProduct = () => {
     }
   };
 
+  // Función para agregar imagen de placeholder
+  const addPlaceholderImage = () => {
+    const placeholderImages = [
+      'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop'
+    ];
+    
+    const randomImage = placeholderImages[Math.floor(Math.random() * placeholderImages.length)];
+    
+    setFormData(prev => ({
+      ...prev,
+      images: [...prev.images, randomImage]
+    }));
+  };
+
   const removeImage = (index) => {
     setFormData(prev => ({
       ...prev,
@@ -117,6 +135,14 @@ const AddProduct = () => {
       const result = await createProduct(productData, user.id);
       
       if (result.success) {
+        // Agregar el producto a la lista de productos de sesión para mostrarlo inmediatamente
+        const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+        const newProduct = {
+          ...result.product,
+          userId: user.id
+        };
+        sessionStorage.setItem('myCatalog', JSON.stringify([...sessionCatalog, newProduct]));
+        
         navigate('/my-products');
       } else {
         throw new Error(result.error);
@@ -222,13 +248,28 @@ const AddProduct = () => {
         <div className="form-group">
           <label>Imágenes</label>
           <div className="image-upload-container">
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              disabled={loading}
-            />
+            <div className="image-upload-buttons">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                disabled={loading}
+                id="image-upload"
+                style={{ display: 'none' }}
+              />
+              <label htmlFor="image-upload" className="upload-button">
+                Subir Imágenes
+              </label>
+              <button
+                type="button"
+                onClick={addPlaceholderImage}
+                disabled={loading}
+                className="placeholder-button"
+              >
+                Agregar Imagen de Ejemplo
+              </button>
+            </div>
             <div className="image-preview-grid">
               {formData.images.map((image, index) => (
                 <div key={index} className="image-preview">
@@ -244,6 +285,9 @@ const AddProduct = () => {
                 </div>
               ))}
             </div>
+            <small className="image-help-text">
+              Puedes subir tus propias imágenes o usar imágenes de ejemplo. Mínimo 1 imagen requerida.
+            </small>
           </div>
           {validationErrors.images && (
             <div className="error-message">{validationErrors.images}</div>

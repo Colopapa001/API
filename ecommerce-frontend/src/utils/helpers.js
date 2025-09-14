@@ -355,6 +355,33 @@ export const imageUtils = {
     return `https://via.placeholder.com/${width}x${height}/E5E7EB/9CA3AF?text=Sin+Imagen`;
   },
   
+  // Validar archivo de imagen
+  isValidImageFile: (file) => {
+    const errors = {};
+    
+    // Verificar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      errors.type = 'El archivo debe ser una imagen';
+    }
+    
+    // Verificar tamaño (máximo 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      errors.size = 'La imagen no puede ser mayor a 5MB';
+    }
+    
+    // Verificar formatos permitidos
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      errors.format = 'Solo se permiten archivos JPG, PNG y WebP';
+    }
+    
+    return {
+      isValid: Object.keys(errors).length === 0,
+      errors
+    };
+  },
+  
   // Redimensionar imagen (para upload)
   resizeImage: (file, maxWidth = 800, maxHeight = 600, quality = 0.8) => {
     return new Promise((resolve) => {
