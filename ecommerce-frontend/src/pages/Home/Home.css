@@ -1,3 +1,12 @@
+/* Mejorar visibilidad de las opciones del select en modo oscuro */
+.dark select.sort-select option {
+  color: #fff;
+  background: #23272f;
+}
+/* Mejorar visibilidad de opciones del select en modo oscuro sin forzar fondo */
+.dark .sort-select {
+  color: #fff !important;
+}
 .category-icon-container {
   display: flex;
   align-items: center;
@@ -37,7 +46,7 @@
   height: 50vh;
 }
 
-.home-filters {
+ .home-filters {
   display: flex;
   align-items: stretch;
   justify-content: center;
@@ -50,9 +59,10 @@
   flex-wrap: wrap;
 }
 
+
 .filter-box {
   background: var(--color-background);
-  border: 1.5px solid var(--color-border);
+  border: none;
   border-radius: 10px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   padding: 0.7rem 1.2rem;
