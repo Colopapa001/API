@@ -21,10 +21,10 @@ const LoadingSpinner = ({
   if (fullscreen) {
     return (
       <div className="loading-container">
-        <div className="loading-spinner">
+        <div className="spinner-wrapper">
           <div className={`spinner ${sizeClasses[size]} ${colorClasses[color]}`}></div>
-          <div className="loading-text">{text}</div>
         </div>
+        <div className="loading-text">{text}</div>
       </div>
     );
   }

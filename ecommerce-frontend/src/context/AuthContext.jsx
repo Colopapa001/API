@@ -239,10 +239,13 @@ export const AuthProvider = ({ children }) => {
         token.set(mockToken);
         localStorage.setItem('userData', JSON.stringify(result.user));
 
-        dispatch({
-          type: AUTH_ACTIONS.REGISTER_SUCCESS,
-          payload: { user: result.user }
-        });
+        // Mantener el loading por 1 segundo después del registro exitoso
+        setTimeout(() => {
+          dispatch({
+            type: AUTH_ACTIONS.REGISTER_SUCCESS,
+            payload: { user: result.user }
+          });
+        }, 1000); // 1 segundo
 
         return { success: true, user: result.user };
       } else {

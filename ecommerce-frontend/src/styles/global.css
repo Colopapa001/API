@@ -333,18 +333,44 @@ a:hover {
 }
 
 .loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-align: center;
+  animation: spin 1s linear infinite;
+}
+
+.loading-spinner .spinner {
   width: 32px;
   height: 32px;
   border: 3px solid var(--color-border);
   border-top: 3px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  order: 1;
+}
+
+.loading-spinner .loading-text {
+  color: white !important;
+  font-size: 1rem;
+  font-weight: 500;
+  animation: spin-reverse 1s linear infinite;
+  margin-top: 1rem;
+  order: 2;
 }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+@keyframes spin-reverse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+
 
 /* Badge Styles */
 .badge {
