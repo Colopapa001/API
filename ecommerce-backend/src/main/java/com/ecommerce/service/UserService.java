@@ -96,7 +96,11 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setFirstName(registerRequest.getFirstName());
         user.setLastName(registerRequest.getLastName());
-        user.setRole(registerRequest.getRole());
+        if (registerRequest.getRole() == null) {
+            user.setRole(Role.USER);
+        } else {
+            user.setRole(registerRequest.getRole());
+        }
         user.setIsEnabled(true);
         user.setIsAccountNonLocked(true);
         user.setFailedLoginAttempts(0);
@@ -107,16 +111,34 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean isUserLocked(String usernameOrEmail) {
-        // Simplified implementation
-        return false;
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail)
+                .orElse(null);
+
+        if (user == null) {
+            return false;
+        }
+
+        return user.isLocked();
     }
 
     public void resetFailedLoginAttempts(String username) {
-        // Simplified implementation
+        User user = userRepository.findByUsernameOrEmail(username)
+                .orElse(null);
+
+        if (user != null) {
+            user.resetFailedLoginAttempts();
+            userRepository.save(user);
+        }
     }
 
     public void incrementFailedLoginAttempts(String usernameOrEmail) {
-        // Simplified implementation
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail)
+                .orElse(null);
+
+        if (user != null) {
+            user.incrementFailedLoginAttempts();
+            userRepository.save(user);
+        }
     }
 
     public Page<UserDto> getAllUsers(Pageable pageable) {
