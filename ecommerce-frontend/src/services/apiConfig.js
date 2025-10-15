@@ -1,10 +1,11 @@
 // src/services/apiConfig.js
 
 // Configuración base de la API
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'http://localhost:8080/api';
 
 // Endpoints de la API
 const ENDPOINTS = {
+  AUTH: '/auth',
   USERS: '/users',
   PRODUCTS: '/products',
   CATEGORIES: '/categories',
@@ -16,6 +17,20 @@ const defaultOptions = {
   headers: {
     'Content-Type': 'application/json'
   }
+};
+
+// Función para obtener el token JWT del localStorage
+const getAuthToken = () => {
+  return localStorage.getItem('auth_token');
+};
+
+// Función para crear headers con autenticación
+const createAuthHeaders = () => {
+  const token = getAuthToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` })
+  };
 };
 
 // Función para construir URLs completas
@@ -37,10 +52,11 @@ const buildUrl = (endpoint, id = null, query = null) => {
 // Funciones para realizar peticiones HTTP
 const api = {
   // GET request
-  get: async (endpoint, id = null, query = null) => {
+  get: async (endpoint, id = null, query = null, requireAuth = true) => {
     const url = buildUrl(endpoint, id, query);
+    const headers = requireAuth ? createAuthHeaders() : defaultOptions.headers;
     const response = await fetch(url, {
-      ...defaultOptions,
+      headers,
       method: 'GET'
     });
     
@@ -52,10 +68,11 @@ const api = {
   },
   
   // POST request
-  post: async (endpoint, data) => {
+  post: async (endpoint, data, requireAuth = true) => {
     const url = buildUrl(endpoint);
+    const headers = requireAuth ? createAuthHeaders() : defaultOptions.headers;
     const response = await fetch(url, {
-      ...defaultOptions,
+      headers,
       method: 'POST',
       body: JSON.stringify(data)
     });
@@ -71,7 +88,7 @@ const api = {
   put: async (endpoint, id, data) => {
     const url = buildUrl(endpoint, id);
     const response = await fetch(url, {
-      ...defaultOptions,
+      headers: createAuthHeaders(),
       method: 'PUT',
       body: JSON.stringify(data)
     });
@@ -87,7 +104,7 @@ const api = {
   patch: async (endpoint, id, data) => {
     const url = buildUrl(endpoint, id);
     const response = await fetch(url, {
-      ...defaultOptions,
+      headers: createAuthHeaders(),
       method: 'PATCH',
       body: JSON.stringify(data)
     });
@@ -103,7 +120,7 @@ const api = {
   delete: async (endpoint, id) => {
     const url = buildUrl(endpoint, id);
     const response = await fetch(url, {
-      ...defaultOptions,
+      headers: createAuthHeaders(),
       method: 'DELETE'
     });
     

@@ -2,18 +2,35 @@ import { api, ENDPOINTS } from './apiConfig';
 
 export const login = async (email, password) => {
   try {
-    // Buscar usuarios con ese email
-    const users = await api.get(ENDPOINTS.USERS, null, { email });
+    // Use the proper authentication endpoint
+    const response = await api.post(ENDPOINTS.AUTH + '/login', {
+      usernameOrEmail: email, // Backend expects usernameOrEmail
+      password
+    }, false); // Don't require auth for login
     
-    // Verificar si existe un usuario con esas credenciales
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
-    } else {
-      throw new Error('Invalid credentials');
+    // Store JWT token in localStorage
+    if (response.token) {
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('user', JSON.stringify({
+        id: response.id,
+        username: response.username,
+        email: response.email,
+        firstName: response.firstName,
+        lastName: response.lastName,
+        role: response.role
+      }));
     }
+    
+    return {
+      id: response.id,
+      username: response.username,
+      email: response.email,
+      firstName: response.firstName,
+      lastName: response.lastName,
+      role: response.role,
+      token: response.token,
+      expiresAt: response.expiresAt
+    };
   } catch (error) {
     console.error('Error during login:', error);
     throw error;
@@ -22,23 +39,57 @@ export const login = async (email, password) => {
 
 export const register = async (userData) => {
   try {
-    // Verificar si ya existe un usuario con ese email
-    const existingUsers = await api.get(ENDPOINTS.USERS, null, { email: userData.email });
+    // Use the proper authentication endpoint
+    const response = await api.post(ENDPOINTS.AUTH + '/register', userData, false); // Don't require auth for register
     
-    if (existingUsers.length > 0) {
-      throw new Error('User already exists');
+    // Store JWT token in localStorage
+    if (response.token) {
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('user', JSON.stringify({
+        id: response.id,
+        username: response.username,
+        email: response.email,
+        firstName: response.firstName,
+        lastName: response.lastName,
+        role: response.role
+      }));
     }
     
-    // Crear nuevo usuario
-    const newUser = await api.post(ENDPOINTS.USERS, userData);
-    
-    // Devolver usuario sin contraseña
-    const { password, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
+    return {
+      id: response.id,
+      username: response.username,
+      email: response.email,
+      firstName: response.firstName,
+      lastName: response.lastName,
+      role: response.role,
+      token: response.token,
+      expiresAt: response.expiresAt
+    };
   } catch (error) {
     console.error('Error during registration:', error);
     throw error;
   }
+};
+
+export const logout = () => {
+  // Remove token and user data from localStorage
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('user');
+};
+
+export const getCurrentUser = () => {
+  const userStr = localStorage.getItem('user');
+  return userStr ? JSON.parse(userStr) : null;
+};
+
+export const getToken = () => {
+  return localStorage.getItem('auth_token');
+};
+
+export const isAuthenticated = () => {
+  const token = getToken();
+  const user = getCurrentUser();
+  return !!(token && user);
 };
 
 export const updateProfile = async (userId, userData) => {

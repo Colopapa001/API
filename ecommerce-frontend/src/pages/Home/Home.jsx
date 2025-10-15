@@ -4,7 +4,8 @@ import ProductCard from '../../components/ProductCard/ProductCard';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
-import { getAllProducts, getCategories } from '../../services/Api';
+import { getAllProducts } from '../../services/productService';
+import { getCategories } from '../../services/Api';
 import { 
   formatPrice, 
   formatStock,

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { loginUser, registerUser } from '../services/Api';
+import { login as loginService, register as registerService } from '../services/authService';
 import { validateEmail, validatePassword, token } from '../utils/helpers';
 
 // Estados de autenticación
@@ -169,24 +169,24 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Intentar login con API
-      const result = await loginUser(email, password);
+      const user = await loginService(email, password);
       
-      if (result.success) {
+      if (user) {
         // Generar token mock (en producción vendría del backend)
-        const mockToken = `mock-jwt-token-${Date.now()}-${result.user.id}`;
+        const mockToken = `mock-jwt-token-${Date.now()}-${user.id}`;
         
         // Guardar token y datos del usuario
         token.set(mockToken);
-        localStorage.setItem('userData', JSON.stringify(result.user));
+        localStorage.setItem('userData', JSON.stringify(user));
 
         dispatch({
           type: AUTH_ACTIONS.LOGIN_SUCCESS,
-          payload: { user: result.user }
+          payload: { user }
         });
 
-        return { success: true, user: result.user };
+        return { success: true, user };
       } else {
-       throw new Error(result.error);
+       throw new Error('Credenciales inválidas');
       }
     } catch (error) {
       const errorMessage = error.message || 'Error al iniciar sesión';
@@ -229,24 +229,24 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Intentar registro con API
-      const result = await registerUser(userData);
+      const user = await registerService(userData);
       
-      if (result.success) {
+      if (user) {
         // Generar token mock
-        const mockToken = `mock-jwt-token-${Date.now()}-${result.user.id}`;
+        const mockToken = `mock-jwt-token-${Date.now()}-${user.id}`;
         
         // Guardar token y datos del usuario
         token.set(mockToken);
-        localStorage.setItem('userData', JSON.stringify(result.user));
+        localStorage.setItem('userData', JSON.stringify(user));
 
         dispatch({
           type: AUTH_ACTIONS.REGISTER_SUCCESS,
-          payload: { user: result.user }
+          payload: { user }
         });
 
-        return { success: true, user: result.user };
+        return { success: true, user };
       } else {
-       throw new Error(result.error);
+       throw new Error('Error al registrar usuario');
       }
     } catch (error) {
       const errorMessage = error.message || 'Error al registrar usuario';
