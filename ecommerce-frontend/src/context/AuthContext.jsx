@@ -149,7 +149,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Función de login
-  const login = async (email, password) => {
+  const login = async (usernameOrEmail, password) => {
     try {
       dispatch({ type: AUTH_ACTIONS.LOGIN_START });
 
@@ -157,9 +157,9 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.removeItem('myCatalog');
       sessionStorage.removeItem('deletedMyProducts');
 
-      // Validar email y password
-      if (!validateEmail(email)) {
-        throw new Error('Email inválida');
+      // Validar que se proporcionó username o email
+      if (!usernameOrEmail || usernameOrEmail.trim() === '') {
+        throw new Error('Usuario o email requerido');
       }
 
       const passwordValidation = validatePassword(password);
@@ -169,7 +169,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Intentar login con API
-      const user = await loginService(email, password);
+      const user = await loginService(usernameOrEmail, password);
       
       if (user) {
         // Generar token mock (en producción vendría del backend)

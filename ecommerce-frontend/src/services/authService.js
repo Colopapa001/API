@@ -1,10 +1,10 @@
 import { api, ENDPOINTS } from './apiConfig';
 
-export const login = async (email, password) => {
+export const login = async (usernameOrEmail, password) => {
   try {
     // Use the proper authentication endpoint
     const response = await api.post(ENDPOINTS.AUTH + '/login', {
-      usernameOrEmail: email, // Backend expects usernameOrEmail
+      usernameOrEmail: usernameOrEmail, // Backend expects usernameOrEmail
       password
     }, false); // Don't require auth for login
     

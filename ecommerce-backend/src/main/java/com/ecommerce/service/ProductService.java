@@ -10,10 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     
-    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
+    
     
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
@@ -39,6 +35,13 @@ public class ProductService {
                 .collect(Collectors.toList());
         
         return new PageImpl<>(productDtos);
+    }
+
+    public List<ProductDto> getAllProductsList() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     public ProductDto getProductById(Long id) {

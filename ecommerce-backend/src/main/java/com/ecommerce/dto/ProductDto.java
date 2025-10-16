@@ -71,6 +71,15 @@ public class ProductDto {
         this.name = name;
     }
     
+    // Alias for frontend compatibility
+    public String getTitle() {
+        return name;
+    }
+    
+    public void setTitle(String title) {
+        this.name = title;
+    }
+    
     public String getDescription() {
         return description;
     }

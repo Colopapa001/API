@@ -108,6 +108,9 @@ const Home = () => {
 
   // Aplicar filtros
   const getFilteredProducts = () => {
+    if (!products || !Array.isArray(products)) {
+      return [];
+    }
     let filtered = [...products];
 
     // Filtrar por categoría seleccionada
@@ -119,8 +122,8 @@ const Home = () => {
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
       filtered = filtered.filter(product => 
-        product.title.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm)
+        (product.title || '').toLowerCase().includes(searchTerm) ||
+        (product.description || '').toLowerCase().includes(searchTerm)
       );
     }
 
@@ -227,7 +230,9 @@ const Home = () => {
             <div className="categories-container">
               {categories.map(category => {
                 // Contar cuántos productos hay en esta categoría
-                const productsInCategory = products.filter(product => product.categoryId === category.id).length;
+                const productsInCategory = products && Array.isArray(products) 
+                  ? products.filter(product => product.categoryId === category.id).length 
+                  : 0;
                 return (
                   <div key={category.id} className="category-card">
                     <div className="category-icon-container">

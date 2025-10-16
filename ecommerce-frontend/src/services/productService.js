@@ -2,7 +2,7 @@ import { api, ENDPOINTS } from './apiConfig';
 
 export const getAllProducts = async () => {
   try {
-    return await api.get(ENDPOINTS.PRODUCTS);
+    return await api.get(ENDPOINTS.PRODUCTS + '/all', null, null, false);
   } catch (error) {
     console.error('Error fetching products:', error);
     throw error;

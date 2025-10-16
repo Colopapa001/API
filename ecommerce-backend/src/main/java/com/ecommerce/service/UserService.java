@@ -76,9 +76,9 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsernameOrEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + username));
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        return userRepository.findByUsernameOrEmail(usernameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
     }
 
     public boolean existsByUsername(String username) {

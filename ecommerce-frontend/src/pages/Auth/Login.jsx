@@ -11,7 +11,7 @@ const Login = () => {
   const { login, error, clearError, isLoading, isBlocked } = useAuth();
 
   const [formData, setFormData] = useState({
-    email: '',
+    usernameOrEmail: '',
     password: ''
   });
 
@@ -27,7 +27,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isBlocked) return;
-    const success = await login(formData.email, formData.password);
+    const success = await login(formData.usernameOrEmail, formData.password);
     if (success) navigate('/');
   };
 
@@ -65,12 +65,12 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <Input
-            type="email"
-            name="email"
-            label="Correo electrónico"
-            value={formData.email}
+            type="text"
+            name="usernameOrEmail"
+            label="Usuario o correo electrónico"
+            value={formData.usernameOrEmail}
             onChange={handleChange}
-            placeholder="tu@email.com"
+            placeholder="usuario o tu@email.com"
             disabled={isLoading || isBlocked}
             required
             icon={EmailIcon}

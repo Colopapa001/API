@@ -120,7 +120,6 @@ export const deleteProduct = async (id) => {
 export const updateProductStock = async (id, newStock) => {
   try {
     await delay(API_DELAY);
-    const product = await getProductById(id);
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PATCH',
       headers: {
@@ -288,7 +287,7 @@ export const apiConfig = {
 };
 
 // Exportar todas las funciones por defecto
-export default {
+const apiExports = {
   // Productos
   getAllProducts,
   getProductById,
@@ -312,3 +311,5 @@ export default {
   checkApiConnection,
   apiConfig
 };
+
+export default apiExports;

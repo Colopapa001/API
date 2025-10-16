@@ -48,16 +48,19 @@ public class Product {
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     @Fetch(FetchMode.JOIN)
+    @JsonIgnore
     private List<String> images;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     @NotNull(message = "Category is required")
+    @JsonIgnore
     private Category category;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     @NotNull(message = "Seller is required")
+    @JsonIgnore
     private User seller;
     
     @CreationTimestamp

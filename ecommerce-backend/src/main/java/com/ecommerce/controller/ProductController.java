@@ -59,6 +59,17 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<java.util.List<ProductDto>> getAllProductsList() {
+        try {
+            java.util.List<ProductDto> products = productService.getAllProductsList();
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            log.error("Error getting all products: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
         try {
