@@ -2,7 +2,6 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.CreateOrderRequest;
 import com.ecommerce.dto.OrderDto;
-import com.ecommerce.repository.OrderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
