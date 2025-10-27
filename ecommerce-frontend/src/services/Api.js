@@ -5,8 +5,14 @@ const API_DELAY = 500; // Simular delay de red
 // Función helper para manejar respuestas
 const handleResponse = async (response) => {
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`HTTP ${response.status}: ${error}`);
+    let errorMessage = `HTTP ${response.status}`;
+    try {
+      const errorText = await response.text();
+      errorMessage = errorText || errorMessage;
+    } catch (e) {
+      // Si no se puede leer el error, usar el código de estado
+    }
+    throw new Error(errorMessage);
   }
   return response.json();
 };
@@ -20,7 +26,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 export const getAllProducts = async () => {
   try {
     await delay(API_DELAY);
-    const response = await fetch(`${API_BASE_URL}/products`);
+    const response = await fetch(`${API_BASE_URL}/products/all`);
     return await handleResponse(response);
   } catch (error) {
     console.error('Error obteniendo productos:', error);
@@ -33,22 +39,51 @@ export const getProductById = async (id) => {
   try {
     await delay(API_DELAY);
     const response = await fetch(`${API_BASE_URL}/products/${id}`);
+    
+    // Si es 404, retornar null en lugar de lanzar error
+    if (response.status === 404) {
+      return null;
+    }
+    
     return await handleResponse(response);
   } catch (error) {
     console.error('Error obteniendo producto:', error);
+    // Si es un error 404, retornar null
+    if (error.message.includes('404')) {
+      return null;
+    }
     throw error;
   }
 };
 
-// Obtener productos por usuario
+// Obtener productos por usuario (requiere autenticación SELLER)
 export const getProductsByUser = async (userId) => {
   try {
     await delay(API_DELAY);
-    const response = await fetch(`${API_BASE_URL}/products?userId=${userId}`);
-    return await handleResponse(response);
+    
+    // Obtener token del localStorage
+    const token = localStorage.getItem('token');
+    
+    const response = await fetch(`${API_BASE_URL}/seller/products`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    const pageData = await handleResponse(response);
+    
+    // Si es un objeto de paginación, retornar solo el contenido
+    if (pageData && Array.isArray(pageData.content)) {
+      return pageData.content;
+    }
+    
+    // Si ya es un array, retornarlo directamente
+    return Array.isArray(pageData) ? pageData : [];
   } catch (error) {
     console.error('Error obteniendo productos del usuario:', error);
-    throw error;
+    // Si no hay autenticación, retornar array vacío en lugar de lanzar error
+    return [];
   }
 };
 

@@ -175,8 +175,10 @@ const MyProducts = () => {
             <div key={product.id} className="product-card">
               <div className="product-image">
                 <img
-                  src={product.images[0]}
-                  alt={product.title}
+                  src={(Array.isArray(product.images) && product.images.length > 0) 
+                    ? product.images[0] 
+                    : product.image || '/images/placeholder.png'}
+                  alt={product.name || product.title}
                   onError={(e) => {
                     e.target.src = '/images/placeholder.png';
                   }}
@@ -184,8 +186,8 @@ const MyProducts = () => {
               </div>
               <div className="product-info">
                 <div className="info-top">
-                  <h3>{product.title}</h3>
-                  <p className="product-description">{product.description}</p>
+                  <h3>{product.name || product.title}</h3>
+                  <p className="product-description">{product.description || 'Sin descripción'}</p>
                 </div>
                 <p className="product-price">{formatPrice(product.price)}</p>
                 <div className="product-status">
@@ -193,9 +195,11 @@ const MyProducts = () => {
                     {product.stock === 0 ? 'Sin stock' : `${product.stock} disponibles`}
                   </span>
                 </div>
-                <p className="product-date">
-                  Publicado: {formatDate(product.createdAt)}
-                </p>
+                {product.createdAt && (
+                  <p className="product-date">
+                    Publicado: {formatDate(product.createdAt)}
+                  </p>
+                )}
               </div>
               <div className="product-actions">
                 <Button
@@ -237,7 +241,7 @@ const MyProducts = () => {
                 <label htmlFor="edit-title">Título</label>
                 <Input
                   id="edit-title"
-                  value={editingProduct.title}
+                  value={editingProduct.name || editingProduct.title}
                   disabled
                   placeholder="Título del producto"
                 />

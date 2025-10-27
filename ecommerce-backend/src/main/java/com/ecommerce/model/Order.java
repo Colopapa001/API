@@ -3,6 +3,10 @@ package com.ecommerce.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,6 +14,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
     
     @Id
@@ -76,111 +84,5 @@ public class Order {
                     .map(OrderItem::getSubtotal)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
-    }
-    
-    // Constructors
-    public Order() {}
-    
-    public Order(Long id, String orderNumber, User user, List<OrderItem> orderItems, BigDecimal totalAmount, OrderStatus status, String shippingAddress, String paymentMethod, String notes, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.orderNumber = orderNumber;
-        this.user = user;
-        this.orderItems = orderItems;
-        this.totalAmount = totalAmount;
-        this.status = status;
-        this.shippingAddress = shippingAddress;
-        this.paymentMethod = paymentMethod;
-        this.notes = notes;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-    
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-    
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-    
-    public User getUser() {
-        return user;
-    }
-    
-    public void setUser(User user) {
-        this.user = user;
-    }
-    
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-    
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
-    
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-    
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-    
-    public OrderStatus getStatus() {
-        return status;
-    }
-    
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-    
-    public String getShippingAddress() {
-        return shippingAddress;
-    }
-    
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }
-    
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-    
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-    
-    public String getNotes() {
-        return notes;
-    }
-    
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

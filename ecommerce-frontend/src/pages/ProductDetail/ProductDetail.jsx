@@ -32,22 +32,36 @@ const ProductDetail = () => {
     const loadProduct = async () => {
       try {
         setLoading(true);
-        const [productData, allProducts] = await Promise.all([
+        const [productData, allProductsResponse] = await Promise.all([
           getProductById(id),
           getAllProducts()
         ]);
         
         if (!productData) {
-          throw new Error('Producto no encontrado');
+          setError('Producto no encontrado');
+          setLoading(false);
+          return;
         }
         
         setProduct(productData);
         
-        // Cargar productos relacionados
+        // Asegurar que allProductsResponse es un array
+        let allProducts = [];
+        if (Array.isArray(allProductsResponse)) {
+          allProducts = allProductsResponse;
+        } else if (allProductsResponse && Array.isArray(allProductsResponse.content)) {
+          // Si es un objeto de paginación, extraer el array
+          allProducts = allProductsResponse.content;
+        }
+        
+        // Obtener categoryId del producto
+        const categoryId = productData.category?.id || productData.categoryId;
+        
+        // Cargar productos relacionados (convertir id a número)
         const related = getRelatedProducts(
           allProducts,
-          id,
-          productData.categoryId
+          parseInt(id),
+          categoryId
         );
         setRelatedProducts(related);
         
@@ -100,10 +114,22 @@ const ProductDetail = () => {
   }
 
   if (error || !product) {
+    // Determinar el mensaje de error
+    let errorMessage = 'Producto no encontrado';
+    if (error) {
+      if (error.includes('404') || error.includes('not found')) {
+        errorMessage = 'El producto que buscas no existe o ha sido eliminado.';
+      } else if (error.includes('HTTP')) {
+        errorMessage = 'Error al cargar el producto. Por favor, intenta nuevamente.';
+      } else {
+        errorMessage = error;
+      }
+    }
+    
     return (
       <div className="product-detail-error">
         <h2>Error</h2>
-        <p>{error || 'Producto no encontrado'}</p>
+        <p>{errorMessage}</p>
         <Button onClick={() => navigate('/')}>
           Volver al inicio
         </Button>
@@ -114,22 +140,27 @@ const ProductDetail = () => {
   const stockStatus = getStockStatus(product.stock);
   const cartQuantity = getItemQuantity(product.id);
 
+  // Asegurar que images sea un array
+  const productImages = Array.isArray(product.images) && product.images.length > 0 
+    ? product.images 
+    : [product.image || '/images/placeholder.png'];
+
   return (
     <div className="product-detail">
       {/* Galería de imágenes */}
       <div className="product-gallery">
         <div className="product-main-image">
           <img
-            src={product.images[selectedImage]}
-            alt={product.title}
+            src={productImages[selectedImage]}
+            alt={product.name || product.title || 'Producto'}
             onError={(e) => {
               e.target.src = '/images/placeholder.png';
             }}
           />
         </div>
-        {product.images.length > 1 && (
+        {productImages.length > 1 && (
           <div className="product-thumbnails">
-            {product.images.map((image, index) => (
+            {productImages.map((image, index) => (
               <button
                 key={index}
                 className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
@@ -137,7 +168,7 @@ const ProductDetail = () => {
               >
                 <img
                   src={image}
-                  alt={`${product.title} - imagen ${index + 1}`}
+                  alt={`${product.name || product.title} - imagen ${index + 1}`}
                   onError={(e) => {
                     e.target.src = '/images/placeholder.png';
                   }}
@@ -150,7 +181,7 @@ const ProductDetail = () => {
 
       {/* Información del producto */}
       <div className="product-info">
-        <h1 className="product-title">{product.title}</h1>
+        <h1 className="product-title">{product.name || product.title}</h1>
         <div className="product-meta">
           <p className="product-price">{formatPrice(product.price)}</p>
           <p className={`product-stock product-stock-${stockStatus.status}`}>
@@ -162,7 +193,7 @@ const ProductDetail = () => {
             Descripción
           </div>
           <div className="description-info-box">
-            {product.description}
+            {product.description || 'Sin descripción disponible'}
           </div>
         </div>
         <div className="product-actions">
@@ -206,18 +237,23 @@ const ProductDetail = () => {
               fullWidth
               style={{ marginTop: '1rem' }}
               onClick={() => {
-                // Obtener productos propios y de sesión
-                const userProducts = [];
-                const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
-                const exists = [...userProducts, ...sessionCatalog].find(p => p.id === product.id);
-                if (exists) {
-                  alert('El producto ya existe en el catálogo');
-                } else {
-                  // Agregar a sessionStorage
-                  const newCatalog = [...sessionCatalog, product];
-                  sessionStorage.setItem('myCatalog', JSON.stringify(newCatalog));
-                  window.dispatchEvent(new Event('storage'));
-                  navigate('/my-products');
+                try {
+                  // Obtener productos de sesión
+                  const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+                  const exists = sessionCatalog.find(p => p.id === product.id);
+                  if (exists) {
+                    alert('El producto ya existe en tu catálogo');
+                  } else {
+                    // Agregar a sessionStorage
+                    const newCatalog = [...sessionCatalog, product];
+                    sessionStorage.setItem('myCatalog', JSON.stringify(newCatalog));
+                    window.dispatchEvent(new Event('storage'));
+                    alert('Producto agregado a tu catálogo');
+                    navigate('/my-products');
+                  }
+                } catch (err) {
+                  console.error('Error al agregar producto:', err);
+                  alert('Error al agregar producto al catálogo');
                 }
               }}
             >
@@ -232,23 +268,29 @@ const ProductDetail = () => {
         <div className="related-products">
           <h3>Productos relacionados</h3>
           <div className="related-products-grid">
-            {relatedProducts.map(relatedProduct => (
-              <div
-                key={relatedProduct.id}
-                className="related-product"
-                onClick={() => navigate(`/product/${relatedProduct.id}`)}
-              >
-                <img
-                  src={relatedProduct.images[0]}
-                  alt={relatedProduct.title}
-                  onError={(e) => {
-                    e.target.src = '/images/placeholder.png';
-                  }}
-                />
-                <h4>{relatedProduct.title}</h4>
-                <p>{formatPrice(relatedProduct.price)}</p>
-              </div>
-            ))}
+            {relatedProducts.map(relatedProduct => {
+              const relatedImages = Array.isArray(relatedProduct.images) && relatedProduct.images.length > 0
+                ? relatedProduct.images
+                : [relatedProduct.image || '/images/placeholder.png'];
+              
+              return (
+                <div
+                  key={relatedProduct.id}
+                  className="related-product"
+                  onClick={() => navigate(`/product/${relatedProduct.id}`)}
+                >
+                  <img
+                    src={relatedImages[0]}
+                    alt={relatedProduct.name || relatedProduct.title}
+                    onError={(e) => {
+                      e.target.src = '/images/placeholder.png';
+                    }}
+                  />
+                  <h4>{relatedProduct.name || relatedProduct.title}</h4>
+                  <p>{formatPrice(relatedProduct.price)}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

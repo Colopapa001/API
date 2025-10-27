@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +17,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
 public class User implements UserDetails {
     
     @Id
@@ -83,16 +89,6 @@ public class User implements UserDetails {
     }
     
     @Override
-    public String getPassword() {
-        return password;
-    }
-    
-    @Override
-    public String getUsername() {
-        return username;
-    }
-    
-    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
@@ -133,122 +129,5 @@ public class User implements UserDetails {
         this.failedLoginAttempts = 0;
         this.isAccountNonLocked = true;
         this.lockedUntil = null;
-    }
-    
-    // Constructors
-    public User() {}
-    
-    public User(Long id, String username, String email, String password, String firstName, String lastName, Role role, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean isEnabled, Boolean isAccountNonLocked, Integer failedLoginAttempts, LocalDateTime lockedUntil) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.role = role;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.isEnabled = isEnabled;
-        this.isAccountNonLocked = isAccountNonLocked;
-        this.failedLoginAttempts = failedLoginAttempts;
-        this.lockedUntil = lockedUntil;
-    }
-    
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    
-    public String getFirstName() {
-        return firstName;
-    }
-    
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-    
-    public String getLastName() {
-        return lastName;
-    }
-    
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    
-    public Role getRole() {
-        return role;
-    }
-    
-    public void setRole(Role role) {
-        this.role = role;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-    
-    public Boolean getIsEnabled() {
-        return isEnabled;
-    }
-    
-    public void setIsEnabled(Boolean isEnabled) {
-        this.isEnabled = isEnabled;
-    }
-    
-    public Boolean getIsAccountNonLocked() {
-        return isAccountNonLocked;
-    }
-    
-    public void setIsAccountNonLocked(Boolean isAccountNonLocked) {
-        this.isAccountNonLocked = isAccountNonLocked;
-    }
-    
-    public Integer getFailedLoginAttempts() {
-        return failedLoginAttempts;
-    }
-    
-    public void setFailedLoginAttempts(Integer failedLoginAttempts) {
-        this.failedLoginAttempts = failedLoginAttempts;
-    }
-    
-    public LocalDateTime getLockedUntil() {
-        return lockedUntil;
-    }
-    
-    public void setLockedUntil(LocalDateTime lockedUntil) {
-        this.lockedUntil = lockedUntil;
     }
 }

@@ -1,5 +1,6 @@
 -- Insertar categorías de prueba
-INSERT INTO categories (name, description) VALUES
+-- Usar INSERT IGNORE para evitar errores si ya existen
+INSERT IGNORE INTO categories (name, description) VALUES
 ('Electrónicos', 'Dispositivos electrónicos y tecnología'),
 ('Ropa', 'Vestimenta para hombres, mujeres y niños'),
 ('Hogar', 'Artículos para el hogar y decoración'),
@@ -8,13 +9,14 @@ INSERT INTO categories (name, description) VALUES
 
 -- Insertar usuarios de prueba
 -- Password: Password123 (meets requirements: capital letter + number)
-INSERT INTO users (username, email, password, first_name, last_name, role) VALUES
+INSERT IGNORE INTO users (username, email, password, first_name, last_name, role) VALUES
 ('admin', 'admin@ecommerce.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'Admin', 'User', 'ADMIN'),
 ('seller1', 'seller1@ecommerce.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'Juan', 'Pérez', 'SELLER'),
 ('user1', 'user1@ecommerce.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'María', 'García', 'USER');
 
 -- Insertar productos de prueba
-INSERT INTO products (name, description, price, stock, category_id, seller_id) VALUES
+-- Usar INSERT IGNORE para evitar duplicados
+INSERT IGNORE INTO products (name, description, price, stock, category_id, seller_id) VALUES
 ('iPhone 15', 'Último modelo de iPhone con cámara mejorada', 999.99, 10, 1, 2),
 ('Samsung Galaxy S24', 'Smartphone Android de alta gama', 899.99, 15, 1, 2),
 ('Camiseta Nike', 'Camiseta deportiva de algodón', 29.99, 50, 2, 2),

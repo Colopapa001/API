@@ -1,11 +1,14 @@
 package com.ecommerce.service;
 
+import com.ecommerce.dto.CategoryDto;
 import com.ecommerce.dto.ProductDto;
 import com.ecommerce.dto.ProductFilterDto;
 import com.ecommerce.model.Product;
 import com.ecommerce.model.User;
 import com.ecommerce.repository.ProductRepository;
 import com.ecommerce.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     
-    
+    @PersistenceContext
+    private EntityManager entityManager;
     
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
@@ -38,16 +42,39 @@ public class ProductService {
     }
 
     public List<ProductDto> getAllProductsList() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
+        // Clear JPA cache to get fresh data from database
+        entityManager.clear();
+        
+        // Use JPQL to eagerly fetch category and seller, and use DISTINCT to avoid duplicates
+        List<Product> products = entityManager.createQuery(
+            "SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.category LEFT JOIN FETCH p.seller", 
+            Product.class
+        ).getResultList();
+        
+        // Remove duplicates by ID in case of any remaining duplicates
+        Map<Long, Product> uniqueProducts = new HashMap<>();
+        for (Product product : products) {
+            uniqueProducts.putIfAbsent(product.getId(), product);
+        }
+        
+        return uniqueProducts.values().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     public ProductDto getProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
-        return convertToDto(product);
+        // Use JPQL to eagerly fetch category and seller to avoid LazyInitializationException
+        try {
+            Product product = entityManager.createQuery(
+                "SELECT p FROM Product p LEFT JOIN FETCH p.category LEFT JOIN FETCH p.seller WHERE p.id = :id", 
+                Product.class
+            ).setParameter("id", id)
+            .getSingleResult();
+            
+            return convertToDto(product);
+        } catch (jakarta.persistence.NoResultException e) {
+            throw new RuntimeException("Product not found with id: " + id);
+        }
     }
 
     public Product getProductEntityById(Long id) {
@@ -81,10 +108,19 @@ public class ProductService {
     }
 
     public Page<ProductDto> getProductsByUsername(String username, int page, int size) {
+        // Clear JPA cache to get fresh data from database
+        entityManager.clear();
+        
         User user = userRepository.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
         
-        List<Product> products = productRepository.findByUserId(user.getId());
+        // Use JPQL to eagerly fetch category and seller
+        List<Product> products = entityManager.createQuery(
+            "SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.category LEFT JOIN FETCH p.seller WHERE p.seller.id = :userId", 
+            Product.class
+        ).setParameter("userId", user.getId())
+        .getResultList();
+        
         List<ProductDto> productDtos = products.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -117,6 +153,19 @@ public class ProductService {
         dto.setStock(product.getStock());
         dto.setImage(product.getImage());
         dto.setImages(product.getImages());
+        
+        // Set category information
+        if (product.getCategory() != null) {
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setId(product.getCategory().getId());
+            categoryDto.setName(product.getCategory().getName());
+            categoryDto.setDescription(product.getCategory().getDescription());
+            dto.setCategory(categoryDto);
+            dto.setCategoryId(product.getCategory().getId());
+        }
+        
+        dto.setSellerId(product.getSeller() != null ? product.getSeller().getId() : null);
+        dto.setSellerName(product.getSeller() != null ? product.getSeller().getFullName() : null);
         dto.setCreatedAt(product.getCreatedAt());
         dto.setUpdatedAt(product.getUpdatedAt());
         return dto;

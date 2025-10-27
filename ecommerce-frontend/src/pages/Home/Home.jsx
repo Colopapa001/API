@@ -115,7 +115,10 @@ const Home = () => {
 
     // Filtrar por categoría seleccionada
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.categoryId === selectedCategory.id);
+      filtered = filtered.filter(product => 
+        product.categoryId === selectedCategory.id || 
+        product.category?.id === selectedCategory.id
+      );
     }
 
     // Filtrar por búsqueda
@@ -157,6 +160,7 @@ const Home = () => {
   const indexOfLastProduct = currentPage * PRODUCTS_PER_PAGE;
   const indexOfFirstProduct = indexOfLastProduct - PRODUCTS_PER_PAGE;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
 
   // Generar array de páginas para mostrar en la paginación
@@ -231,7 +235,10 @@ const Home = () => {
               {categories.map(category => {
                 // Contar cuántos productos hay en esta categoría
                 const productsInCategory = products && Array.isArray(products) 
-                  ? products.filter(product => product.categoryId === category.id).length 
+                  ? products.filter(product => 
+                      product.categoryId === category.id || 
+                      product.category?.id === category.id
+                    ).length 
                   : 0;
                 return (
                   <div key={category.id} className="category-card">
