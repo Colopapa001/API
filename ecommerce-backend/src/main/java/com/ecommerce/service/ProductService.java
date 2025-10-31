@@ -83,7 +83,10 @@ public class ProductService {
     }
 
     public ProductDto createProduct(ProductDto productDto, String username) {
-        // Simplified implementation
+        if (productRepository.existsByName(productDto.getName())) {
+            throw new RuntimeException("Ya existe un producto con ese nombre");
+        }
+        // Resto de la implementación
         throw new RuntimeException("Not implemented yet");
     }
 

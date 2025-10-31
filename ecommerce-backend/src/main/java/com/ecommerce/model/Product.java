@@ -32,7 +32,7 @@ public class Product {
     private Long id;
     
     @NotBlank(message = "Product name is required")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
     
     @NotBlank(message = "Product description is required")

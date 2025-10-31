@@ -5,13 +5,12 @@ import './ProductCard.css';
 
 const ProductCard = ({
   id,
-  title,
+  name,
   price,
   description,
-  image,
+  image_url,
   stockLabel,
   formattedPrice,
-  images = [],
   onAddToCart,
   loading = false,
   stock
@@ -22,17 +21,13 @@ const ProductCard = ({
     navigate(`/product/${id}`);
   };
 
-  const primaryImage = Array.isArray(images) && images.length > 0
-    ? images[0]
-    : 'https://via.placeholder.com/400x400/EDF2FA/3b82f6?text=Sin+imagen';
-
   return (
     <div className="product-card">
       <div className="product-content">
         <div className="product-image-container">
           <img
-            src={primaryImage}
-            alt={title}
+            src={image_url || 'https://via.placeholder.com/400x400/EDF2FA/3b82f6?text=Sin+imagen'}
+            alt={name}
             className="product-image"
             onError={(e) => {
               e.target.src = 'https://via.placeholder.com/400x400/EDF2FA/3b82f6?text=Sin+imagen';
@@ -40,7 +35,7 @@ const ProductCard = ({
           />
         </div>
         <div className="product-info">
-          <h3 className="product-title">{title}</h3>
+          <h3 className="product-title">{name}</h3>
           <div className="product-meta-row">
             <span className="product-price">{formattedPrice || `$${price.toFixed(2)}`}</span>
             {stock !== undefined && (

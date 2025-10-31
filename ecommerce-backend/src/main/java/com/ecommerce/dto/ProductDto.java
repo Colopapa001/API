@@ -56,4 +56,9 @@ public class ProductDto {
     public void setTitle(String title) {
         this.name = title;
     }
+
+    // Alias for frontend compatibility with image_url
+    public String getImage_url() {
+        return image;
+    }
 }
