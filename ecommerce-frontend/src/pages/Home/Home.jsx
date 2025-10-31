@@ -122,15 +122,13 @@ const Home = () => {
     }
 
     // Filtrar por búsqueda
-    if (filters.search) {
+      if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
       filtered = filtered.filter(product => 
-        (product.title || '').toLowerCase().includes(searchTerm) ||
+        (product.name || '').toLowerCase().includes(searchTerm) ||
         (product.description || '').toLowerCase().includes(searchTerm)
       );
-    }
-
-    // Filtrar por precio
+    }    // Filtrar por precio
     filtered = filterProductsByPriceRange(
       filtered,
       filters.minPrice,

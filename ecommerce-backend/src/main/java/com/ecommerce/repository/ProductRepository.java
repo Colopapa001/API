@@ -67,4 +67,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     @Query("SELECT p FROM Product p ORDER BY p.name ASC")
     Page<Product> findAllOrderByNameAsc(Pageable pageable);
+    
+    boolean existsByName(String name);
 }

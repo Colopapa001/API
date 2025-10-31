@@ -29,7 +29,7 @@ spring:
   # SQL initialization
   sql:
     init:
-      mode: always
+      mode: never
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
       continue-on-error: true

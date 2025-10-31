@@ -16,7 +16,7 @@ INSERT IGNORE INTO users (username, email, password, first_name, last_name, role
 
 -- Insertar productos de prueba
 -- Usar INSERT IGNORE para evitar duplicados
-INSERT IGNORE INTO products (name, description, price, stock, category_id, seller_id) VALUES
+INSERT IGNORE INTO products (name, description, price, stock, category_id, seller_id, image_url) VALUES
 ('iPhone 15', 'Último modelo de iPhone con cámara mejorada', 999.99, 10, 1, 2),
 ('Samsung Galaxy S24', 'Smartphone Android de alta gama', 899.99, 15, 1, 2),
 ('Camiseta Nike', 'Camiseta deportiva de algodón', 29.99, 50, 2, 2),
