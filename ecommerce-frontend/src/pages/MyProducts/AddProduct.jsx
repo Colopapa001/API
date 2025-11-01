@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import { createProduct, getCategories } from '../../services/Api';
-import { validateProductData, imageUtils } from '../../utils/helpers';
+import { validateProductData, imageUtils, blobToBase64 } from '../../utils/helpers';
 import './MyProducts.css';
 
 const AddProduct = () => {
@@ -67,13 +67,15 @@ const AddProduct = () => {
       }
     }
 
-    // Procesar imágenes
+    // Procesar imágenes: redimensionar y convertir a base64 para enviar en JSON
     try {
       const processedImages = await Promise.all(
         files.map(async file => {
-          // Redimensionar imagen
+          // Redimensionar imagen -> Blob
           const resizedBlob = await imageUtils.resizeImage(file);
-          return URL.createObjectURL(resizedBlob);
+          // Convertir Blob a base64 data URL (para persistir en backend cuando no hay endpoint de uploads)
+          const base64 = await blobToBase64(resizedBlob);
+          return base64;
         })
       );
 
@@ -82,6 +84,7 @@ const AddProduct = () => {
         images: [...prev.images, ...processedImages]
       }));
     } catch (err) {
+      console.error(err);
       setError('Error procesando imágenes');
     }
   };
@@ -273,7 +276,11 @@ const AddProduct = () => {
             <div className="image-preview-grid">
               {formData.images.map((image, index) => (
                 <div key={index} className="image-preview">
-                  <img src={image} alt={`Preview ${index + 1}`} />
+                  <img
+                    src={image}
+                    alt={`Preview ${index + 1}`}
+                    onError={(e) => { e.target.onerror = null; e.target.src = imageUtils.getDefaultImage(); }}
+                  />
                   <button
                     type="button"
                     onClick={() => removeImage(index)}

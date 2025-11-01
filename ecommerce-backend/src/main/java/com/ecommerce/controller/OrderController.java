@@ -61,6 +61,18 @@ public class OrderController {
         }
     }
 
+    @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('SELLER') or hasRole('ADMIN')")
+    public ResponseEntity<?> getAllOrders() {
+        try {
+            // Return all orders (admin/seller/user can see via frontend filtering)
+            return ResponseEntity.ok(orderService.getAllOrders());
+        } catch (Exception e) {
+            log.error("Error getting all orders: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('SELLER') or hasRole('ADMIN')")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable Long id, Authentication authentication) {

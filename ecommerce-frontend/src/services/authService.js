@@ -10,9 +10,10 @@ export const login = async (usernameOrEmail, password) => {
     
     // Store JWT token in localStorage
     if (response.token) {
-      localStorage.setItem('auth_token', response.token);
+      // Use unified key 'token' so Api.js getAuthHeaders picks it up
+      localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify({
-        id: response.id,
+        id: response.userId || response.id,
         username: response.username,
         email: response.email,
         firstName: response.firstName,
@@ -22,7 +23,7 @@ export const login = async (usernameOrEmail, password) => {
     }
     
     return {
-      id: response.id,
+      id: response.userId || response.id,
       username: response.username,
       email: response.email,
       firstName: response.firstName,
@@ -44,9 +45,10 @@ export const register = async (userData) => {
     
     // Store JWT token in localStorage
     if (response.token) {
-      localStorage.setItem('auth_token', response.token);
+      // Use unified key 'token'
+      localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify({
-        id: response.id,
+        id: response.userId || response.id,
         username: response.username,
         email: response.email,
         firstName: response.firstName,
@@ -56,7 +58,7 @@ export const register = async (userData) => {
     }
     
     return {
-      id: response.id,
+      id: response.userId || response.id,
       username: response.username,
       email: response.email,
       firstName: response.firstName,
@@ -73,7 +75,7 @@ export const register = async (userData) => {
 
 export const logout = () => {
   // Remove token and user data from localStorage
-  localStorage.removeItem('auth_token');
+  localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
 
@@ -83,7 +85,7 @@ export const getCurrentUser = () => {
 };
 
 export const getToken = () => {
-  return localStorage.getItem('auth_token');
+  return localStorage.getItem('token');
 };
 
 export const isAuthenticated = () => {

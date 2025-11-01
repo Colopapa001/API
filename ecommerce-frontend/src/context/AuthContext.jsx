@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { login as loginService, register as registerService } from '../services/authService';
+import { getCurrentUserProfile, getUserById } from '../services/Api';
 import { validateEmail, validatePassword, token } from '../utils/helpers';
 
 // Estados de autenticación
@@ -125,19 +126,28 @@ export const AuthProvider = ({ children }) => {
         if (sessionToken && !token.isExpired(sessionToken)) {
           // En una app real, verificarías el token con el backend
           // Aquí simulamos encontrar el usuario por token
-          const userData = JSON.parse(localStorage.getItem('userData'));
+          const userData = JSON.parse(localStorage.getItem('user'));
           if (userData) {
-            dispatch({
-              type: AUTH_ACTIONS.RESTORE_SESSION,
-              payload: { user: userData }
-            });
+            // Intentar obtener datos completos del usuario desde el backend (incluye createdAt)
+            (async () => {
+              try {
+                const full = await getCurrentUserProfile();
+                const merged = { ...userData, ...(full || {}) };
+                // Guardar la versión completa
+                localStorage.setItem('user', JSON.stringify(merged));
+                dispatch({ type: AUTH_ACTIONS.RESTORE_SESSION, payload: { user: merged } });
+              } catch (err) {
+                // Si falla la llamada (p.ej. token inválido), restaurar con los datos parciales
+                dispatch({ type: AUTH_ACTIONS.RESTORE_SESSION, payload: { user: userData } });
+              }
+            })();
             return;
           }
         }
         
         // Si no hay token válido, cerrar sesión
         token.remove();
-        localStorage.removeItem('userData');
+        localStorage.removeItem('user');
         dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
       } catch (error) {
         console.error('Error restaurando sesión:', error);
@@ -169,15 +179,26 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Intentar login con API
-      const user = await loginService(usernameOrEmail, password);
-      
-      if (user) {
-        // Generar token mock (en producción vendría del backend)
-        const mockToken = `mock-jwt-token-${Date.now()}-${user.id}`;
-        
-        // Guardar token y datos del usuario
-        token.set(mockToken);
-        localStorage.setItem('userData', JSON.stringify(user));
+      const resp = await loginService(usernameOrEmail, password);
+
+      if (resp && resp.token) {
+        // Try to fetch full user profile including createdAt
+        let fullUser = null;
+        try {
+          fullUser = await getCurrentUserProfile();
+        } catch (e) {
+          // ignore and fall back to resp
+        }
+        // authService already stored token and user in localStorage
+        const user = {
+          id: resp.id || resp.userId,
+          username: resp.username,
+          email: resp.email,
+          firstName: resp.firstName,
+          lastName: resp.lastName,
+          role: resp.role,
+          ...(fullUser || {})
+        };
 
         dispatch({
           type: AUTH_ACTIONS.LOGIN_SUCCESS,
@@ -185,9 +206,8 @@ export const AuthProvider = ({ children }) => {
         });
 
         return { success: true, user };
-      } else {
-       throw new Error('Credenciales inválidas');
       }
+      throw new Error('Credenciales inválidas');
     } catch (error) {
       const errorMessage = error.message || 'Error al iniciar sesión';
       dispatch({
@@ -229,25 +249,36 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Intentar registro con API
-      const user = await registerService(userData);
-      
-      if (user) {
-        // Generar token mock
-        const mockToken = `mock-jwt-token-${Date.now()}-${user.id}`;
-        
-        // Guardar token y datos del usuario
-        token.set(mockToken);
-        localStorage.setItem('userData', JSON.stringify(user));
+      const resp = await registerService(userData);
+
+      if (resp && resp.token) {
+        // Try to fetch full user profile including createdAt
+        let fullUser = null;
+        try {
+          fullUser = await getCurrentUserProfile();
+        } catch (e) {
+          // ignore
+        }
+        const user = {
+          id: resp.id || resp.userId,
+          username: resp.username,
+          email: resp.email,
+          firstName: resp.firstName,
+          lastName: resp.lastName,
+          role: resp.role
+        };
+
+        // Merge full profile if available
+        const mergedUser = { ...user, ...(fullUser || {}) };
 
         dispatch({
           type: AUTH_ACTIONS.REGISTER_SUCCESS,
-          payload: { user }
+          payload: { user: mergedUser }
         });
 
-        return { success: true, user };
-      } else {
-       throw new Error('Error al registrar usuario');
+        return { success: true, user: mergedUser };
       }
+      throw new Error('Error al registrar usuario');
     } catch (error) {
       const errorMessage = error.message || 'Error al registrar usuario';
       dispatch({
@@ -261,7 +292,7 @@ export const AuthProvider = ({ children }) => {
   // Función de logout
   const logout = () => {
   token.remove();
-  localStorage.removeItem('userData');
+  localStorage.removeItem('user');
   localStorage.removeItem('cartItems'); // Limpiar carrito también
   sessionStorage.removeItem('myCatalog');
   sessionStorage.removeItem('deletedMyProducts');
@@ -296,7 +327,7 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = (updatedData) => {
     try {
       const updatedUser = { ...state.user, ...updatedData };
-      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      localStorage.setItem('user', JSON.stringify(updatedUser));
       
       dispatch({
         type: AUTH_ACTIONS.RESTORE_SESSION,

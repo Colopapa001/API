@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import Input from '../../components/UI/Input';
-import { getProductsByUser, deleteProduct } from '../../services/Api';
+import { getProductsByUser, deleteProduct, updateProduct } from '../../services/Api';
 import { formatPrice, formatDate } from '../../utils/helpers';
 import './MyProducts.css';
 
@@ -23,10 +23,18 @@ const MyProducts = () => {
     description: '',
     stock: ''
   });
+  const [savingId, setSavingId] = useState(null);
 
   const loadProducts = useCallback(async () => {
     try {
       setLoading(true);
+      // Si no hay usuario en contexto, evitar llamar al backend con 'undefined'
+      if (!user || !user.id) {
+        setError('Sesión inválida o no iniciada. Por favor inicia sesión.');
+        setLoading(false);
+        return;
+      }
+
       const userProducts = await getProductsByUser(user.id);
       // Filtrar productos eliminados en la sesión
       const deletedIds = JSON.parse(sessionStorage.getItem('deletedMyProducts')) || [];
@@ -34,21 +42,52 @@ const MyProducts = () => {
       setProducts(filteredProducts);
       setError(null);
     } catch (err) {
-      setError('Error cargando productos');
-      console.error(err);
+      // Si es error de autorización, mostrar mensaje claro
+      console.error('Error cargando productos:', err);
+      const msg = err && err.message ? err.message : '';
+      // Token inválido detectado por la capa de API
+      if (msg === 'INVALID_TOKEN') {
+        setError('Sesión inválida o token malformado. Por favor inicia sesión de nuevo.');
+        return;
+      }
+      if (msg.includes('HTTP 401') || msg.includes('HTTP 403')) {
+        setError('No tienes permisos para ver esta sección. Inicia sesión como SELLER o ADMIN.');
+      } else {
+        setError('Error cargando productos');
+      }
     } finally {
       setLoading(false);
     }
-  }, [user.id]);
+  }, [user]);
 
   useEffect(() => {
     // Scroll al inicio al montar
     import('../../utils/helpers').then(({ scrollToTop }) => scrollToTop('auto'));
-  loadProducts();
-  // Cargar productos agregados en la sesión
-  const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
-  setSessionProducts(sessionCatalog);
-  }, [loadProducts]);
+
+    // Cargar productos solo si hay usuario
+    if (user && user.id) {
+      loadProducts();
+    } else {
+      // No hay usuario: dejar de mostrar loading e informar al usuario
+      setLoading(false);
+      setError('Sesión inválida o no iniciada. Por favor inicia sesión.');
+    }
+
+    // Cargar productos agregados en la sesión
+    const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+    setSessionProducts(sessionCatalog);
+
+    // Escuchar evento global de token inválido para mostrar mensaje y permitir re-login
+    const onAuthInvalid = () => {
+      setError('Sesión inválida o token malformado. Por favor inicia sesión de nuevo.');
+      setLoading(false);
+    };
+    window.addEventListener('auth:invalid', onAuthInvalid);
+
+    return () => {
+      window.removeEventListener('auth:invalid', onAuthInvalid);
+    };
+  }, [loadProducts, user]);
 
   const handleDelete = async (productId) => {
     if (!window.confirm('¿Estás seguro de eliminar este producto?')) {
@@ -98,7 +137,8 @@ const MyProducts = () => {
     }));
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
+    console.log('handleSaveEdit invoked, editingProduct=', editingProduct);
     if (!editingProduct) return;
 
     const updatedProduct = {
@@ -108,19 +148,55 @@ const MyProducts = () => {
       stock: parseInt(editForm.stock) || 0
     };
 
-    // Actualizar en el estado local (solo para la sesión actual)
-    setProducts(prev => 
-      prev.map(p => p.id === editingProduct.id ? updatedProduct : p)
-    );
+    setSavingId(editingProduct.id);
 
-    // Si es un producto de sesión, actualizar también ahí
-    setSessionProducts(prev => 
-      prev.map(p => p.id === editingProduct.id ? updatedProduct : p)
-    );
+    try {
+      console.log('local token:', localStorage.getItem('token'));
+      // Si el producto está en sessionProducts (creado en sesión), actualizar solo localmente y en sessionStorage
+      const isSessionProduct = sessionProducts.some(p => p.id === editingProduct.id);
+      console.log('isSessionProduct=', isSessionProduct);
+      if (isSessionProduct) {
+        const newSession = sessionProducts.map(p => p.id === editingProduct.id ? updatedProduct : p);
+        setSessionProducts(newSession);
+        sessionStorage.setItem('myCatalog', JSON.stringify(newSession));
 
-    // Cerrar el modal
-    setEditingProduct(null);
-    setEditForm({ price: '', description: '', stock: '' });
+        // También actualizar la lista principal si existe ahí
+        setProducts(prev => prev.map(p => p.id === editingProduct.id ? updatedProduct : p));
+        setError(null);
+        return;
+      }
+
+      // Intentar persistir en backend
+      console.log('Calling updateProduct for id', editingProduct.id);
+      const res = await updateProduct(editingProduct.id, {
+        // Backend validation expects a name (even if not editable in the modal),
+        // so include the current name to avoid 400 validation errors.
+        name: updatedProduct.name || updatedProduct.title || editingProduct.name || editingProduct.title,
+        price: updatedProduct.price,
+        description: updatedProduct.description,
+        stock: updatedProduct.stock,
+        // include categoryId if available to avoid nulling it accidentally
+        categoryId: updatedProduct.categoryId || editingProduct.categoryId || null
+      });
+      console.log('updateProduct result=', res);
+
+      if (res && res.success) {
+        const serverProduct = res.product;
+        setProducts(prev => prev.map(p => p.id === editingProduct.id ? serverProduct : p));
+        setError(null);
+      } else {
+        const msg = res && res.error ? res.error : 'Error guardando cambios en el servidor';
+        setError(msg);
+      }
+    } catch (err) {
+      console.error('Error guardando edición:', err);
+      setError('Error guardando los cambios. Intenta de nuevo.');
+    } finally {
+      // Cerrar modal y limpiar estados de edición
+      setEditingProduct(null);
+      setEditForm({ price: '', description: '', stock: '' });
+      setSavingId(null);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -177,10 +253,10 @@ const MyProducts = () => {
                 <img
                   src={(Array.isArray(product.images) && product.images.length > 0) 
                     ? product.images[0] 
-                    : product.image || '/images/placeholder.png'}
+                    : product.image || '/images/placeholder.svg'}
                   alt={product.name || product.title}
                   onError={(e) => {
-                    e.target.src = '/images/placeholder.png';
+                    e.target.src = '/images/placeholder.svg';
                   }}
                 />
               </div>
@@ -296,6 +372,7 @@ const MyProducts = () => {
               <Button
                 variant="primary"
                 onClick={handleSaveEdit}
+                loading={savingId === editingProduct.id}
               >
                 Guardar Cambios
               </Button>

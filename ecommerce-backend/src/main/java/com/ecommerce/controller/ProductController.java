@@ -139,7 +139,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}/stock")
-    @PreAuthorize("hasRole('SELLER') or hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
     public ResponseEntity<?> updateProductStock(@PathVariable Long id, @RequestBody Map<String, Integer> stockUpdate, Authentication authentication) {
         try {
             String username = authentication.getName();

@@ -128,6 +128,20 @@ export const fileToBase64 = (file) => {
   });
 };
 
+// Convert a Blob to a base64 data URL
+export const blobToBase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(blob);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 // Generar ID único temporal (para nuevos productos antes de guardar)
 export const generateTempId = () => {
   return 'temp-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
@@ -225,7 +239,8 @@ export const getRelatedProducts = (products, currentProductId, categoryId, limit
 
 // Generar URL de imagen placeholder personalizada
 export const getPlaceholderImage = (width = 400, height = 400, text = 'Imagen', bgColor = '333333', textColor = 'FFFFFF') => {
-  return `https://via.placeholder.com/${width}x${height}/${bgColor}/${textColor}?text=${encodeURIComponent(text)}`;
+  // Use a local svg placeholder to avoid external network/CORS issues during development
+  return '/images/placeholder.svg';
 };
 
 // Validar datos de producto
@@ -352,7 +367,8 @@ export const imageUtils = {
   
   // Obtener imagen por defecto si falla la carga
   getDefaultImage: (width = 400, height = 400) => {
-    return `https://via.placeholder.com/${width}x${height}/E5E7EB/9CA3AF?text=Sin+Imagen`;
+    // Use local svg placeholder to avoid blocked external requests
+    return '/images/placeholder.svg';
   },
   
   // Validar archivo de imagen
@@ -415,6 +431,19 @@ export const imageUtils = {
       
       img.src = URL.createObjectURL(file);
     });
+  }
+  ,
+  // Quitar imágenes no válidas (por ejemplo blob: URLs que no persisten)
+  sanitizeImages: (images) => {
+    if (!images) return [];
+    try {
+      const filtered = images
+        .filter(i => typeof i === 'string' && i && !i.startsWith('blob:'))
+        .map(i => i);
+      return filtered.length > 0 ? filtered : [];
+    } catch {
+      return [];
+    }
   }
 };
 
@@ -499,9 +528,10 @@ export const formatStock = (stock) => {
 // TOKEN MANAGEMENT
 // ============================================
 export const token = {
-  get: () => localStorage.getItem('auth_token'),
-  set: (token) => localStorage.setItem('auth_token', token),
-  remove: () => localStorage.removeItem('auth_token'),
+  // Use unified 'token' key across the frontend
+  get: () => localStorage.getItem('token'),
+  set: (token) => localStorage.setItem('token', token),
+  remove: () => localStorage.removeItem('token'),
   isExpired: (token) => {
     if (!token) return true;
     try {

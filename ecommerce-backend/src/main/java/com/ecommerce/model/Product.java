@@ -49,12 +49,12 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
     
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition = "TEXT")
     private String image;
     
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition = "TEXT")
     @Fetch(FetchMode.JOIN)
     @JsonIgnore
     private List<String> images;
