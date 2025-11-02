@@ -9,6 +9,7 @@ const ProductCard = ({
   price,
   description,
   image_url,
+  images,
   stockLabel,
   formattedPrice,
   onAddToCart,
@@ -25,14 +26,33 @@ const ProductCard = ({
     <div className="product-card">
       <div className="product-content">
         <div className="product-image-container">
-          <img
-            src={image_url || 'https://via.placeholder.com/400x400/EDF2FA/3b82f6?text=Sin+imagen'}
-            alt={name}
-            className="product-image"
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/400x400/EDF2FA/3b82f6?text=Sin+imagen';
-            }}
-          />
+          {
+            (() => {
+              const placeholder = '/images/placeholder.svg';
+              // Prefer explicit image_url, otherwise try images array (ignore blob: URLs)
+              let src = image_url;
+              if (!src || src === 'null') {
+                if (Array.isArray(images) && images.length > 0) {
+                  const valid = images.find(i => typeof i === 'string' && i && !i.startsWith('blob:'));
+                  src = valid || null;
+                }
+              }
+              if (!src) src = placeholder;
+
+              return (
+                <img
+                  src={src}
+                  alt={name}
+                  className="product-image"
+                  onError={(e) => {
+                    // prevent infinite error loop
+                    try { e.target.onerror = null; } catch {}
+                    e.target.src = placeholder;
+                  }}
+                />
+              );
+            })()
+          }
         </div>
         <div className="product-info">
           <h3 className="product-title">{name}</h3>

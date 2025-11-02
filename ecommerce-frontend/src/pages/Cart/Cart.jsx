@@ -15,6 +15,7 @@ const Cart = () => {
     updateQuantity, 
     clearCart,
     getCartSummary,
+    applyProductUpdates,
   } = useCart();
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -87,12 +88,30 @@ const Cart = () => {
         return;
       }
       
+      // Aplicar actualizaciones locales de productos (para sincronizar UI)
+      try {
+        const updatedProducts = results
+          .filter(r => r && r.success && r.product)
+          .map(r => r.product);
+        if (updatedProducts.length > 0 && applyProductUpdates) {
+          applyProductUpdates(updatedProducts);
+          // Emit event global para que otros componentes (p.ej. Home) puedan sincronizar su cache local
+          try {
+            window.dispatchEvent(new CustomEvent('products:updated', { detail: updatedProducts }));
+          } catch (e) {
+            // no-op
+          }
+        }
+      } catch (e) {
+        console.warn('No se pudieron aplicar las actualizaciones locales de productos:', e);
+      }
+
       // Mostrar mensaje de éxito
       alert('¡Compra realizada con éxito! Volviendo a la página de inicio...');
-      
+
       // Vaciar el carrito
       clearCart();
-      
+
       // Redirigir a la página de inicio
       navigate('/');
     } catch (err) {
@@ -125,7 +144,7 @@ const Cart = () => {
                   src={item.product.images[0]}
                   alt={item.product.title}
                   onError={(e) => {
-                    e.target.src = '/images/placeholder.png';
+                    e.target.src = '/images/placeholder.svg';
                   }}
                 />
               </div>

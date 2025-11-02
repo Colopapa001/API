@@ -432,6 +432,36 @@ export const CartProvider = ({ children }) => {
     lastUpdated: state.lastUpdated,
     products, // Exportamos los productos para tener acceso al stock actualizado
 
+    // Aplicar actualizaciones de productos (por ejemplo, después de un checkout server-side)
+    applyProductUpdates: (updatedProducts = []) => {
+      try {
+        if (!Array.isArray(updatedProducts) || updatedProducts.length === 0) return { success: false, message: 'No hay productos para actualizar' };
+
+        // Crear mapa de actualizaciones por id
+        const updatesMap = updatedProducts.reduce((m, p) => { m[p.id] = p; return m; }, {});
+
+        // Actualizar lista de productos
+        setProducts(prev => prev.map(p => updatesMap[p.id] ? { ...p, ...updatesMap[p.id] } : p));
+
+        // Actualizar referencias dentro del carrito para que muestren el stock actualizado
+        const newItems = state.items.map(item => {
+          const updated = updatesMap[item.productId];
+          if (updated) {
+            return { ...item, product: { ...item.product, ...updated } };
+          }
+          return item;
+        });
+
+        // Reemplazar items en el reducer (reutilizamos LOAD_CART para setear items)
+        dispatch({ type: CART_ACTIONS.LOAD_CART, payload: newItems });
+
+        return { success: true };
+      } catch (e) {
+        console.error('Error aplicando actualizaciones de productos:', e);
+        return { success: false, error: e.message || String(e) };
+      }
+    },
+
     // Métricas
     cartTotal,
     cartCount,

@@ -164,6 +164,17 @@ const Profile = () => {
     return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
   };
 
+  const memberSinceDisplay = (() => {
+    try {
+      if (!user || !user.createdAt) return 'Fecha no disponible';
+      const d = new Date(user.createdAt);
+      if (isNaN(d)) return 'Fecha no disponible';
+      return d.toLocaleDateString();
+    } catch (e) {
+      return 'Fecha no disponible';
+    }
+  })();
+
   return (
     <div className="profile">
       <div className="profile-header">
@@ -177,7 +188,7 @@ const Profile = () => {
           <h1>{user.firstName} {user.lastName}</h1>
           <p className="username">@{user.username}</p>
           <p className="member-since">
-            Miembro desde {new Date(user.createdAt).toLocaleDateString()}
+            Miembro desde {memberSinceDisplay}
           </p>
         </div>
 
@@ -318,7 +329,7 @@ const Profile = () => {
               <div className="detail-row">
                 <span className="detail-label">Miembro desde:</span>
                 <span className="detail-value">
-                  {new Date(user.createdAt).toLocaleDateString()}
+                  {memberSinceDisplay}
                 </span>
               </div>
             </div>

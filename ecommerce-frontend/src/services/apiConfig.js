@@ -21,7 +21,8 @@ const defaultOptions = {
 
 // Función para obtener el token JWT del localStorage
 const getAuthToken = () => {
-  return localStorage.getItem('auth_token');
+  // Usar la clave unificada 'token' (coherente con el resto del frontend)
+  return localStorage.getItem('token');
 };
 
 // Función para crear headers con autenticación

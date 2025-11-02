@@ -143,7 +143,7 @@ const ProductDetail = () => {
   // Asegurar que images sea un array
   const productImages = Array.isArray(product.images) && product.images.length > 0 
     ? product.images 
-    : [product.image || '/images/placeholder.png'];
+    : [product.image || '/images/placeholder.svg'];
 
   return (
     <div className="product-detail">
@@ -154,7 +154,7 @@ const ProductDetail = () => {
             src={productImages[selectedImage]}
             alt={product.name || product.title || 'Producto'}
             onError={(e) => {
-              e.target.src = '/images/placeholder.png';
+              e.target.src = '/images/placeholder.svg';
             }}
           />
         </div>
@@ -170,7 +170,7 @@ const ProductDetail = () => {
                   src={image}
                   alt={`${product.name || product.title} - imagen ${index + 1}`}
                   onError={(e) => {
-                    e.target.src = '/images/placeholder.png';
+                    e.target.src = '/images/placeholder.svg';
                   }}
                 />
               </button>
@@ -269,9 +269,9 @@ const ProductDetail = () => {
           <h3>Productos relacionados</h3>
           <div className="related-products-grid">
             {relatedProducts.map(relatedProduct => {
-              const relatedImages = Array.isArray(relatedProduct.images) && relatedProduct.images.length > 0
+                const relatedImages = Array.isArray(relatedProduct.images) && relatedProduct.images.length > 0
                 ? relatedProduct.images
-                : [relatedProduct.image || '/images/placeholder.png'];
+                : [relatedProduct.image || '/images/placeholder.svg'];
               
               return (
                 <div
@@ -283,7 +283,7 @@ const ProductDetail = () => {
                     src={relatedImages[0]}
                     alt={relatedProduct.name || relatedProduct.title}
                     onError={(e) => {
-                      e.target.src = '/images/placeholder.png';
+                      e.target.src = '/images/placeholder.svg';
                     }}
                   />
                   <h4>{relatedProduct.name || relatedProduct.title}</h4>

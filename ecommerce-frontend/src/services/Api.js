@@ -21,13 +21,87 @@ const handleResponse = async (response) => {
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // ============= PRODUCTOS =============
+// Helper: comprobar si el token tiene formato JWT válido (3 partes, payload decodificable en base64)
+const isValidJwt = (token) => {
+  if (!token) return false;
+  // Quitar prefijo Bearer si existe
+  const raw = token.replace(/^Bearer\s+/i, '');
+  const parts = raw.split('.');
+  if (parts.length !== 3) return false;
+  try {
+    // Reemplazar URL-safe base64 y decodificar
+    const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    // atob puede lanzar si la cadena no es válida
+    const json = atob(payload);
+    const obj = JSON.parse(json);
+    return typeof obj === 'object' && obj !== null;
+  } catch (e) {
+    return false;
+  }
+};
+
+// Helper: quitar token/usuario del localStorage
+const clearAuth = () => {
+  try {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  } catch (e) {
+    // no-op
+  }
+};
+
+// Helper para obtener headers con Authorization cuando exista token
+const getAuthHeaders = (hasJson = false) => {
+  const headers = {};
+  const token = localStorage.getItem('token');
+  if (hasJson) headers['Content-Type'] = 'application/json';
+  if (token) {
+    // Validar que el token tenga formato JWT (tres partes base64) para evitar tokens "mock" o malformados
+    const isValid = isValidJwt(token);
+    if (!isValid) {
+      // Limpiar credenciales y notificar a la app
+      clearAuth();
+      // Disparar un evento para que componentes puedan reaccionar (p.ej. redirigir a login)
+      try { window.dispatchEvent(new CustomEvent('auth:invalid')); } catch (e) {}
+      // Lanzar error para que el llamado lo maneje (p.ej. MyProducts mostrará mensaje de re-login)
+      throw new Error('INVALID_TOKEN');
+    }
+
+    // Normalizar valor Authorization: si el token ya contiene "Bearer ", usarlo tal cual
+    headers['Authorization'] = (/^Bearer\s+/i.test(token)) ? token : `Bearer ${token}`;
+  }
+  return headers;
+};
+
+ 
+
 
 // Obtener todos los productos
 export const getAllProducts = async () => {
   try {
     await delay(API_DELAY);
     const response = await fetch(`${API_BASE_URL}/products/all`);
-    return await handleResponse(response);
+    const data = await handleResponse(response);
+    // sanitize images to avoid transient blob: URLs stored in session/local state
+    if (Array.isArray(data)) {
+      return data.map(product => {
+        try {
+          if (product.images && Array.isArray(product.images)) {
+            product.images = product.images.filter(i => typeof i === 'string' && i && !i.startsWith('blob:'));
+          }
+          if ((!product.images || product.images.length === 0) && product.image) {
+            product.images = [product.image];
+          }
+                  if (!product.images || product.images.length === 0) {
+                    product.images = ['/images/placeholder.svg'];
+          }
+        } catch (e) {
+          product.images = ['/images/placeholder.svg'];
+        }
+        return product;
+      });
+    }
+    return data;
   } catch (error) {
     console.error('Error obteniendo productos:', error);
     throw error;
@@ -45,7 +119,24 @@ export const getProductById = async (id) => {
       return null;
     }
     
-    return await handleResponse(response);
+    const product = await handleResponse(response);
+    // sanitize single product images
+    if (product) {
+      try {
+        if (product.images && Array.isArray(product.images)) {
+          product.images = product.images.filter(i => typeof i === 'string' && i && !i.startsWith('blob:'));
+        }
+        if ((!product.images || product.images.length === 0) && product.image) {
+          product.images = [product.image];
+        }
+                if (!product.images || product.images.length === 0) {
+                  product.images = ['/images/placeholder.svg'];
+        }
+      } catch (e) {
+        product.images = ['/images/placeholder.svg'];
+      }
+    }
+    return product;
   } catch (error) {
     console.error('Error obteniendo producto:', error);
     // Si es un error 404, retornar null
@@ -60,29 +151,42 @@ export const getProductById = async (id) => {
 export const getProductsByUser = async (userId) => {
   try {
     await delay(API_DELAY);
-    
-    // Obtener token del localStorage
-    const token = localStorage.getItem('token');
-    
-    const response = await fetch(`${API_BASE_URL}/seller/products`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+    // Backend exposes: GET /products/user/{userId} (protected: SELLER or ADMIN)
+    const response = await fetch(`${API_BASE_URL}/products/user/${userId}`, {
+      headers: getAuthHeaders(true)
+    });
+
+    // If forbidden (403) propagate so caller can react (e.g., show login/role error)
+    if (!response.ok) {
+      // Return empty array on 401/403 to avoid breaking UI, but still surface the error
+      if (response.status === 401 || response.status === 403) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    }
+
+    const pageData = await handleResponse(response);
+
+    // Si es paginación (Page), extraer contenido
+    const items = pageData && Array.isArray(pageData.content) ? pageData.content : (Array.isArray(pageData) ? pageData : []);
+
+    // Sanitizar imágenes
+    return items.map(p => {
+      try {
+        if (p.images && Array.isArray(p.images)) p.images = p.images.filter(i => typeof i === 'string' && i && !i.startsWith('blob:'));
+        if ((!p.images || p.images.length === 0) && p.image) p.images = [p.image];
+        if (!p.images || p.images.length === 0) p.images = ['/images/placeholder.svg'];
+        return p;
+      } catch (e) {
+        return { ...p, images: ['/images/placeholder.svg'] };
       }
     });
-    
-    const pageData = await handleResponse(response);
-    
-    // Si es un objeto de paginación, retornar solo el contenido
-    if (pageData && Array.isArray(pageData.content)) {
-      return pageData.content;
-    }
-    
-    // Si ya es un array, retornarlo directamente
-    return Array.isArray(pageData) ? pageData : [];
   } catch (error) {
     console.error('Error obteniendo productos del usuario:', error);
-    // Si no hay autenticación, retornar array vacío en lugar de lanzar error
+    // Si es un error de autorización, re-lanzarlo para que la UI lo maneje
+    if (error && error.message && (error.message.includes('HTTP 401') || error.message.includes('HTTP 403'))) {
+      throw error;
+    }
+    // Para otros errores, retornar array vacío en lugar de lanzar error
     return [];
   }
 };
@@ -91,17 +195,13 @@ export const getProductsByUser = async (userId) => {
 export const createProduct = async (productData, userId) => {
   try {
     await delay(API_DELAY);
+    // Adjuntar token si existe
     const response = await fetch(`${API_BASE_URL}/products`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(true),
       body: JSON.stringify({
         ...productData,
-        userId: userId, // Incluir el userId del usuario autenticado
-        id: Date.now(), // ID temporal
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        userId: userId // incluir userId si lo necesita el frontend
       })
     });
     const newProduct = await handleResponse(response);
@@ -118,9 +218,7 @@ export const updateProduct = async (id, productData) => {
     await delay(API_DELAY);
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(true),
       body: JSON.stringify({
         ...productData,
         updatedAt: new Date().toISOString()
@@ -139,7 +237,8 @@ export const deleteProduct = async (id) => {
   try {
     await delay(API_DELAY);
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders(false)
     });
     if (response.ok) {
       return { success: true, message: 'Producto eliminado correctamente' };
@@ -155,15 +254,10 @@ export const deleteProduct = async (id) => {
 export const updateProductStock = async (id, newStock) => {
   try {
     await delay(API_DELAY);
-    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/products/${id}/stock`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        stock: newStock,
-        updatedAt: new Date().toISOString()
-      })
+      headers: getAuthHeaders(true),
+      body: JSON.stringify({ stock: newStock })
     });
     const updatedProduct = await handleResponse(response);
     return { success: true, product: updatedProduct };
@@ -228,16 +322,30 @@ export const getCategoryById = async (id) => {
 export const loginUser = async (email, password) => {
   try {
     await delay(API_DELAY);
-    const response = await fetch(`${API_BASE_URL}/users?email=${email}`);
-    const users = await handleResponse(response);
-    
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-      return { success: true, user: { ...user, password: undefined } };
-    } else {
-      return { success: false, error: 'Credenciales inválidas' };
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const auth = await handleResponse(response);
+
+    // Guardar token y algunos datos del usuario en localStorage para uso del frontend
+    if (auth && auth.token) {
+      localStorage.setItem('token', auth.token);
+      // Guardar user básico (no sensible)
+      const user = {
+        id: auth.userId,
+        username: auth.username,
+        email: auth.email,
+        role: auth.role
+      };
+      localStorage.setItem('user', JSON.stringify(user));
+      return { success: true, user };
     }
+    return { success: false, error: 'Credenciales inválidas' };
   } catch (error) {
     console.error('Error en login:', error);
     return { success: false, error: 'Error de conexión' };
@@ -298,6 +406,24 @@ export const getUserById = async (id) => {
     return { ...user, password: undefined };
   } catch (error) {
     console.error('Error obteniendo usuario:', error);
+    throw error;
+  }
+};
+
+// Obtener perfil del usuario autenticado
+export const getCurrentUserProfile = async () => {
+  try {
+    await delay(API_DELAY);
+    const response = await fetch(`${API_BASE_URL}/users/profile`, {
+      headers: getAuthHeaders(true)
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const user = await handleResponse(response);
+    return { ...user };
+  } catch (error) {
+    console.error('Error obteniendo perfil actual:', error);
     throw error;
   }
 };

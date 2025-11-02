@@ -3,14 +3,11 @@ echo ========================================
 echo   Ecommerce Full System Starter
 echo ========================================
 
-REM Set Java environment - Java 17 installed
-set "JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-17.0.16.8-hotspot"
-set "PATH=%JAVA_HOME%\bin;%PATH%"
-
-REM Verify Java is installed
+REM Do not hardcode JAVA_HOME here. start-backend.bat will detect/derive JAVA_HOME safely.
+REM Just verify there's some java on PATH; if not, warn and exit.
 where java >nul 2>&1
 if %errorlevel% neq 0 (
-    echo ERROR: Java no encontrado. Por favor instala Java 17.
+    echo ERROR: java no encontrado en PATH. Por favor instala JDK 17 o añade java al PATH.
     pause
     exit /b 1
 )
@@ -38,11 +35,33 @@ if "%NODE_FOUND%"=="0" (
     exit /b 1
 )
 
-REM Stop any existing backend processes
+REM Stop any existing backend process that is listening on 8080 (avoid killing all java processes)
 echo.
-echo Deteniendo procesos existentes...
-taskkill /F /IM java.exe >nul 2>&1
+echo Deteniendo proceso que ocupa el puerto 8080 (si existe)...
+set "_PID="
+rem Filtrar solo las líneas que están en estado LISTENING para evitar capturar columnas equivocadas
+for /f "delims=" %%a in ('netstat -ano ^| findstr ":8080" ^| findstr /I "LISTENING"') do (
+    for /f "tokens=5" %%b in ("%%a") do (
+        set "_PID=%%b"
+        goto :_kill_pid
+    )
+)
+if not defined _PID (
+    echo No se detectó proceso en el puerto 8080.
+    goto :_after_kill
+)
+
+:_kill_pid
+echo Matando PID %_PID% que ocupa 8080...
+taskkill /F /PID %_PID% >nul 2>&1
+if %errorlevel% equ 0 (
+    echo PID %_PID% terminado.
+) else (
+    echo No se pudo terminar PID %_PID% (permiso o ya finalizado).
+)
 timeout /t 2 /nobreak >nul
+
+:_after_kill
 
 echo.
 echo ========================================
@@ -51,8 +70,9 @@ echo ========================================
 echo Por favor espere, esto puede tardar unos minutos...
 echo.
 
-REM Start backend in a new window using internal script
-start "Ecommerce Backend" cmd /k "%~dp0start-backend-internal.bat"
+REM Start backend in a new window using a small wrapper that forces JDK17 if present
+REM This avoids nested quoting issues and keeps start-backend.bat unchanged.
+start "Ecommerce Backend" "%~dp0start-backend-with-jdk.bat"
 
 REM Wait for backend to start (increased to 60 seconds)
 echo.

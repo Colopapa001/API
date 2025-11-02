@@ -12,8 +12,10 @@
 ## 🔧 Requisitos Previos
 
 ### Software Necesario
-1. **Java 17** (Eclipse Adoptium Temurin)
-   - Instalado en: `C:\Program Files\Eclipse Adoptium\jdk-17.0.16.8-hotspot`
+1. **Java 17 (requerido)** — Eclipse Adoptium Temurin recomendado
+   - El backend está compilado para Java 17 (ver `pom.xml` -> `<java.version>17`). Usa un JDK 17 para ejecutar Maven/Spring Boot.
+   - Ruta sugerida (si está instalada en tu máquina): `C:\Program Files\Java\jdk-17`
+   - Si tienes varios JDKs instalados (por ejemplo Adoptium jdk-25), usa JDK 17 para este proyecto: versiones mayores pueden introducir incompatibilidades con dependencias o con la configuración del proyecto.
    
 2. **Node.js** (v16 o superior)
    - Descarga: https://nodejs.org/

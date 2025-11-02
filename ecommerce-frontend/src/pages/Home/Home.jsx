@@ -95,6 +95,25 @@ const Home = () => {
     };
 
     loadData();
+
+    // Listener para actualizaciones globales de productos (p.ej. después de un checkout)
+    const onProductsUpdated = (e) => {
+      try {
+        const updated = e && e.detail ? e.detail : [];
+        if (!Array.isArray(updated) || updated.length === 0) return;
+        setProducts(prev => prev.map(p => {
+          const u = updated.find(x => x.id === p.id);
+          return u ? { ...p, ...u } : p;
+        }));
+      } catch (err) {
+        console.warn('Error aplicando products:updated en Home:', err);
+      }
+    };
+
+    window.addEventListener('products:updated', onProductsUpdated);
+    return () => {
+      window.removeEventListener('products:updated', onProductsUpdated);
+    };
   }, []);
 
   // Manejar cambios en filtros
