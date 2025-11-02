@@ -27,7 +27,7 @@ spring:
   # SQL initialization
   sql:
     init:
-      mode: always
+      mode: never
       continue-on-error: true
   
   # Security Configuration
