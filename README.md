@@ -19,6 +19,7 @@ Sistema completo de e-commerce desarrollado con arquitectura de microservicios, 
 10. [Sistema de Seguridad](#sistema-de-seguridad)
 11. [Casos de Uso y Flujos](#casos-de-uso-y-flujos)
 12. [Testing y Validación](#testing-y-validación)
+13. [Docker Compose](#ejecución-del-sistema)
 
 ---
 
@@ -228,7 +229,39 @@ npm install
 
 ## 🎬 Ejecución del Sistema
 
-### Opción 1: Inicio Automático (Recomendado)
+### Opción 1: Docker Compose (Recomendado para Equipos) 🐳
+
+La forma más fácil de levantar toda la aplicación es usando Docker Compose:
+
+**Requisitos:**
+- Docker Desktop instalado y corriendo
+
+**Comandos:**
+```bash
+# Levantar toda la aplicación
+.\start-docker.bat
+
+# O manualmente
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
+
+# Detener
+docker-compose down
+
+# Detener y eliminar datos
+docker-compose down -v
+```
+
+**Acceso:**
+- Frontend: http://localhost:3000
+- Backend: http://localhost:8080/api
+- Base de datos: localhost:3306
+
+**Documentación completa:** Ver [DOCKER-README.md](DOCKER-README.md)
+
+### Opción 2: Inicio Automático con Scripts Locales
 ```bash
 .\start-full-system.bat
 ```
@@ -241,7 +274,7 @@ Este script:
 - Inicia el frontend en http://localhost:3000
 - Abre ambas aplicaciones en ventanas separadas
 
-### Opción 2: Inicio Manual
+### Opción 3: Inicio Manual
 
 #### Iniciar Backend
 ```bash
@@ -726,13 +759,22 @@ spring:
 
 ## 🐛 Solución de Problemas
 
-### Backend no inicia
+### Docker - Problemas Comunes
+1. **Docker Desktop no inicia**: Verifica que Docker Desktop esté instalado y corriendo
+2. **Puertos ocupados**: Cambia los puertos en `docker-compose.yml` o detén servicios que los usen
+3. **Backend no conecta a DB**: Espera 2-3 minutos, el backend espera a que la DB esté healthy
+4. **Error de build**: Ejecuta `docker-compose build --no-cache`
+5. **Ver logs**: `docker-compose logs -f` para ver logs en tiempo real
+
+Ver [DOCKER-README.md](DOCKER-README.md) para más soluciones.
+
+### Backend no inicia (local)
 1. Verificar que Java 17 esté instalado
 2. Verificar que MySQL esté corriendo (puerto 3306)
 3. Verificar que el puerto 8080 no esté en uso
 4. Revisar logs en la consola del backend
 
-### Frontend no inicia
+### Frontend no inicia (local)
 1. Verificar que Node.js esté instalado
 2. Ejecutar `npm install` en ecommerce-frontend
 3. Verificar que el puerto 3000 no esté en uso
@@ -757,6 +799,8 @@ spring:
 ## 📚 Archivos de Documentación Adicional
 
 - `GUIA-COMPLETA.md` - Guía detallada de uso
+- `DOCKER-README.md` - Guía completa de Docker Compose
+- `DOCKER-SETUP-COMPLETE.md` - Resumen de setup Docker
 - `ecommerce-backend/README.md` - Documentación del backend
 - `ecommerce-backend/SECURITY_DOCUMENTATION.md` - Seguridad
 - `README-MYSQL.md` - Configuración MySQL

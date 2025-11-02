@@ -16,14 +16,14 @@ INSERT IGNORE INTO users (username, email, password, first_name, last_name, role
 
 -- Insertar productos de prueba
 -- Usar INSERT IGNORE para evitar duplicados
-INSERT IGNORE INTO products (name, description, price, stock, category_id, seller_id, image_url) VALUES
-('iPhone 15', 'Último modelo de iPhone con cámara mejorada', 999.99, 10, 1, 2),
-('Samsung Galaxy S24', 'Smartphone Android de alta gama', 899.99, 15, 1, 2),
-('Camiseta Nike', 'Camiseta deportiva de algodón', 29.99, 50, 2, 2),
-('Pantalón Adidas', 'Pantalón deportivo cómodo', 49.99, 30, 2, 2),
-('Sofá 3 plazas', 'Sofá moderno para sala', 599.99, 5, 3, 2),
-('Mesa de centro', 'Mesa de centro de madera', 199.99, 8, 3, 2),
-('Balón de fútbol', 'Balón oficial de fútbol', 39.99, 25, 4, 2),
-('Raqueta de tenis', 'Raqueta profesional de tenis', 89.99, 12, 4, 2),
-('Libro de Java', 'Programación en Java para principiantes', 49.99, 20, 5, 2),
-('Novela de ficción', 'Novela de ciencia ficción', 19.99, 35, 5, 2);
+INSERT IGNORE INTO products (name, description, price, stock, category_id, seller_id, image_url, created_at) VALUES
+('iPhone 15', 'Último modelo de iPhone con cámara mejorada', 999.99, 10, 1, 2, NULL, NOW()),
+('Samsung Galaxy S24', 'Smartphone Android de alta gama', 899.99, 15, 1, 2, NULL, NOW()),
+('Camiseta Nike', 'Camiseta deportiva de algodón', 29.99, 50, 2, 2, NULL, NOW()),
+('Pantalón Adidas', 'Pantalón deportivo cómodo', 49.99, 30, 2, 2, NULL, NOW()),
+('Sofá 3 plazas', 'Sofá moderno para sala', 599.99, 5, 3, 2, NULL, NOW()),
+('Mesa de centro', 'Mesa de centro de madera', 199.99, 8, 3, 2, NULL, NOW()),
+('Balón de fútbol', 'Balón oficial de fútbol', 39.99, 25, 4, 2, NULL, NOW()),
+('Raqueta de tenis', 'Raqueta profesional de tenis', 89.99, 12, 4, 2, NULL, NOW()),
+('Libro de Java', 'Programación en Java para principiantes', 49.99, 20, 5, 2, NULL, NOW()),
+('Novela de ficción', 'Novela de ciencia ficción', 19.99, 35, 5, 2, NULL, NOW());

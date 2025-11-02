@@ -1,0 +1,43 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.class
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Git
+.git
+.gitignore
+.github
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Documentation
+*.md
+README*
+
+# Tests
+src/test/
+
+# XAMPP
+apache-maven-3.9.9/
+maven.zip
+mvnw.cmd
+*.bat
+!start-backend*.bat
+

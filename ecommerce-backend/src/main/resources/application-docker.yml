@@ -1,0 +1,61 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: ecommerce-backend
+  
+  # Database Configuration for Docker
+  datasource:
+    url: jdbc:mysql://${DB_HOST:db}:${DB_PORT:3306}/${DB_NAME:ecommerce_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:rootpassword}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+    open-in-view: false
+  
+  # SQL initialization
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+  
+  # Security Configuration
+  security:
+    jwt:
+      secret: ${JWT_SECRET:myVerySecureJWTSecretKeyForEcommerceApplicationThatIs256BitsLongEnoughForSecurityPurposesAndShouldWorkWithAllJWTAlgorithms12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890}
+      expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
+
+# Logging Configuration
+logging:
+  level:
+    com.ecommerce: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+
+# CORS Configuration
+cors:
+  allowed-origins: 
+    - ${FRONTEND_URL:http://localhost:3000}
+  allowed-methods:
+    - GET
+    - POST
+    - PUT
+    - PATCH
+    - DELETE
+    - OPTIONS
+  allowed-headers:
+    - "*"
+  allow-credentials: true
+
