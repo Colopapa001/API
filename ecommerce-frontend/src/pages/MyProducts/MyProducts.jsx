@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/UI/Button';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import Input from '../../components/UI/Input';
-import { getProductsByUser, deleteProduct, updateProduct } from '../../services/Api';
+import { getProductsByUser, deleteProduct, updateProduct, getProductById } from '../../services/Api';
 import { formatPrice, formatDate } from '../../utils/helpers';
 import './MyProducts.css';
 
@@ -24,6 +24,10 @@ const MyProducts = () => {
     stock: ''
   });
   const [savingId, setSavingId] = useState(null);
+  const [infoMessage, setInfoMessage] = useState(null);
+  // Helper to compare ids that may be string or number (coerce to string)
+  const sameId = (a, b) => String(a) === String(b);
+  const [saveClickedCount, setSaveClickedCount] = useState(0);
 
   const loadProducts = useCallback(async () => {
     try {
@@ -37,171 +41,143 @@ const MyProducts = () => {
 
       const userProducts = await getProductsByUser(user.id);
       // Filtrar productos eliminados en la sesión
-      const deletedIds = JSON.parse(sessionStorage.getItem('deletedMyProducts')) || [];
-      const filteredProducts = userProducts.filter(p => !deletedIds.includes(p.id));
+  const deletedIds = JSON.parse(sessionStorage.getItem('deletedMyProducts')) || [];
+  const filteredProducts = userProducts.filter(p => !deletedIds.some(did => String(did) === String(p.id)));
       setProducts(filteredProducts);
       setError(null);
+      // load session products stored locally
+      const stored = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+      setSessionProducts(stored);
+      setLoading(false);
+      return;
     } catch (err) {
-      // Si es error de autorización, mostrar mensaje claro
-      console.error('Error cargando productos:', err);
-      const msg = err && err.message ? err.message : '';
-      // Token inválido detectado por la capa de API
-      if (msg === 'INVALID_TOKEN') {
-        setError('Sesión inválida o token malformado. Por favor inicia sesión de nuevo.');
-        return;
-      }
-      if (msg.includes('HTTP 401') || msg.includes('HTTP 403')) {
-        setError('No tienes permisos para ver esta sección. Inicia sesión como SELLER o ADMIN.');
-      } else {
-        setError('Error cargando productos');
-      }
-    } finally {
+      console.error(err);
+      setError(err.message || 'Error al cargar productos');
       setLoading(false);
     }
   }, [user]);
-
-  useEffect(() => {
-    // Scroll al inicio al montar
-    import('../../utils/helpers').then(({ scrollToTop }) => scrollToTop('auto'));
-
-    // Cargar productos solo si hay usuario
-    if (user && user.id) {
-      loadProducts();
-    } else {
-      // No hay usuario: dejar de mostrar loading e informar al usuario
-      setLoading(false);
-      setError('Sesión inválida o no iniciada. Por favor inicia sesión.');
-    }
-
-    // Cargar productos agregados en la sesión
-    const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
-    setSessionProducts(sessionCatalog);
-
-    // Escuchar evento global de token inválido para mostrar mensaje y permitir re-login
-    const onAuthInvalid = () => {
-      setError('Sesión inválida o token malformado. Por favor inicia sesión de nuevo.');
-      setLoading(false);
-    };
-    window.addEventListener('auth:invalid', onAuthInvalid);
-
-    return () => {
-      window.removeEventListener('auth:invalid', onAuthInvalid);
-    };
-  }, [loadProducts, user]);
-
-  const handleDelete = async (productId) => {
-    if (!window.confirm('¿Estás seguro de eliminar este producto?')) {
-      return;
-    }
-
-    setDeletingId(productId);
-    
-    try {
-      // Intentar eliminar el producto usando la función importada
-      await deleteProduct(productId);
-      
-      // Si el producto fue agregado en la sesión, eliminar de sessionStorage
-      const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
-      const newCatalog = sessionCatalog.filter(p => p.id !== productId);
-      sessionStorage.setItem('myCatalog', JSON.stringify(newCatalog));
-      setSessionProducts(newCatalog);
-      
-      // Si el producto es propio, guardar su ID en sessionStorage para excluirlo en la sesión
-      if (products.some(p => p.id === productId && p.userId === user.id)) {
-        setProducts(prev => prev.filter(p => p.id !== productId));
-        const deletedIds = JSON.parse(sessionStorage.getItem('deletedMyProducts')) || [];
-        sessionStorage.setItem('deletedMyProducts', JSON.stringify([...deletedIds, productId]));
-      }
-    } catch (error) {
-      console.error('Error eliminando producto:', error);
-      // Mostrar mensaje de error al usuario
-      setError('Error al eliminar el producto. Inténtalo nuevamente.');
-    } finally {
-      setDeletingId(null);
-    }
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
+    setEditForm({ price: '', description: '', stock: '' });
   };
 
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
   const handleEdit = (product) => {
-    setEditingProduct(product);
+    // Ensure we prefer the server-side product fields (e.g., name) when available.
+    const serverProduct = (products || []).find(p => sameId(p.id, product.id));
+    const enriched = serverProduct ? { ...serverProduct, ...product } : product;
+    setEditingProduct(enriched);
     setEditForm({
-      price: product.price.toString(),
-      description: product.description,
-      stock: product.stock.toString()
+      price: enriched.price ?? '',
+      description: enriched.description ?? '',
+      stock: enriched.stock ?? ''
     });
   };
 
   const handleEditFormChange = (field, value) => {
-    setEditForm(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setEditForm(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSaveEdit = async () => {
-    console.log('handleSaveEdit invoked, editingProduct=', editingProduct);
+    setSaveClickedCount(c => c + 1);
     if (!editingProduct) return;
-
-    const updatedProduct = {
+    const isSessionProduct = (sessionProducts || []).some(sp => sameId(sp.id, editingProduct.id) && sp.isLocal);
+    const updatedValues = {
       ...editingProduct,
-      price: parseFloat(editForm.price) || 0,
-      description: editForm.description,
-      stock: parseInt(editForm.stock) || 0
+      price: editForm.price === '' ? editingProduct.price : Number(editForm.price),
+      description: editForm.description === '' ? editingProduct.description : editForm.description,
+      stock: editForm.stock === '' ? editingProduct.stock : Number(editForm.stock)
     };
 
-    setSavingId(editingProduct.id);
+    // Ensure 'name' is present (backend validation requires it). Fallback to title if available.
+    if (!updatedValues.name) {
+      updatedValues.name = updatedValues.title || editingProduct.title || 'Sin título';
+    }
 
+    try { console.debug('[MyProducts] handleSaveEdit isSessionProduct:', isSessionProduct, 'payload:', updatedValues); } catch(e) {}
+
+    if (isSessionProduct) {
+      // update locally in sessionStorage
+      const newSession = (sessionProducts || []).map(sp => sameId(sp.id, editingProduct.id) ? updatedValues : sp);
+      setSessionProducts(newSession);
+      sessionStorage.setItem('myCatalog', JSON.stringify(newSession));
+      setEditingProduct(updatedValues);
+      setInfoMessage('Cambios guardados localmente en la sesión.');
+      return;
+    }
+
+    // Persist to backend
     try {
-      console.log('local token:', localStorage.getItem('token'));
-      // Si el producto está en sessionProducts (creado en sesión), actualizar solo localmente y en sessionStorage
-      const isSessionProduct = sessionProducts.some(p => p.id === editingProduct.id);
-      console.log('isSessionProduct=', isSessionProduct);
-      if (isSessionProduct) {
-        const newSession = sessionProducts.map(p => p.id === editingProduct.id ? updatedProduct : p);
-        setSessionProducts(newSession);
-        sessionStorage.setItem('myCatalog', JSON.stringify(newSession));
-
-        // También actualizar la lista principal si existe ahí
-        setProducts(prev => prev.map(p => p.id === editingProduct.id ? updatedProduct : p));
-        setError(null);
-        return;
-      }
-
-      // Intentar persistir en backend
-      console.log('Calling updateProduct for id', editingProduct.id);
-      const res = await updateProduct(editingProduct.id, {
-        // Backend validation expects a name (even if not editable in the modal),
-        // so include the current name to avoid 400 validation errors.
-        name: updatedProduct.name || updatedProduct.title || editingProduct.name || editingProduct.title,
-        price: updatedProduct.price,
-        description: updatedProduct.description,
-        stock: updatedProduct.stock,
-        // include categoryId if available to avoid nulling it accidentally
-        categoryId: updatedProduct.categoryId || editingProduct.categoryId || null
-      });
-      console.log('updateProduct result=', res);
-
-      if (res && res.success) {
-        const serverProduct = res.product;
-        setProducts(prev => prev.map(p => p.id === editingProduct.id ? serverProduct : p));
-        setError(null);
-      } else {
-        const msg = res && res.error ? res.error : 'Error guardando cambios en el servidor';
-        setError(msg);
-      }
-    } catch (err) {
-      console.error('Error guardando edición:', err);
-      setError('Error guardando los cambios. Intenta de nuevo.');
-    } finally {
-      // Cerrar modal y limpiar estados de edición
+      setSavingId(editingProduct.id);
+      // Send the full product object required by backend validation (name, description, price, stock)
+      try { console.debug('[MyProducts] calling updateProduct', editingProduct.id, updatedValues); } catch(e) {}
+      // Ensure final payload always includes a name (use server value, title, or fallbacks)
+      try {
+        const serverProduct = (products || []).find(p => sameId(p.id, editingProduct.id));
+        updatedValues.name = updatedValues.name || serverProduct?.name || serverProduct?.title || editingProduct?.name || editingProduct?.title || 'Sin título';
+        console.debug('[MyProducts] final update payload', updatedValues);
+      } catch (e) {}
+      await updateProduct(editingProduct.id, updatedValues);
+      setProducts(prev => prev.map(p => sameId(p.id, editingProduct.id) ? { ...p, ...updatedValues } : p));
+      setInfoMessage('Producto actualizado en el servidor.');
       setEditingProduct(null);
-      setEditForm({ price: '', description: '', stock: '' });
+    } catch (err) {
+      console.error(err);
+      setInfoMessage('Error al guardar los cambios en el servidor.');
+    } finally {
       setSavingId(null);
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingProduct(null);
-    setEditForm({ price: '', description: '', stock: '' });
+  const handleDelete = async (productId) => {
+    // mark deletingId early to prevent double-click issues and show loading
+    setDeletingId(productId);
+    const isSessionProduct = (sessionProducts || []).some(sp => String(sp.id) === String(productId));
+    try { console.debug('[MyProducts] handleDelete called', { productId, isSessionProduct }); } catch(e) {}
+    if (isSessionProduct) {
+      const newSession = (sessionProducts || []).filter(sp => String(sp.id) !== String(productId));
+      setSessionProducts(newSession);
+      sessionStorage.setItem('myCatalog', JSON.stringify(newSession));
+      setProducts(prev => prev.filter(p => String(p.id) !== String(productId)));
+      setInfoMessage('Producto eliminado de la sesión.');
+      setDeletingId(null);
+      return;
+    }
+
+    try {
+      // Debug: log delete attempt
+        // Before deleting locally, check whether product exists on server. If it exists, call backend delete.
+        try { console.debug('[MyProducts] checking server existence for delete', productId); } catch (e) {}
+        let existsOnServer = false;
+        try {
+          const srv = await getProductById(productId);
+          existsOnServer = !!srv;
+        } catch (e) {
+          // ignore errors (treat as not existing)
+        }
+
+        if (existsOnServer) {
+          try { console.debug('[MyProducts] calling deleteProduct', productId); } catch (e) {}
+          await deleteProduct(productId);
+          setProducts(prev => prev.filter(p => String(p.id) !== String(productId)));
+          setInfoMessage('Producto eliminado.');
+        } else {
+          // If not in server, just remove local session entry(s)
+          const newSession = (sessionProducts || []).filter(sp => String(sp.id) !== String(productId));
+          setSessionProducts(newSession);
+          sessionStorage.setItem('myCatalog', JSON.stringify(newSession));
+          setProducts(prev => prev.filter(p => String(p.id) !== String(productId)));
+          setInfoMessage('Producto eliminado de la sesión.');
+        }
+    } catch (err) {
+      console.error(err);
+      setInfoMessage('Error al eliminar el producto.');
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   if (loading) {
@@ -224,6 +200,12 @@ const MyProducts = () => {
     );
   }
 
+  // Prepare displayedProducts: merge backend products and sessionProducts, preferring session entries
+  const mergedMap = new Map();
+  (products || []).forEach(p => mergedMap.set(String(p.id), p));
+  (sessionProducts || []).forEach(sp => mergedMap.set(String(sp.id), sp));
+  const displayedProducts = Array.from(mergedMap.values());
+
   return (
     <div className="my-products">
       <div className="my-products-header">
@@ -233,7 +215,13 @@ const MyProducts = () => {
         </Button>
       </div>
 
-      {products.length === 0 && sessionProducts.length === 0 ? (
+      {infoMessage && (
+        <div className="my-products-info">
+          {infoMessage}
+        </div>
+      )}
+
+      {displayedProducts.length === 0 ? (
         <div className="my-products-empty">
           <h3>No tienes productos publicados</h3>
           <p>¡Comienza a vender agregando tu primer producto!</p>
@@ -243,11 +231,7 @@ const MyProducts = () => {
         </div>
       ) : (
         <div className="products-grid">
-          {[...products,
-            ...sessionProducts.filter(
-              sp => !products.some(p => p.id === sp.id)
-            )
-          ].map(product => (
+          {displayedProducts.map(product => (
             <div key={product.id} className="product-card">
               <div className="product-image">
                 <img
@@ -255,9 +239,7 @@ const MyProducts = () => {
                     ? product.images[0] 
                     : product.image || '/images/placeholder.svg'}
                   alt={product.name || product.title}
-                  onError={(e) => {
-                    e.target.src = '/images/placeholder.svg';
-                  }}
+                  onError={(e) => { e.target.src = '/images/placeholder.svg'; }}
                 />
               </div>
               <div className="product-info">
@@ -272,110 +254,48 @@ const MyProducts = () => {
                   </span>
                 </div>
                 {product.createdAt && (
-                  <p className="product-date">
-                    Publicado: {formatDate(product.createdAt)}
-                  </p>
+                  <p className="product-date">Publicado: {formatDate(product.createdAt)}</p>
                 )}
               </div>
               <div className="product-actions">
-                <Button
-                  variant="outline"
-                  onClick={() => handleEdit(product)}
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => handleDelete(product.id)}
-                  loading={deletingId === product.id}
-                >
-                  Eliminar
-                </Button>
+                <Button variant="outline" onClick={() => handleEdit(product)}>Editar</Button>
+                <Button variant="danger" onClick={() => handleDelete(product.id)} loading={deletingId === product.id}>Eliminar</Button>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal de Edición */}
+      {/* Edit Modal */}
       {editingProduct && (
         <div className="edit-modal-overlay">
           <div className="edit-modal">
             <div className="edit-modal-header">
               <h2>Editar Producto</h2>
-              <button 
-                className="edit-modal-close"
-                onClick={handleCancelEdit}
-                aria-label="Cerrar modal"
-              >
-                ×
-              </button>
+              <button className="edit-modal-close" onClick={handleCancelEdit} aria-label="Cerrar modal">×</button>
             </div>
-            
             <div className="edit-modal-content">
               <div className="edit-form-group">
                 <label htmlFor="edit-title">Título</label>
-                <Input
-                  id="edit-title"
-                  value={editingProduct.name || editingProduct.title}
-                  disabled
-                  placeholder="Título del producto"
-                />
+                <Input id="edit-title" value={editingProduct.name || editingProduct.title} disabled placeholder="Título del producto" />
                 <small>El título no se puede editar</small>
               </div>
-
               <div className="edit-form-group">
                 <label htmlFor="edit-price">Precio ($)</label>
-                <Input
-                  id="edit-price"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={editForm.price}
-                  onChange={(e) => handleEditFormChange('price', e.target.value)}
-                  placeholder="0.00"
-                />
+                <Input id="edit-price" type="number" step="0.01" min="0" value={editForm.price} onChange={(e) => handleEditFormChange('price', e.target.value)} placeholder="0.00" />
               </div>
-
               <div className="edit-form-group">
                 <label htmlFor="edit-description">Descripción</label>
-                <textarea
-                  id="edit-description"
-                  className="edit-textarea"
-                  value={editForm.description}
-                  onChange={(e) => handleEditFormChange('description', e.target.value)}
-                  placeholder="Descripción del producto"
-                  rows="4"
-                />
+                <textarea id="edit-description" className="edit-textarea" value={editForm.description} onChange={(e) => handleEditFormChange('description', e.target.value)} placeholder="Descripción del producto" rows="4" />
               </div>
-
               <div className="edit-form-group">
                 <label htmlFor="edit-stock">Cantidad en Stock</label>
-                <Input
-                  id="edit-stock"
-                  type="number"
-                  min="0"
-                  value={editForm.stock}
-                  onChange={(e) => handleEditFormChange('stock', e.target.value)}
-                  placeholder="0"
-                />
+                <Input id="edit-stock" type="number" min="0" value={editForm.stock} onChange={(e) => handleEditFormChange('stock', e.target.value)} placeholder="0" />
               </div>
             </div>
-
             <div className="edit-modal-actions">
-              <Button
-                variant="outline"
-                onClick={handleCancelEdit}
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleSaveEdit}
-                loading={savingId === editingProduct.id}
-              >
-                Guardar Cambios
-              </Button>
+              <Button variant="outline" onClick={handleCancelEdit}>Cancelar</Button>
+              <Button variant="primary" onClick={handleSaveEdit} loading={savingId === editingProduct.id}>Guardar Cambios</Button>
             </div>
           </div>
         </div>

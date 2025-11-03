@@ -240,12 +240,26 @@ const ProductDetail = () => {
                 try {
                   // Obtener productos de sesión
                   const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
-                  const exists = sessionCatalog.find(p => p.id === product.id);
+                  const exists = sessionCatalog.find(p => String(p.id) === String(product.id));
                   if (exists) {
                     alert('El producto ya existe en tu catálogo');
                   } else {
                     // Agregar a sessionStorage
-                    const newCatalog = [...sessionCatalog, product];
+                    // Normalize product before storing in session catalog
+                    const normalized = {
+                      ...product,
+                      id: String(product.id ?? Date.now()),
+                      name: product.name || product.title || '',
+                      title: product.title || product.name || '',
+                      price: typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0,
+                      stock: typeof product.stock === 'number' ? product.stock : parseInt(product.stock) || 0,
+                      images: Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []),
+                      image: product.image || (Array.isArray(product.images) && product.images[0]) || null,
+                      // mark server-derived catalog entries as not local
+                      isLocal: false,
+                      createdAt: product.createdAt || new Date().toISOString()
+                    };
+                    const newCatalog = [...sessionCatalog, normalized];
                     sessionStorage.setItem('myCatalog', JSON.stringify(newCatalog));
                     window.dispatchEvent(new Event('storage'));
                     alert('Producto agregado a tu catálogo');

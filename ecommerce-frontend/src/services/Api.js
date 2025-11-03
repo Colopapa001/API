@@ -59,16 +59,21 @@ const getAuthHeaders = (hasJson = false) => {
     // Validar que el token tenga formato JWT (tres partes base64) para evitar tokens "mock" o malformados
     const isValid = isValidJwt(token);
     if (!isValid) {
-      // Limpiar credenciales y notificar a la app
+      // Si el token está mal formado, limpiarlo y notificar pero NO lanzar una excepción
+      // de forma síncrona aquí porque eso evita que el fetch se ejecute y oculta la
+      // llamada de red en la UI (por ejemplo durante edición/elim. de productos).
       clearAuth();
-      // Disparar un evento para que componentes puedan reaccionar (p.ej. redirigir a login)
       try { window.dispatchEvent(new CustomEvent('auth:invalid')); } catch (e) {}
-      // Lanzar error para que el llamado lo maneje (p.ej. MyProducts mostrará mensaje de re-login)
-      throw new Error('INVALID_TOKEN');
+      // No lanzar error: dejamos que la llamada al backend ocurra (si procede)
+      // y que el backend responda 401/403 si es necesario.
     }
 
     // Normalizar valor Authorization: si el token ya contiene "Bearer ", usarlo tal cual
-    headers['Authorization'] = (/^Bearer\s+/i.test(token)) ? token : `Bearer ${token}`;
+    // Nota: si limpiamos el token por malformado, 'token' todavía contiene el antiguo valor
+    // — en ese caso la llamada se hará sin Authorization (porque clearAuth removió el key),
+    // así que verificamos de nuevo antes de adjuntar la cabecera.
+    const current = localStorage.getItem('token');
+    if (current) headers['Authorization'] = (/^Bearer\s+/i.test(current)) ? current : `Bearer ${current}`;
   }
   return headers;
 };
@@ -216,13 +221,14 @@ export const createProduct = async (productData, userId) => {
 export const updateProduct = async (id, productData) => {
   try {
     await delay(API_DELAY);
+    // Debug: log update attempt so developer can see the call in console
+    try { console.debug('[Api] updateProduct called', { id, productData, headers: getAuthHeaders(true) }); } catch (e) {}
+    const bodyObj = { ...productData, updatedAt: new Date().toISOString() };
+    try { console.debug('[Api] updateProduct body:', bodyObj); } catch (e) {}
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PUT',
       headers: getAuthHeaders(true),
-      body: JSON.stringify({
-        ...productData,
-        updatedAt: new Date().toISOString()
-      })
+      body: JSON.stringify(bodyObj)
     });
     const updatedProduct = await handleResponse(response);
     return { success: true, product: updatedProduct };
@@ -236,6 +242,8 @@ export const updateProduct = async (id, productData) => {
 export const deleteProduct = async (id) => {
   try {
     await delay(API_DELAY);
+    // Debug: log delete attempt so developer can see the call in console
+    try { console.debug('[Api] deleteProduct called', { id, headers: getAuthHeaders(false) }); } catch (e) {}
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(false)

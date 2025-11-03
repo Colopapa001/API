@@ -140,9 +140,22 @@ const AddProduct = () => {
       if (result.success) {
         // Agregar el producto a la lista de productos de sesión para mostrarlo inmediatamente
         const sessionCatalog = JSON.parse(sessionStorage.getItem('myCatalog')) || [];
+        // Normalize product shape for session storage: coerce id to string and ensure fields
+        const created = result.product || {};
         const newProduct = {
-          ...result.product,
-          userId: user.id
+          id: String(created.id ?? Date.now()),
+          name: created.name || created.title || productData.title || '',
+          title: created.title || created.name || productData.title || '',
+          description: created.description || productData.description || '',
+          price: typeof created.price === 'number' ? created.price : parseFloat(productData.price) || 0,
+          stock: typeof created.stock === 'number' ? created.stock : parseInt(productData.stock) || 0,
+          categoryId: created.categoryId || productData.categoryId || null,
+          images: Array.isArray(created.images) ? created.images : (created.image ? [created.image] : productData.images || []),
+          image: (created.image) ? created.image : (Array.isArray(created.images) && created.images[0]) || (productData.images && productData.images[0]) || null,
+          userId: user.id,
+          // mark if this entry is local-only (true) or was returned by server (false)
+          isLocal: !(created && created.id),
+          createdAt: created.createdAt || new Date().toISOString()
         };
         sessionStorage.setItem('myCatalog', JSON.stringify([...sessionCatalog, newProduct]));
         
