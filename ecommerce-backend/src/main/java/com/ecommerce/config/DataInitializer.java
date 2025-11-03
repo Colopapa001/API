@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@Profile("docker") // Solo se ejecuta en perfil docker
+@Profile({"docker", "default"}) // Se ejecuta en perfil docker y default
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -33,38 +33,38 @@ public class DataInitializer implements CommandLineRunner {
         log.info("🚀 Inicializando datos de prueba para Docker...");
         
         // Crear categorías
-        Category electronicos = createCategoryIfNotExists("Electrónicos", "Dispositivos electrónicos y tecnología");
-        Category ropa = createCategoryIfNotExists("Ropa", "Vestimenta para hombres, mujeres y niños");
-        Category hogar = createCategoryIfNotExists("Hogar", "Artículos para el hogar y decoración");
+        Category electronicos = createCategoryIfNotExists("Electronicos", "Dispositivos electronicos y tecnologia");
+        Category ropa = createCategoryIfNotExists("Ropa", "Vestimenta para hombres, mujeres y ninos");
+        Category hogar = createCategoryIfNotExists("Hogar", "Articulos para el hogar y decoracion");
         Category deportes = createCategoryIfNotExists("Deportes", "Equipos y accesorios deportivos");
         Category libros = createCategoryIfNotExists("Libros", "Libros y material educativo");
 
-        // Crear usuarios (con hashes BCrypt válidos)
+        // Crear usuarios (con hashes BCrypt validos)
         createUserIfNotExists("admin", "admin@ecommerce.com", "Password123", "Admin", "User", Role.ADMIN);
-        User seller = createUserIfNotExists("seller1", "seller1@ecommerce.com", "Password123", "Juan", "Pérez", Role.SELLER);
-        createUserIfNotExists("user1", "user1@ecommerce.com", "Password123", "María", "García", Role.USER);
+        User seller = createUserIfNotExists("seller1", "seller1@ecommerce.com", "Password123", "Juan", "Perez", Role.SELLER);
+        createUserIfNotExists("user1", "user1@ecommerce.com", "Password123", "Maria", "Garcia", Role.USER);
 
-        // Crear productos
-        createProductIfNotExists("iPhone 15", "Último modelo de iPhone con cámara mejorada", 
-                new BigDecimal("999.99"), 10, electronicos, seller);
+        // Crear productos sin imágenes (para agregar manualmente desde el frontend)
+        createProductIfNotExists("iPhone 15", "Ultimo modelo de iPhone con camara mejorada", 
+                new BigDecimal("999.99"), 10, electronicos, seller, "https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/tile/Apple-iPhone-15-Pro-lineup-hero-230912.jpg.news_app_ed.jpg");
         createProductIfNotExists("Samsung Galaxy S24", "Smartphone Android de alta gama", 
-                new BigDecimal("899.99"), 15, electronicos, seller);
-        createProductIfNotExists("Camiseta Nike", "Camiseta deportiva de algodón", 
-                new BigDecimal("29.99"), 50, ropa, seller);
-        createProductIfNotExists("Pantalón Adidas", "Pantalón deportivo cómodo", 
-                new BigDecimal("49.99"), 30, ropa, seller);
-        createProductIfNotExists("Sofá 3 plazas", "Sofá moderno para sala", 
-                new BigDecimal("599.99"), 5, hogar, seller);
+                new BigDecimal("899.99"), 15, electronicos, seller, "https://media.flixcar.com/webp/synd-asset/Samsung-144461453-ar-galaxy-s24-plus-sm-s926bzkmaro-539290910--Download-Source--zoom.png");
+        createProductIfNotExists("Camiseta Nike", "Camiseta deportiva de algodon", 
+                new BigDecimal("29.99"), 50, ropa, seller, "https://www.dexter.com.ar/on/demandware.static/-/Sites-365-dabra-catalog/default/dw99435cde/products/NIDV9237-349/NIDV9237-349-1.JPG");
+        createProductIfNotExists("Pantalon Adidas", "Pantalon deportivo comodo", 
+                new BigDecimal("49.99"), 30, ropa, seller, "https://www.moov.com.ar/on/demandware.static/-/Sites-365-dabra-catalog/default/dw24ab4ad1/products/ADIL2488/ADIL2488-3.JPG");
+        createProductIfNotExists("Sofa 3 plazas", "Sofa moderno para sala", 
+                new BigDecimal("599.99"), 5, hogar, seller, "https://mubak.com/4000-large_default/sofa-3-plazas-2-relax-de-280x84x105-cm.jpg");
         createProductIfNotExists("Mesa de centro", "Mesa de centro de madera", 
-                new BigDecimal("199.99"), 8, hogar, seller);
-        createProductIfNotExists("Balón de fútbol", "Balón oficial de fútbol", 
-                new BigDecimal("39.99"), 25, deportes, seller);
+                new BigDecimal("199.99"), 8, hogar, seller, "https://m.media-amazon.com/images/I/81X8REJ2XZL.jpg");
+        createProductIfNotExists("Balon de futbol", "Balon oficial de futbol", 
+                new BigDecimal("39.99"), 25, deportes, seller, "https://celadasa.vtexassets.com/arquivos/ids/467581/IX4011-1.jpg?v=638743572929830000");
         createProductIfNotExists("Raqueta de tenis", "Raqueta profesional de tenis", 
-                new BigDecimal("89.99"), 12, deportes, seller);
-        createProductIfNotExists("Libro de Java", "Programación en Java para principiantes", 
-                new BigDecimal("49.99"), 20, libros, seller);
-        createProductIfNotExists("Novela de ficción", "Novela de ciencia ficción", 
-                new BigDecimal("19.99"), 35, libros, seller);
+                new BigDecimal("89.99"), 12, deportes, seller, "https://www.wilsonstore.com.ar/cdn/shop/files/2_b4717d1b-ae9f-4fa6-808c-81e37dd39e40.jpg?v=1749652413&width=1200");
+        createProductIfNotExists("Libro de Java", "Programacion en Java para principiantes", 
+                new BigDecimal("49.99"), 20, libros, seller, "https://alfaomegaeditor.com.ar/wp-content/uploads/2020/10/TAPALIBRO.jpg");
+        createProductIfNotExists("Novela de ficcion", "Novela de ciencia ficcion", 
+                new BigDecimal("19.99"), 35, libros, seller, "https://vader-prod.s3.amazonaws.com/1676131517-41NCg3R6koL._SL500_.jpg");
 
         log.info("✅ Datos de prueba inicializados correctamente");
     }
@@ -108,7 +108,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private Product createProductIfNotExists(String name, String description, BigDecimal price, 
-                                             int stock, Category category, User seller) {
+                                             int stock, Category category, User seller, String imageUrl) {
         if (productRepository.existsByName(name)) {
             log.info("• Producto ya existe: {}", name);
             return productRepository.findByNameContainingIgnoreCase(name).stream()
@@ -124,7 +124,7 @@ public class DataInitializer implements CommandLineRunner {
         product.setStock(stock);
         product.setCategory(category);
         product.setSeller(seller);
-        product.setImage(null);
+        product.setImage(imageUrl);
         product.setCreatedAt(LocalDateTime.now());
         product.setUpdatedAt(LocalDateTime.now());
         Product saved = productRepository.save(product);
