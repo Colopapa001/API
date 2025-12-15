@@ -145,19 +145,74 @@ const ProductDetail = () => {
     ? product.images 
     : [product.image || '/images/placeholder.svg'];
 
+  // Navegación de imágenes
+  const nextImage = () => {
+    setSelectedImage((prev) => (prev + 1) % productImages.length);
+  };
+
+  const prevImage = () => {
+    setSelectedImage((prev) => (prev - 1 + productImages.length) % productImages.length);
+  };
+
+  // Navegación con teclado
+  useEffect(() => {
+    if (productImages.length <= 1) return;
+
+    const handleKeyPress = (e) => {
+      if (e.key === 'ArrowLeft') {
+        setSelectedImage((prev) => (prev - 1 + productImages.length) % productImages.length);
+      } else if (e.key === 'ArrowRight') {
+        setSelectedImage((prev) => (prev + 1) % productImages.length);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [productImages.length]);
+
   return (
     <div className="product-detail">
       {/* Galería de imágenes */}
       <div className="product-gallery">
-        <div className="product-main-image">
-          <img
-            src={productImages[selectedImage]}
-            alt={product.name || product.title || 'Producto'}
-            onError={(e) => {
-              e.target.src = '/images/placeholder.svg';
-            }}
-          />
+        <div className="product-main-image-container">
+          <div className="product-main-image">
+            <img
+              key={selectedImage}
+              src={productImages[selectedImage]}
+              alt={`${product.name || product.title || 'Producto'} - Vista ${selectedImage + 1}`}
+              onError={(e) => {
+                e.target.src = '/images/placeholder.svg';
+              }}
+            />
+          </div>
+          
+          {/* Navegación con flechas (solo si hay más de 1 imagen) */}
+          {productImages.length > 1 && (
+            <>
+              <button
+                className="image-nav-btn image-nav-prev"
+                onClick={prevImage}
+                aria-label="Imagen anterior"
+              >
+                ‹
+              </button>
+              <button
+                className="image-nav-btn image-nav-next"
+                onClick={nextImage}
+                aria-label="Imagen siguiente"
+              >
+                ›
+              </button>
+              
+              {/* Indicador de imagen actual */}
+              <div className="image-indicator">
+                {selectedImage + 1} / {productImages.length}
+              </div>
+            </>
+          )}
         </div>
+        
+        {/* Thumbnails (solo si hay más de 1 imagen) */}
         {productImages.length > 1 && (
           <div className="product-thumbnails">
             {productImages.map((image, index) => (
@@ -165,14 +220,20 @@ const ProductDetail = () => {
                 key={index}
                 className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
                 onClick={() => setSelectedImage(index)}
+                aria-label={`Ver imagen ${index + 1}`}
               >
                 <img
                   src={image}
-                  alt={`${product.name || product.title} - imagen ${index + 1}`}
+                  alt={`${product.name || product.title} - miniatura ${index + 1}`}
                   onError={(e) => {
                     e.target.src = '/images/placeholder.svg';
                   }}
                 />
+                {selectedImage === index && (
+                  <div className="thumbnail-overlay">
+                    <span className="thumbnail-check">✓</span>
+                  </div>
+                )}
               </button>
             ))}
           </div>

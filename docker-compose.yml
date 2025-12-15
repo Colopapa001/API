@@ -87,9 +87,10 @@ services:
       PMA_PORT: 3306
       PMA_USER: root
       PMA_PASSWORD: rootpassword
-      MYSQL_ROOT_PASSWORD: rootpassword
+      UPLOAD_LIMIT: 300M
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
       interval: 30s
